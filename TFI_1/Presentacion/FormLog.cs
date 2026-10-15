@@ -1,9 +1,10 @@
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Crypto.Generators;
 using TFI_1.Datos;
 using TFI_1.Models;
 using TFI_1.Negocio;
 using TFI_1.Presentacion;
+using System.Runtime.InteropServices;
 
 
 
@@ -24,9 +25,9 @@ namespace TFI_1
             {
                 Sesion.UsuarioActual = _negocio.Autenticar(txtNomUsuario.Text, txtConUsuario.Text);
 
-                var dashboard = new FormDashboard();
-                dashboard.FormClosed += (s, args) => Application.Exit();
-                dashboard.Show();
+                var principal = new FormPrincipal();
+                principal.FormClosed += (s, args) => Application.Exit();
+                principal.Show();
                 Hide();
             }
             catch (ArgumentException ex)
@@ -40,6 +41,10 @@ namespace TFI_1
             catch (MySqlException)
             {
                 MessageBox.Show("No se pudo conectar con la base de datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocurrió un error inesperado: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
