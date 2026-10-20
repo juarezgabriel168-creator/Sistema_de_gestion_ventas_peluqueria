@@ -1,0 +1,80 @@
+using System;
+using System.Data;
+using MySql.Data.MySqlClient;
+
+namespace TFI_1.Datos;
+
+/// <summary>
+/// Acceso a la tabla de auditoría: registra operaciones sensibles y permite
+/// consultarlas por rango de fechas, usuario y tipo de acción.
+/// </summary>
+public class AuditoriaDatos
+{
+	// Traduce el código interno de la acción a un texto legible para el usuario.
+	private const string CamposAccion =
+		"CASE {0} " +
+		"  WHEN 'venta' THEN 'Venta' " +
+		"  WHEN 'anulacion_venta' THEN 'Anulación de venta' " +
+		"  WHEN 'abono' THEN 'Pago de cuenta corriente' " +
+		"  WHEN 'gasto_alta' THEN 'Alta de gasto' " +
+		"  WHEN 'gasto_edicion' THEN 'Edición de gasto' " +
+		"  WHEN 'ingreso_mercaderia' THEN 'Ingreso de mercadería' " +
+		"  WHEN 'usuario_alta' THEN 'Alta de usuario' " +
+		"  WHEN 'usuario_edicion' THEN 'Edición de usuario' " +
+		"  WHEN 'usuario_desactivacion' THEN 'Desactivación de usuario' " +
+		"  WHEN 'usuario_reactivacion' THEN 'Reactivación de usuario' " +
+		"  ELSE {0} END";
+
+	public void Registrar(int usuarioId, string accion, string entidad, int? idEntidad, string? detalle)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"INSERT INTO auditoria (id_usuario, accion, entidad, id_entidad, detalle) " +
+			"VALUES (@usuario, @accion, @entidad, @id, @detalle);", conexion);
+		cmd.Parameters.AddWithValue("@usuario", usuarioId);
+		cmd.Parameters.AddWithValue("@accion", accion);
+		cmd.Parameters.AddWithValue("@entidad", entidad);
+		cmd.Parameters.AddWithValue("@id", ((object?)idEntidad) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@detalle",
+			string.IsNullOrWhiteSpace(detalle) ? DBNull.Value : ((object)detalle));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
+	}
+
+	public DataTable Listar(DateTime desde, DateTime hasta, int? usuarioId, string? accion)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT a.id_auditoria AS Id, a.fecha AS Fecha, u.nombre_usuario AS Usuario, " +
+			"       a.accion AS Codigo, " + string.Format(CamposAccion, "a.accion") + " AS Accion, " +
+			"       a.entidad AS Entidad, a.id_entidad AS IdEntidad, a.detalle AS Detalle " +
+			"FROM auditoria AS a " +
+			"INNER JOIN usuarios AS u ON u.id_usuario = a.id_usuario " +
+			"WHERE DATE(a.fecha) BETWEEN @desde AND @hasta " +
+			"  AND (@usuario IS NULL OR a.id_usuario = @usuario) " +
+			"  AND (@accion IS NULL OR a.accion = @accion) " +
+			"ORDER BY a.fecha DESC, a.id_auditoria DESC;", conexion);
+		cmd.Parameters.AddWithValue("@desde", desde.Date);
+		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.AddWithValue("@usuario", ((object?)usuarioId) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@accion",
+			string.IsNullOrWhiteSpace(accion) ? DBNull.Value : ((object)accion));
+		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
+		DataTable tabla = new DataTable();
+		adaptador.Fill(tabla);
+		return tabla;
+	}
+
+	// Acciones que ya tienen movimientos, para armar el filtro de la pantalla.
+	public DataTable Acciones()
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT DISTINCT accion AS Codigo, " + string.Format(CamposAccion, "accion") + " AS Nombre " +
+			"FROM auditoria ORDER BY Nombre;", conexion);
+		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
+		DataTable tabla = new DataTable();
+		adaptador.Fill(tabla);
+		return tabla;
+	}
+}

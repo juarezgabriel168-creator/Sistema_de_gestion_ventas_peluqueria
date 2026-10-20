@@ -10,6 +10,8 @@ public class IngresoMercaderiaNegocio
 {
 	private readonly IngresoMercaderiaDatos _datos = new();
 
+	private readonly AuditoriaNegocio _auditoria = new();
+
 	public List<IngresoMercaderia> Listar(DateTime? desde = null, DateTime? hasta = null, string? filtro = null) =>
 		_datos.Listar(desde, hasta, filtro);
 
@@ -40,7 +42,10 @@ public class IngresoMercaderiaNegocio
 				throw new ArgumentException($"El costo de {detalle.Item.Nombre} no puede ser negativo.");
 		}
 
-		return _datos.Insertar(ingreso);
+		int id = _datos.Insertar(ingreso);
+		_auditoria.Registrar("ingreso_mercaderia", "ingresos_mercaderia", id,
+			$"Ingreso #{id} de {ingreso.Proveedor} por {ingreso.Total:C2}.", ingreso.IdUsuario);
+		return id;
 	}
 
 	public DataTable IngresosResumen(DateTime desde, DateTime hasta) => _datos.IngresosResumen(desde, hasta);

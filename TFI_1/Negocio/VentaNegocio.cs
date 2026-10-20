@@ -14,6 +14,8 @@ public class VentaNegocio
 
 	private readonly ItemDatos _itemDatos = new ItemDatos();
 
+	private readonly AuditoriaNegocio _auditoria = new();
+
     public int Registrar(Venta venta)
     {
         if (venta == null)
@@ -74,7 +76,11 @@ public class VentaNegocio
         }
 
         venta.Fecha = DateTime.Now;
-        return _datos.Registrar(venta);
+        int idVenta = _datos.Registrar(venta);
+        _auditoria.Registrar("venta", "ventas", idVenta,
+            $"Venta #{idVenta} a {venta.Cliente.NombreCompleto} por {venta.Total:C2} ({venta.MedioPago}).",
+            venta.Usuario.Id);
+        return idVenta;
     }
 
     public DataTable Listar(DateTime desde, DateTime hasta, int? usuarioId = null, int? empleadoId = null, int? ventaId = null)
@@ -108,5 +114,7 @@ public class VentaNegocio
 			motivo = motivo.Substring(0, 200);
 
 		_datos.Anular(ventaId, usuarioId, motivo);
+		_auditoria.Registrar("anulacion_venta", "ventas", ventaId,
+			$"Venta #{ventaId} anulada. Motivo: {motivo}", usuarioId);
 	}
 }

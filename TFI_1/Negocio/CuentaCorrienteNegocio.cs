@@ -10,6 +10,8 @@ public class CuentaCorrienteNegocio
 {
 	private readonly CuentaCorrienteDatos _datos = new();
 
+	private readonly AuditoriaNegocio _auditoria = new();
+
 	public CuentaCorriente? ObtenerPorCliente(int idCliente) => _datos.ObtenerPorCliente(idCliente);
 
 	public int CrearSiNoExiste(int idCliente) => _datos.CrearSiNoExiste(idCliente);
@@ -52,7 +54,10 @@ public class CuentaCorrienteNegocio
 			throw new ArgumentException($"El abono no puede superar el saldo adeudado ({saldo:C2}).");
 
 		string conceptoFinal = string.IsNullOrWhiteSpace(concepto) ? "Pago a cuenta" : concepto.Trim();
-		return _datos.RegistrarAbono(idCliente, monto, conceptoFinal, Sesion.UsuarioActual.Id, DateTime.Now);
+		int idMovimiento = _datos.RegistrarAbono(idCliente, monto, conceptoFinal, Sesion.UsuarioActual.Id, DateTime.Now);
+		_auditoria.Registrar("abono", "movimientos_cuenta_corriente", idMovimiento,
+			$"Pago a cuenta del cliente #{idCliente} por {monto:C2}.", Sesion.UsuarioActual.Id);
+		return idMovimiento;
 	}
 
 	public DataTable MovimientosResumen(int idCliente, DateTime desde, DateTime hasta) =>

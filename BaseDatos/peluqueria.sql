@@ -36,6 +36,7 @@ SET NAMES utf8mb4;
 -- ---------------------------------------------------------------------
 SET FOREIGN_KEY_CHECKS = 0;
 
+DROP TABLE IF EXISTS auditoria;
 DROP TABLE IF EXISTS ingresos_mercaderia_detalle;
 DROP TABLE IF EXISTS ingresos_mercaderia;
 DROP TABLE IF EXISTS movimientos_cuenta_corriente;
@@ -352,7 +353,29 @@ CREATE TABLE atenciones (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 -- =====================================================================
---  9. DATOS INICIALES
+--  9. AUDITORÍA
+-- =====================================================================
+
+-- Registro de las operaciones sensibles: quién, cuándo, qué acción y
+-- sobre qué registro. No se borra al desactivar usuarios.
+CREATE TABLE auditoria (
+    id_auditoria INT          NOT NULL AUTO_INCREMENT,
+    fecha        DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    id_usuario   INT          NOT NULL,
+    accion       VARCHAR(40)  NOT NULL,
+    entidad      VARCHAR(40)  NOT NULL,
+    id_entidad   INT          NULL,
+    detalle      VARCHAR(255) NULL,
+    PRIMARY KEY (id_auditoria),
+    KEY ix_auditoria_fecha (fecha),
+    KEY ix_auditoria_usuario (id_usuario),
+    KEY ix_auditoria_accion (accion),
+    CONSTRAINT fk_auditoria_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario)
+        ON UPDATE CASCADE ON DELETE RESTRICT
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+-- =====================================================================
+--  10. DATOS INICIALES
 -- =====================================================================
 
 -- Roles (los identificadores 1, 2 y 3 son los que usa el sistema).

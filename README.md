@@ -28,6 +28,7 @@ base de datos **MySQL**.
 | Administración | Proveedores | Alta, edición, activación/desactivación y búsqueda de proveedores (nombre, CUIT, teléfono, email y dirección). |
 | Administración | Ingreso de mercadería | Registrar la compra de productos a un proveedor de la lista, actualizando stock y costo. Solo admite productos (no servicios). |
 | Administración | Historial de mercadería | Consultar los ingresos por rango de fechas y proveedor, ver el detalle de cada uno (productos, cantidades y costos) y el total del período. |
+| Administración | Auditoría | Consultar quién hizo cada operación sensible (ventas, anulaciones, pagos de cuenta corriente, gastos, mercadería y usuarios), filtrando por rango de fechas, usuario y tipo de acción. |
 | Reportes | Reporte diario / mensual | Ver ventas, gastos e ingresos por período. |
 
 En la barra de menú también están **Cerrar sesión** (vuelve a la pantalla de

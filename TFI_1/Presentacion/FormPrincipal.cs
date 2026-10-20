@@ -188,6 +188,14 @@ public partial class FormPrincipal : Form
 		}
 	}
 
+	private void mnuAdminAuditoria_Click(object sender, EventArgs e)
+	{
+		if (ExigirAdministrador())
+		{
+			AbrirFormulario(new FormAuditoria());
+		}
+	}
+
 	private void mnuReportesDiario_Click(object sender, EventArgs e)
 	{
 		AbrirFormulario(new FormReporteDiario());

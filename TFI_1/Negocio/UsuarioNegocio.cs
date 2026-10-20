@@ -10,6 +10,8 @@ namespace TFI_1.Negocio
     {
         private readonly UsuarioDatos _datos = new UsuarioDatos();
 
+        private readonly AuditoriaNegocio _auditoria = new();
+
         public Usuario Autenticar(string nombreUsuario, string contrasena)
         {
             if (string.IsNullOrWhiteSpace(nombreUsuario) || string.IsNullOrWhiteSpace(contrasena))
@@ -75,6 +77,10 @@ namespace TFI_1.Negocio
                 _datos.Actualizar(usuario);
             }
 
+            string accion = esNuevo ? "usuario_alta" : "usuario_edicion";
+            _auditoria.Registrar(accion, "usuarios", usuario.Id,
+                $"Usuario '{usuario.NombreUsuario}' (rol {usuario.Rol.Nombre}).");
+
             return usuario;
         }
 
@@ -87,6 +93,8 @@ namespace TFI_1.Negocio
                 throw new InvalidOperationException("No puede desactivar su propio usuario.");
 
             _datos.Desactivar(id);
+            _auditoria.Registrar("usuario_desactivacion", "usuarios", id,
+                $"Usuario con id {id} desactivado.");
         }
 
         public void Reactivar(int id)
@@ -95,6 +103,8 @@ namespace TFI_1.Negocio
                 throw new ArgumentException("Debe seleccionar un usuario.");
 
             _datos.Reactivar(id);
+            _auditoria.Registrar("usuario_reactivacion", "usuarios", id,
+                $"Usuario con id {id} reactivado.");
         }
 
         private static bool VerificarContrasena(string contrasena, string hashAlmacenado)
