@@ -230,7 +230,7 @@ TFI_1/
 │   ├── Program.cs            # Punto de entrada (abre el login)
 │   ├── Validaciones.cs       # Reglas compartidas (DNI, email, importes, fechas)
 │   ├── Models/               # Clases del dominio (Cliente, Venta, Item, ...)
-│   ├── Datos/                # Acceso a MySQL (consultas SQL)
+│   ├── Datos/                # Acceso a MySQL (consultas y parámetros tipados)
 │   ├── Negocio/              # Reglas de negocio y validaciones
 │   └── Presentacion/         # Formularios (pantallas de la aplicación)
 ├── TFI_1.Tests/              # Pruebas automatizadas de la lógica
@@ -288,6 +288,10 @@ Cada formulario se compone de tres archivos:
   muestran **50 filas por página** con botones **Anterior/Siguiente**. El total
   y los importes siempre se calculan sobre todos los registros del período,
   no solo sobre la página visible.
+- Las consultas usan **parámetros tipados** (`MySqlDbType`) en lugar de
+  `AddWithValue`. Cada dato viaja con su tipo real (entero, decimal, fecha,
+  texto, booleano o nulo), lo que evita conversiones implícitas y problemas
+  con importes, fechas y campos opcionales.
 - Los **errores** se muestran siempre con el mismo formato: una frase que
   explica qué se estaba haciendo y el detalle del problema. Los errores
   inesperados se registran en

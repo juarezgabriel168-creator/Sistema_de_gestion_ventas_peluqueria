@@ -14,7 +14,7 @@ public class CuentaCorrienteDatos
 		using MySqlCommand cmd = new MySqlCommand(
 			"SELECT id_cuenta_corriente, id_cliente, saldo, fecha_actualizacion " +
 			"FROM cuentas_corrientes WHERE id_cliente = @cliente;", conexion);
-		cmd.Parameters.AddWithValue("@cliente", idCliente);
+		cmd.Parameters.Add(Parametros.Entero("@cliente", idCliente));
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		if (!rd.Read())
@@ -38,7 +38,7 @@ public class CuentaCorrienteDatos
 		using MySqlCommand cmd = new MySqlCommand(
 			"INSERT INTO cuentas_corrientes (id_cliente, saldo) VALUES (@cliente, 0); " +
 			"SELECT LAST_INSERT_ID();", conexion);
-		cmd.Parameters.AddWithValue("@cliente", idCliente);
+		cmd.Parameters.Add(Parametros.Entero("@cliente", idCliente));
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
@@ -54,8 +54,8 @@ public class CuentaCorrienteDatos
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
 			"UPDATE cuentas_corrientes SET saldo = @saldo WHERE id_cuenta_corriente = @id;", conexion);
-		cmd.Parameters.AddWithValue("@saldo", nuevoSaldo);
-		cmd.Parameters.AddWithValue("@id", idCuenta);
+		cmd.Parameters.Add(Parametros.Importe("@saldo", nuevoSaldo));
+		cmd.Parameters.Add(Parametros.Entero("@id", idCuenta));
 		conexion.Open();
 		cmd.ExecuteNonQuery();
 	}
@@ -72,9 +72,9 @@ public class CuentaCorrienteDatos
 			"  AND (@desde IS NULL OR DATE(m.fecha) >= @desde) " +
 			"  AND (@hasta IS NULL OR DATE(m.fecha) <= @hasta) " +
 			"ORDER BY m.fecha DESC, m.id_movimiento DESC;", conexion);
-		cmd.Parameters.AddWithValue("@cuenta", idCuenta);
-		cmd.Parameters.AddWithValue("@desde", ((object?)desde?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta?.Date) ?? DBNull.Value);
+		cmd.Parameters.Add(Parametros.Entero("@cuenta", idCuenta));
+		cmd.Parameters.Add(Parametros.SoloFechaNula("@desde", desde?.Date));
+		cmd.Parameters.Add(Parametros.SoloFechaNula("@hasta", hasta?.Date));
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		while (rd.Read())
@@ -89,13 +89,13 @@ public class CuentaCorrienteDatos
 			"INSERT INTO movimientos_cuenta_corriente (id_cuenta, fecha, tipo, monto, concepto, id_venta, id_usuario) " +
 			"VALUES (@cuenta, @fecha, @tipo, @monto, @concepto, @idVenta, @idUsuario); " +
 			"SELECT LAST_INSERT_ID();", conexion);
-		cmd.Parameters.AddWithValue("@cuenta", movimiento.IdCuenta);
-		cmd.Parameters.AddWithValue("@fecha", movimiento.Fecha);
-		cmd.Parameters.AddWithValue("@tipo", movimiento.Tipo == TipoMovimientoCC.Cargo ? "cargo" : "abono");
-		cmd.Parameters.AddWithValue("@monto", movimiento.Monto);
-		cmd.Parameters.AddWithValue("@concepto", (object?)movimiento.Concepto ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@idVenta", (object?)movimiento.IdVenta ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@idUsuario", movimiento.IdUsuario);
+		cmd.Parameters.Add(Parametros.Entero("@cuenta", movimiento.IdCuenta));
+		cmd.Parameters.Add(Parametros.Fecha("@fecha", movimiento.Fecha));
+		cmd.Parameters.Add(Parametros.Texto("@tipo", movimiento.Tipo == TipoMovimientoCC.Cargo ? "cargo" : "abono"));
+		cmd.Parameters.Add(Parametros.Importe("@monto", movimiento.Monto));
+		cmd.Parameters.Add(Parametros.Texto("@concepto", movimiento.Concepto));
+		cmd.Parameters.Add(Parametros.EnteroNulo("@idVenta", movimiento.IdVenta));
+		cmd.Parameters.Add(Parametros.Entero("@idUsuario", movimiento.IdUsuario));
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
@@ -114,14 +114,14 @@ public class CuentaCorrienteDatos
 				"SELECT id_cuenta_corriente FROM cuentas_corrientes WHERE id_cliente = @cliente FOR UPDATE;",
 				conexion, transaccion))
 			{
-				cmdCuenta.Parameters.AddWithValue("@cliente", idCliente);
+				cmdCuenta.Parameters.Add(Parametros.Entero("@cliente", idCliente));
 				object? resultado = cmdCuenta.ExecuteScalar();
 				if (resultado == null || resultado == DBNull.Value)
 				{
 					using MySqlCommand cmdNueva = new MySqlCommand(
 						"INSERT INTO cuentas_corrientes (id_cliente, saldo) VALUES (@cliente, 0); " +
 						"SELECT LAST_INSERT_ID();", conexion, transaccion);
-					cmdNueva.Parameters.AddWithValue("@cliente", idCliente);
+					cmdNueva.Parameters.Add(Parametros.Entero("@cliente", idCliente));
 					idCuenta = Convert.ToInt32(cmdNueva.ExecuteScalar());
 				}
 				else
@@ -136,11 +136,11 @@ public class CuentaCorrienteDatos
 				"VALUES (@cuenta, @fecha, 'abono', @monto, @concepto, NULL, @usuario); " +
 				"SELECT LAST_INSERT_ID();", conexion, transaccion))
 			{
-				cmdMov.Parameters.AddWithValue("@cuenta", idCuenta);
-				cmdMov.Parameters.AddWithValue("@fecha", fecha);
-				cmdMov.Parameters.AddWithValue("@monto", monto);
-				cmdMov.Parameters.AddWithValue("@concepto", (object?)concepto ?? DBNull.Value);
-				cmdMov.Parameters.AddWithValue("@usuario", idUsuario);
+				cmdMov.Parameters.Add(Parametros.Entero("@cuenta", idCuenta));
+				cmdMov.Parameters.Add(Parametros.Fecha("@fecha", fecha));
+				cmdMov.Parameters.Add(Parametros.Importe("@monto", monto));
+				cmdMov.Parameters.Add(Parametros.Texto("@concepto", concepto));
+				cmdMov.Parameters.Add(Parametros.Entero("@usuario", idUsuario));
 				idMovimiento = Convert.ToInt32(cmdMov.ExecuteScalar());
 			}
 
@@ -148,8 +148,8 @@ public class CuentaCorrienteDatos
 				"UPDATE cuentas_corrientes SET saldo = saldo - @monto, fecha_actualizacion = NOW() " +
 				"WHERE id_cuenta_corriente = @cuenta;", conexion, transaccion))
 			{
-				cmdSaldo.Parameters.AddWithValue("@monto", monto);
-				cmdSaldo.Parameters.AddWithValue("@cuenta", idCuenta);
+				cmdSaldo.Parameters.Add(Parametros.Importe("@monto", monto));
+				cmdSaldo.Parameters.Add(Parametros.Entero("@cuenta", idCuenta));
 				cmdSaldo.ExecuteNonQuery();
 			}
 
@@ -189,9 +189,9 @@ public class CuentaCorrienteDatos
 			"WHERE c.id_cliente = @cliente " +
 			"  AND DATE(m.fecha) BETWEEN @desde AND @hasta " +
 			"ORDER BY m.fecha DESC;", conexion);
-		cmd.Parameters.AddWithValue("@cliente", idCliente);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.Add(Parametros.Entero("@cliente", idCliente));
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new();
 		adaptador.Fill(tabla);

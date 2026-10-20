@@ -13,7 +13,7 @@ public class ClienteDatos
 		using (MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion())
 		{
 			using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT id_cliente, nombre, apellido, dni, telefono, activo\n                FROM clientes\n                WHERE (@filtro = ''\n                       OR dni LIKE CONCAT('%', @filtro, '%')\n                       OR apellido LIKE CONCAT('%', @filtro, '%')\n                       OR nombre LIKE CONCAT('%', @filtro, '%'))\n                ORDER BY apellido, nombre;", mySqlConnection);
-			mySqlCommand.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
+			mySqlCommand.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
 			mySqlConnection.Open();
 			using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
 			while (mySqlDataReader.Read())
@@ -28,8 +28,8 @@ public class ClienteDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM clientes\n                WHERE dni = @dni\n                  AND (@exceptoId IS NULL OR id_cliente <> @exceptoId);", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@dni", dni);
-		mySqlCommand.Parameters.AddWithValue("@exceptoId", ((object?)exceptoId) ?? DBNull.Value);
+		mySqlCommand.Parameters.Add(Parametros.Texto("@dni", dni));
+		mySqlCommand.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
 		mySqlConnection.Open();
 		return Convert.ToInt32(mySqlCommand.ExecuteScalar()) > 0;
 	}
@@ -40,7 +40,7 @@ public class ClienteDatos
 		using MySqlCommand mySqlCommand = new MySqlCommand(
 			"SELECT id_cliente, nombre, apellido, dni, telefono, activo " +
 			"FROM clientes WHERE dni = @dni LIMIT 1;", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@dni", dni);
+		mySqlCommand.Parameters.Add(Parametros.Texto("@dni", dni));
 		mySqlConnection.Open();
 		using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
 		if (mySqlDataReader.Read())
@@ -62,7 +62,7 @@ public class ClienteDatos
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                UPDATE clientes\n                SET nombre = @nombre,\n                    apellido = @apellido,\n                    dni = @dni,\n                    telefono = @telefono,\n                    activo = @activo\n                WHERE id_cliente = @id;", mySqlConnection);
 		AgregarParametros(mySqlCommand, cliente);
-		mySqlCommand.Parameters.AddWithValue("@id", cliente.Id);
+		mySqlCommand.Parameters.Add(Parametros.Entero("@id", cliente.Id));
 		mySqlConnection.Open();
 		mySqlCommand.ExecuteNonQuery();
 	}
@@ -71,7 +71,7 @@ public class ClienteDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE clientes SET activo = 0 WHERE id_cliente = @id;", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@id", id);
+		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
 		mySqlConnection.Open();
 		mySqlCommand.ExecuteNonQuery();
 	}
@@ -80,18 +80,18 @@ public class ClienteDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE clientes SET activo = 1 WHERE id_cliente = @id;", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@id", id);
+		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
 		mySqlConnection.Open();
 		mySqlCommand.ExecuteNonQuery();
 	}
 
 	private static void AgregarParametros(MySqlCommand cmd, Cliente cliente)
 	{
-		cmd.Parameters.AddWithValue("@nombre", cliente.Nombre);
-		cmd.Parameters.AddWithValue("@apellido", cliente.Apellido);
-		cmd.Parameters.AddWithValue("@dni", cliente.Dni);
-		cmd.Parameters.AddWithValue("@telefono", string.IsNullOrWhiteSpace(cliente.Telefono) ? ((IConvertible)DBNull.Value) : ((IConvertible)cliente.Telefono));
-		cmd.Parameters.AddWithValue("@activo", cliente.Activo);
+		cmd.Parameters.Add(Parametros.Texto("@nombre", cliente.Nombre));
+		cmd.Parameters.Add(Parametros.Texto("@apellido", cliente.Apellido));
+		cmd.Parameters.Add(Parametros.Texto("@dni", cliente.Dni));
+		cmd.Parameters.Add(Parametros.Texto("@telefono", string.IsNullOrWhiteSpace(cliente.Telefono) ? null : cliente.Telefono));
+		cmd.Parameters.Add(Parametros.Booleano("@activo", cliente.Activo));
 	}
 
 	private static Cliente Leer(MySqlDataReader rd)

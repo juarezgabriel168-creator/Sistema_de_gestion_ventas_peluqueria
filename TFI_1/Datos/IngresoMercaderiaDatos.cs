@@ -23,11 +23,11 @@ public class IngresoMercaderiaDatos
 			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%')) " +
 			"ORDER BY i.fecha DESC, i.id_ingreso DESC " +
 			"LIMIT @limite OFFSET @desplazamiento;", conexion);
-		cmd.Parameters.AddWithValue("@desde", ((object?)desde?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
-		cmd.Parameters.AddWithValue("@limite", limite ?? int.MaxValue);
-		cmd.Parameters.AddWithValue("@desplazamiento", desplazamiento ?? 0);
+		cmd.Parameters.Add(Parametros.SoloFechaNula("@desde", desde?.Date));
+		cmd.Parameters.Add(Parametros.SoloFechaNula("@hasta", hasta?.Date));
+		cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
+		cmd.Parameters.Add(Parametros.Entero("@limite", limite ?? int.MaxValue));
+		cmd.Parameters.Add(Parametros.Entero("@desplazamiento", desplazamiento ?? 0));
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		while (rd.Read())
@@ -44,9 +44,9 @@ public class IngresoMercaderiaDatos
 			"WHERE (@desde IS NULL OR DATE(i.fecha) >= @desde) " +
 			"  AND (@hasta IS NULL OR DATE(i.fecha) <= @hasta) " +
 			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%'));", conexion);
-		cmd.Parameters.AddWithValue("@desde", ((object?)desde?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
+		cmd.Parameters.Add(Parametros.SoloFechaNula("@desde", desde?.Date));
+		cmd.Parameters.Add(Parametros.SoloFechaNula("@hasta", hasta?.Date));
+		cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
@@ -60,9 +60,9 @@ public class IngresoMercaderiaDatos
 			"WHERE (@desde IS NULL OR DATE(i.fecha) >= @desde) " +
 			"  AND (@hasta IS NULL OR DATE(i.fecha) <= @hasta) " +
 			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%'));", conexion);
-		cmd.Parameters.AddWithValue("@desde", ((object?)desde?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
+		cmd.Parameters.Add(Parametros.SoloFechaNula("@desde", desde?.Date));
+		cmd.Parameters.Add(Parametros.SoloFechaNula("@hasta", hasta?.Date));
+		cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
 		conexion.Open();
 		return Convert.ToDecimal(cmd.ExecuteScalar());
 	}
@@ -76,7 +76,7 @@ public class IngresoMercaderiaDatos
 			"FROM ingresos_mercaderia AS i " +
 			"INNER JOIN usuarios AS u ON u.id_usuario = i.id_usuario " +
 			"WHERE i.id_ingreso = @id;", conexion);
-		cmd.Parameters.AddWithValue("@id", id);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		IngresoMercaderia? ingreso = null;
@@ -105,12 +105,12 @@ public class IngresoMercaderiaDatos
 				"VALUES (@fecha, @idProveedor, @proveedor, @total, @idUsuario, @observacion); " +
 				"SELECT LAST_INSERT_ID();", conexion, trans))
 			{
-				cmd.Parameters.AddWithValue("@fecha", ingreso.Fecha);
-				cmd.Parameters.AddWithValue("@idProveedor", (object?)ingreso.IdProveedor ?? DBNull.Value);
-				cmd.Parameters.AddWithValue("@proveedor", (object?)ingreso.Proveedor ?? DBNull.Value);
-				cmd.Parameters.AddWithValue("@total", ingreso.Total);
-				cmd.Parameters.AddWithValue("@idUsuario", ingreso.IdUsuario);
-				cmd.Parameters.AddWithValue("@observacion", (object?)ingreso.Observacion ?? DBNull.Value);
+				cmd.Parameters.Add(Parametros.Fecha("@fecha", ingreso.Fecha));
+				cmd.Parameters.Add(Parametros.EnteroNulo("@idProveedor", ingreso.IdProveedor));
+				cmd.Parameters.Add(Parametros.Texto("@proveedor", ingreso.Proveedor));
+				cmd.Parameters.Add(Parametros.Importe("@total", ingreso.Total));
+				cmd.Parameters.Add(Parametros.Entero("@idUsuario", ingreso.IdUsuario));
+				cmd.Parameters.Add(Parametros.Texto("@observacion", ingreso.Observacion));
 				ingreso.Id = Convert.ToInt32(cmd.ExecuteScalar());
 			}
 
@@ -120,11 +120,11 @@ public class IngresoMercaderiaDatos
 					"INSERT INTO ingresos_mercaderia_detalle (id_ingreso, id_item, cantidad, costo_unitario, subtotal) " +
 					"VALUES (@ingreso, @item, @cantidad, @costo, @subtotal);", conexion, trans))
 				{
-					cmdDet.Parameters.AddWithValue("@ingreso", ingreso.Id);
-					cmdDet.Parameters.AddWithValue("@item", detalle.Item.Id);
-					cmdDet.Parameters.AddWithValue("@cantidad", detalle.Cantidad);
-					cmdDet.Parameters.AddWithValue("@costo", detalle.CostoUnitario);
-					cmdDet.Parameters.AddWithValue("@subtotal", detalle.Subtotal);
+					cmdDet.Parameters.Add(Parametros.Entero("@ingreso", ingreso.Id));
+					cmdDet.Parameters.Add(Parametros.Entero("@item", detalle.Item.Id));
+					cmdDet.Parameters.Add(Parametros.Entero("@cantidad", detalle.Cantidad));
+					cmdDet.Parameters.Add(Parametros.Importe("@costo", detalle.CostoUnitario));
+					cmdDet.Parameters.Add(Parametros.Importe("@subtotal", detalle.Subtotal));
 					cmdDet.ExecuteNonQuery();
 				}
 
@@ -134,10 +134,10 @@ public class IngresoMercaderiaDatos
 					"    precio = @precio, costo = @costo " +
 					"WHERE id_item = @item;", conexion, trans))
 				{
-					cmdItem.Parameters.AddWithValue("@cantidad", detalle.Cantidad);
-					cmdItem.Parameters.AddWithValue("@precio", detalle.Item.Precio);
-					cmdItem.Parameters.AddWithValue("@costo", detalle.CostoUnitario);
-					cmdItem.Parameters.AddWithValue("@item", detalle.Item.Id);
+					cmdItem.Parameters.Add(Parametros.Entero("@cantidad", detalle.Cantidad));
+					cmdItem.Parameters.Add(Parametros.Importe("@precio", detalle.Item.Precio));
+					cmdItem.Parameters.Add(Parametros.Importe("@costo", detalle.CostoUnitario));
+					cmdItem.Parameters.Add(Parametros.Entero("@item", detalle.Item.Id));
 					cmdItem.ExecuteNonQuery();
 				}
 			}
@@ -161,7 +161,7 @@ public class IngresoMercaderiaDatos
 			"FROM ingresos_mercaderia_detalle AS d " +
 			"INNER JOIN items AS i ON i.id_item = d.id_item " +
 			"WHERE d.id_ingreso = @ingreso ORDER BY d.id_detalle_ingreso;", conexion);
-		cmd.Parameters.AddWithValue("@ingreso", idIngreso);
+		cmd.Parameters.Add(Parametros.Entero("@ingreso", idIngreso));
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		while (rd.Read())
 		{
@@ -202,8 +202,8 @@ public class IngresoMercaderiaDatos
 			"SELECT DATE(fecha) AS Fecha, COUNT(*) AS Cantidad, COALESCE(SUM(total), 0) AS Total " +
 			"FROM ingresos_mercaderia WHERE DATE(fecha) BETWEEN @desde AND @hasta " +
 			"GROUP BY DATE(fecha) ORDER BY Fecha;", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new();
 		adaptador.Fill(tabla);

@@ -62,7 +62,7 @@ public class DashboardDatos
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT v.id_venta            AS Venta,\n                       v.fecha               AS Fecha,\n                       CONCAT(c.apellido, ', ', c.nombre) AS Cliente,\n                       CONCAT(e.apellido, ', ', e.nombre) AS Empleado,\n                       u.nombre_usuario      AS Usuario,\n                       v.medio_pago          AS Pago,\n                       v.total               AS Total\n                FROM ventas AS v\n                INNER JOIN clientes AS c ON c.id_cliente = v.id_cliente\n                INNER JOIN usuarios AS u ON u.id_usuario = v.id_usuario\n                LEFT JOIN empleados AS e ON e.id_empleado = v.id_empleado\n                WHERE v.anulada = 0\n                ORDER BY v.fecha DESC, v.id_venta DESC\n                LIMIT @cantidad;", mySqlConnection);
 		using MySqlDataAdapter mySqlDataAdapter = new MySqlDataAdapter(mySqlCommand);
-		mySqlCommand.Parameters.AddWithValue("@cantidad", cantidad);
+		mySqlCommand.Parameters.Add(Parametros.Entero("@cantidad", cantidad));
 		mySqlConnection.Open();
 		DataTable dataTable = new DataTable();
 		mySqlDataAdapter.Fill(dataTable);

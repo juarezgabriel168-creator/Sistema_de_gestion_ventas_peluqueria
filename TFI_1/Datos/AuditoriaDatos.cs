@@ -36,12 +36,11 @@ public class AuditoriaDatos
 		using MySqlCommand cmd = new MySqlCommand(
 			"INSERT INTO auditoria (id_usuario, accion, entidad, id_entidad, detalle) " +
 			"VALUES (@usuario, @accion, @entidad, @id, @detalle);", conexion);
-		cmd.Parameters.AddWithValue("@usuario", usuarioId);
-		cmd.Parameters.AddWithValue("@accion", accion);
-		cmd.Parameters.AddWithValue("@entidad", entidad);
-		cmd.Parameters.AddWithValue("@id", ((object?)idEntidad) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@detalle",
-			string.IsNullOrWhiteSpace(detalle) ? DBNull.Value : ((object?)detalle));
+		cmd.Parameters.Add(Parametros.Entero("@usuario", usuarioId));
+		cmd.Parameters.Add(Parametros.Texto("@accion", accion));
+		cmd.Parameters.Add(Parametros.Texto("@entidad", entidad));
+		cmd.Parameters.Add(Parametros.EnteroNulo("@id", idEntidad));
+		cmd.Parameters.Add(Parametros.Texto("@detalle", string.IsNullOrWhiteSpace(detalle) ? null : detalle));
 		conexion.Open();
 		cmd.ExecuteNonQuery();
 	}
@@ -61,13 +60,12 @@ public class AuditoriaDatos
 			"  AND (@accion IS NULL OR a.accion = @accion) " +
 			"ORDER BY a.fecha DESC, a.id_auditoria DESC " +
 			"LIMIT @limite OFFSET @desplazamiento;", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
-		cmd.Parameters.AddWithValue("@usuario", ((object?)usuarioId) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@accion",
-			string.IsNullOrWhiteSpace(accion) ? DBNull.Value : ((object?)accion));
-		cmd.Parameters.AddWithValue("@limite", limite ?? int.MaxValue);
-		cmd.Parameters.AddWithValue("@desplazamiento", desplazamiento ?? 0);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
+		cmd.Parameters.Add(Parametros.EnteroNulo("@usuario", usuarioId));
+		cmd.Parameters.Add(Parametros.Texto("@accion", string.IsNullOrWhiteSpace(accion) ? null : accion));
+		cmd.Parameters.Add(Parametros.Entero("@limite", limite ?? int.MaxValue));
+		cmd.Parameters.Add(Parametros.Entero("@desplazamiento", desplazamiento ?? 0));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
@@ -83,11 +81,10 @@ public class AuditoriaDatos
 			"WHERE DATE(a.fecha) BETWEEN @desde AND @hasta " +
 			"  AND (@usuario IS NULL OR a.id_usuario = @usuario) " +
 			"  AND (@accion IS NULL OR a.accion = @accion);", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
-		cmd.Parameters.AddWithValue("@usuario", ((object?)usuarioId) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@accion",
-			string.IsNullOrWhiteSpace(accion) ? DBNull.Value : ((object?)accion));
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
+		cmd.Parameters.Add(Parametros.EnteroNulo("@usuario", usuarioId));
+		cmd.Parameters.Add(Parametros.Texto("@accion", string.IsNullOrWhiteSpace(accion) ? null : accion));
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());
 	}

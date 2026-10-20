@@ -18,15 +18,16 @@ public class TarjetaCreditoDatos
     public List<TarjetaCredito> Listar(bool soloActivas = true) =>
         Consultar("WHERE (@soloActivas = 0 OR (t.activo = 1 AND b.activo = 1)) " +
                   "ORDER BY b.nombre, t.tipo_tarjeta;",
-                  ("@soloActivas", soloActivas ? 1 : 0));
+                  Parametros.Entero("@soloActivas", soloActivas ? 1 : 0));
 
     public List<TarjetaCredito> ListarPorBanco(int idBanco, bool soloActivas = true) =>
         Consultar("WHERE t.id_banco = @banco AND (@soloActivas = 0 OR t.activo = 1) " +
                   "ORDER BY t.tipo_tarjeta;",
-                  ("@banco", idBanco), ("@soloActivas", soloActivas ? 1 : 0));
+                  Parametros.Entero("@banco", idBanco),
+                  Parametros.Entero("@soloActivas", soloActivas ? 1 : 0));
 
     public TarjetaCredito? ObtenerPorId(int id) =>
-        Consultar("WHERE t.id_tarjeta_credito = @id;", ("@id", id)).FirstOrDefault();
+        Consultar("WHERE t.id_tarjeta_credito = @id;", Parametros.Entero("@id", id)).FirstOrDefault();
 
     public bool ExisteTipo(int idBanco, string tipo, int? exceptoId = null)
     {
@@ -35,9 +36,9 @@ public class TarjetaCreditoDatos
             "SELECT COUNT(*) FROM tarjetas_credito " +
             "WHERE id_banco = @banco AND tipo_tarjeta = @tipo " +
             "  AND (@exceptoId IS NULL OR id_tarjeta_credito <> @exceptoId);", conexion);
-        cmd.Parameters.AddWithValue("@banco", idBanco);
-        cmd.Parameters.AddWithValue("@tipo", tipo);
-        cmd.Parameters.AddWithValue("@exceptoId", ((object?)exceptoId) ?? DBNull.Value);
+        cmd.Parameters.Add(Parametros.Entero("@banco", idBanco));
+        cmd.Parameters.Add(Parametros.Texto("@tipo", tipo));
+        cmd.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
         conexion.Open();
         return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
     }
@@ -61,7 +62,7 @@ public class TarjetaCreditoDatos
             "porcentaje_recargo = @recargo, cuotas_max = @cuotas, activo = @activo " +
             "WHERE id_tarjeta_credito = @id;", conexion);
         Cargar(cmd, t);
-        cmd.Parameters.AddWithValue("@id", t.Id);
+        cmd.Parameters.Add(Parametros.Entero("@id", t.Id));
         conexion.Open();
         cmd.ExecuteNonQuery();
     }
@@ -71,7 +72,7 @@ public class TarjetaCreditoDatos
         using MySqlConnection conexion = ConexionBD.ObtenerConexion();
         using MySqlCommand cmd = new MySqlCommand(
             "UPDATE tarjetas_credito SET activo = 0 WHERE id_tarjeta_credito = @id;", conexion);
-        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters.Add(Parametros.Entero("@id", id));
         conexion.Open();
         cmd.ExecuteNonQuery();
     }
@@ -81,27 +82,26 @@ public class TarjetaCreditoDatos
         using MySqlConnection conexion = ConexionBD.ObtenerConexion();
         using MySqlCommand cmd = new MySqlCommand(
             "UPDATE tarjetas_credito SET activo = 1 WHERE id_tarjeta_credito = @id;", conexion);
-        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters.Add(Parametros.Entero("@id", id));
         conexion.Open();
         cmd.ExecuteNonQuery();
     }
 
     private static void Cargar(MySqlCommand cmd, TarjetaCredito t)
     {
-        cmd.Parameters.AddWithValue("@banco", t.IdBanco);
-        cmd.Parameters.AddWithValue("@tipo", t.TipoTarjeta);
-        cmd.Parameters.AddWithValue("@recargo", t.PorcentajeRecargo);
-        cmd.Parameters.AddWithValue("@cuotas", t.CuotasMax);
-        cmd.Parameters.AddWithValue("@activo", t.Activo);
+        cmd.Parameters.Add(Parametros.Entero("@banco", t.IdBanco));
+        cmd.Parameters.Add(Parametros.Texto("@tipo", t.TipoTarjeta));
+        cmd.Parameters.Add(Parametros.Importe("@recargo", t.PorcentajeRecargo));
+        cmd.Parameters.Add(Parametros.Entero("@cuotas", t.CuotasMax));
+        cmd.Parameters.Add(Parametros.Booleano("@activo", t.Activo));
     }
 
-    private static List<TarjetaCredito> Consultar(string where, params (string nombre, object valor)[] parametros)
+    private static List<TarjetaCredito> Consultar(string where, params MySqlParameter[] parametros)
     {
         List<TarjetaCredito> lista = new();
         using MySqlConnection conexion = ConexionBD.ObtenerConexion();
         using MySqlCommand cmd = new MySqlCommand(Select + where, conexion);
-        foreach (var (nombre, valor) in parametros)
-            cmd.Parameters.AddWithValue(nombre, valor);
+        cmd.Parameters.AddRange(parametros);
         conexion.Open();
         using MySqlDataReader rd = cmd.ExecuteReader();
         while (rd.Read())

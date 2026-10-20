@@ -18,8 +18,8 @@ public class ReporteDatos
 			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
 			"  AND v.anulada = 0 " +
 			"  AND v.anulada = 0;", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
@@ -38,8 +38,8 @@ public class ReporteDatos
 			"  AND v.anulada = 0 " +
 			"GROUP BY v.medio_pago " +
 			"ORDER BY Total DESC;", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
@@ -61,8 +61,8 @@ public class ReporteDatos
 			"GROUP BY i.id_item " +
 			"ORDER BY Cantidad DESC, Total DESC " +
 			"LIMIT 10;", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
@@ -81,8 +81,8 @@ public class ReporteDatos
 			"  AND v.anulada = 0 " +
 			"GROUP BY DATE(v.fecha) " +
 			"ORDER BY Fecha;", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
@@ -101,8 +101,8 @@ public class ReporteDatos
             "WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
             "GROUP BY v.id_empleado, e.apellido, e.nombre " +
             "ORDER BY Total DESC;", conexion);
-        cmd.Parameters.AddWithValue("@desde", desde.Date);
-        cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+        cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+        cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
         using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
         DataTable tabla = new DataTable();
         adaptador.Fill(tabla);

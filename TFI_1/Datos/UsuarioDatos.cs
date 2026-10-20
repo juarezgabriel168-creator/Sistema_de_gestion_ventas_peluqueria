@@ -20,7 +20,7 @@ namespace TFI_1.Datos
             using (var cn = ConexionBD.ObtenerConexion())
             using (var cmd = new MySqlCommand(sql, cn))
             {
-                cmd.Parameters.AddWithValue("@usuario", nombreUsuario);
+                cmd.Parameters.Add(Parametros.Texto("@usuario", nombreUsuario));
                 cn.Open();
 
                 using (var rd = cmd.ExecuteReader())
@@ -54,7 +54,7 @@ namespace TFI_1.Datos
             using (var cn = ConexionBD.ObtenerConexion())
             using (var cmd = new MySqlCommand(sql, cn))
             {
-                cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
+                cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
                 cn.Open();
 
                 using (var rd = cmd.ExecuteReader())
@@ -108,8 +108,8 @@ namespace TFI_1.Datos
             using (var cn = ConexionBD.ObtenerConexion())
             using (var cmd = new MySqlCommand(sql, cn))
             {
-                cmd.Parameters.AddWithValue("@usuario", nombreUsuario);
-                cmd.Parameters.AddWithValue("@exceptoId", (object?)exceptoId ?? DBNull.Value);
+                cmd.Parameters.Add(Parametros.Texto("@usuario", nombreUsuario));
+                cmd.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
                 cn.Open();
                 return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
             }
@@ -125,10 +125,10 @@ namespace TFI_1.Datos
             using (var cn = ConexionBD.ObtenerConexion())
             using (var cmd = new MySqlCommand(sql, cn))
             {
-                cmd.Parameters.AddWithValue("@usuario", usuario.NombreUsuario);
-                cmd.Parameters.AddWithValue("@contrasena", usuario.Contrasena);
-                cmd.Parameters.AddWithValue("@rol", usuario.Rol.Id);
-                cmd.Parameters.AddWithValue("@activo", usuario.Activo);
+                cmd.Parameters.Add(Parametros.Texto("@usuario", usuario.NombreUsuario));
+                cmd.Parameters.Add(Parametros.Texto("@contrasena", usuario.Contrasena));
+                cmd.Parameters.Add(Parametros.Entero("@rol", usuario.Rol.Id));
+                cmd.Parameters.Add(Parametros.Booleano("@activo", usuario.Activo));
                 cn.Open();
                 return Convert.ToInt32(cmd.ExecuteScalar());
             }
@@ -147,11 +147,11 @@ namespace TFI_1.Datos
             using (var cn = ConexionBD.ObtenerConexion())
             using (var cmd = new MySqlCommand(sql, cn))
             {
-                cmd.Parameters.AddWithValue("@usuario", usuario.NombreUsuario);
-                cmd.Parameters.AddWithValue("@contrasena", usuario.Contrasena);
-                cmd.Parameters.AddWithValue("@rol", usuario.Rol.Id);
-                cmd.Parameters.AddWithValue("@activo", usuario.Activo);
-                cmd.Parameters.AddWithValue("@id", usuario.Id);
+                cmd.Parameters.Add(Parametros.Texto("@usuario", usuario.NombreUsuario));
+                cmd.Parameters.Add(Parametros.Texto("@contrasena", usuario.Contrasena));
+                cmd.Parameters.Add(Parametros.Entero("@rol", usuario.Rol.Id));
+                cmd.Parameters.Add(Parametros.Booleano("@activo", usuario.Activo));
+                cmd.Parameters.Add(Parametros.Entero("@id", usuario.Id));
                 cn.Open();
                 cmd.ExecuteNonQuery();
             }
@@ -164,7 +164,7 @@ namespace TFI_1.Datos
             using (var cn = ConexionBD.ObtenerConexion())
             using (var cmd = new MySqlCommand(sql, cn))
             {
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.Add(Parametros.Entero("@id", id));
                 cn.Open();
                 cmd.ExecuteNonQuery();
             }
@@ -177,7 +177,7 @@ namespace TFI_1.Datos
             using (var cn = ConexionBD.ObtenerConexion())
             using (var cmd = new MySqlCommand(sql, cn))
             {
-                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.Add(Parametros.Entero("@id", id));
                 cn.Open();
                 cmd.ExecuteNonQuery();
             }

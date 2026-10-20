@@ -22,16 +22,16 @@ public class VentaDatos
 				"        @idTarjeta, @cantidadCuotas, @descuento, @recargo, @total); " +
 				"SELECT LAST_INSERT_ID();", conexion, transaccion))
 			{
-				cmd.Parameters.AddWithValue("@cliente", venta.Cliente.Id);
-				cmd.Parameters.AddWithValue("@usuario", venta.Usuario.Id);
-				cmd.Parameters.AddWithValue("@empleado", (object?)venta.IdEmpleado ?? DBNull.Value);
-				cmd.Parameters.AddWithValue("@fecha", venta.Fecha);
-				cmd.Parameters.AddWithValue("@medioPago", venta.MedioPago);
-				cmd.Parameters.AddWithValue("@idTarjeta", (object?)venta.IdTarjetaCredito ?? DBNull.Value);
-				cmd.Parameters.AddWithValue("@cantidadCuotas", (object?)venta.CantidadCuotas ?? DBNull.Value);
-				cmd.Parameters.AddWithValue("@descuento", venta.Descuento);
-				cmd.Parameters.AddWithValue("@recargo", venta.Recargo);
-				cmd.Parameters.AddWithValue("@total", venta.Total);
+				cmd.Parameters.Add(Parametros.Entero("@cliente", venta.Cliente.Id));
+				cmd.Parameters.Add(Parametros.Entero("@usuario", venta.Usuario.Id));
+				cmd.Parameters.Add(Parametros.EnteroNulo("@empleado", venta.IdEmpleado));
+				cmd.Parameters.Add(Parametros.Fecha("@fecha", venta.Fecha));
+				cmd.Parameters.Add(Parametros.Texto("@medioPago", venta.MedioPago));
+				cmd.Parameters.Add(Parametros.EnteroNulo("@idTarjeta", venta.IdTarjetaCredito));
+				cmd.Parameters.Add(Parametros.EnteroNulo("@cantidadCuotas", venta.CantidadCuotas));
+				cmd.Parameters.Add(Parametros.Importe("@descuento", venta.Descuento));
+				cmd.Parameters.Add(Parametros.Importe("@recargo", venta.Recargo));
+				cmd.Parameters.Add(Parametros.Importe("@total", venta.Total));
 				venta.Id = Convert.ToInt32(cmd.ExecuteScalar());
 			}
 
@@ -41,11 +41,11 @@ public class VentaDatos
 					"INSERT INTO detalle_venta (id_venta, id_item, cantidad, precio, subtotal) " +
 					"VALUES (@venta, @item, @cantidad, @precio, @subtotal);", conexion, transaccion))
 				{
-					cmdDetalle.Parameters.AddWithValue("@venta", venta.Id);
-					cmdDetalle.Parameters.AddWithValue("@item", detalle.Item.Id);
-					cmdDetalle.Parameters.AddWithValue("@cantidad", detalle.Cantidad);
-					cmdDetalle.Parameters.AddWithValue("@precio", detalle.Precio);
-					cmdDetalle.Parameters.AddWithValue("@subtotal", detalle.Subtotal);
+					cmdDetalle.Parameters.Add(Parametros.Entero("@venta", venta.Id));
+					cmdDetalle.Parameters.Add(Parametros.Entero("@item", detalle.Item.Id));
+					cmdDetalle.Parameters.Add(Parametros.Entero("@cantidad", detalle.Cantidad));
+					cmdDetalle.Parameters.Add(Parametros.Importe("@precio", detalle.Precio));
+					cmdDetalle.Parameters.Add(Parametros.Importe("@subtotal", detalle.Subtotal));
 					cmdDetalle.ExecuteNonQuery();
 				}
 
@@ -56,8 +56,8 @@ public class VentaDatos
 					using MySqlCommand cmdStock = new MySqlCommand(
 						"UPDATE items SET stock = stock - @cantidad " +
 						"WHERE id_item = @item AND stock >= @cantidad;", conexion, transaccion);
-					cmdStock.Parameters.AddWithValue("@cantidad", detalle.Cantidad);
-					cmdStock.Parameters.AddWithValue("@item", detalle.Item.Id);
+					cmdStock.Parameters.Add(Parametros.Entero("@cantidad", detalle.Cantidad));
+					cmdStock.Parameters.Add(Parametros.Entero("@item", detalle.Item.Id));
 					if (cmdStock.ExecuteNonQuery() == 0)
 					{
 						throw new InvalidOperationException($"Stock insuficiente de {detalle.Item.Nombre}.");
@@ -72,14 +72,14 @@ public class VentaDatos
                     "SELECT id_cuenta_corriente FROM cuentas_corrientes WHERE id_cliente = @cliente FOR UPDATE;",
                     conexion, transaccion))
                 {
-                    cmdCuenta.Parameters.AddWithValue("@cliente", venta.Cliente.Id);
+                    cmdCuenta.Parameters.Add(Parametros.Entero("@cliente", venta.Cliente.Id));
                     object? resultado = cmdCuenta.ExecuteScalar();
                     if (resultado == null || resultado == DBNull.Value)
                     {
                         using MySqlCommand cmdNueva = new MySqlCommand(
                             "INSERT INTO cuentas_corrientes (id_cliente, saldo) VALUES (@cliente, 0); " +
                             "SELECT LAST_INSERT_ID();", conexion, transaccion);
-                        cmdNueva.Parameters.AddWithValue("@cliente", venta.Cliente.Id);
+                        cmdNueva.Parameters.Add(Parametros.Entero("@cliente", venta.Cliente.Id));
                         idCuenta = Convert.ToInt32(cmdNueva.ExecuteScalar());
                     }
                     else
@@ -92,12 +92,12 @@ public class VentaDatos
                     "INSERT INTO movimientos_cuenta_corriente (id_cuenta, fecha, tipo, monto, concepto, id_venta, id_usuario) " +
                     "VALUES (@cuenta, @fecha, 'cargo', @monto, @concepto, @venta, @usuario);", conexion, transaccion))
                 {
-                    cmdMov.Parameters.AddWithValue("@cuenta", idCuenta);
-                    cmdMov.Parameters.AddWithValue("@fecha", venta.Fecha);
-                    cmdMov.Parameters.AddWithValue("@monto", venta.Total);
-                    cmdMov.Parameters.AddWithValue("@concepto", $"Venta #{venta.Id}");
-                    cmdMov.Parameters.AddWithValue("@venta", venta.Id);
-                    cmdMov.Parameters.AddWithValue("@usuario", venta.Usuario.Id);
+                    cmdMov.Parameters.Add(Parametros.Entero("@cuenta", idCuenta));
+                    cmdMov.Parameters.Add(Parametros.Fecha("@fecha", venta.Fecha));
+                    cmdMov.Parameters.Add(Parametros.Importe("@monto", venta.Total));
+                    cmdMov.Parameters.Add(Parametros.Texto("@concepto", $"Venta #{venta.Id}"));
+                    cmdMov.Parameters.Add(Parametros.Entero("@venta", venta.Id));
+                    cmdMov.Parameters.Add(Parametros.Entero("@usuario", venta.Usuario.Id));
                     cmdMov.ExecuteNonQuery();
                 }
 
@@ -105,8 +105,8 @@ public class VentaDatos
                     "UPDATE cuentas_corrientes SET saldo = saldo + @monto, fecha_actualizacion = NOW() " +
                     "WHERE id_cuenta_corriente = @cuenta;", conexion, transaccion))
                 {
-                    cmdSaldo.Parameters.AddWithValue("@monto", venta.Total);
-                    cmdSaldo.Parameters.AddWithValue("@cuenta", idCuenta);
+                    cmdSaldo.Parameters.Add(Parametros.Importe("@monto", venta.Total));
+                    cmdSaldo.Parameters.Add(Parametros.Entero("@cuenta", idCuenta));
                     cmdSaldo.ExecuteNonQuery();
                 }
             }
@@ -147,13 +147,13 @@ public class VentaDatos
             "  AND (@ventaId IS NULL OR v.id_venta = @ventaId) " +
             "ORDER BY v.fecha DESC, v.id_venta DESC " +
             "LIMIT @limite OFFSET @desplazamiento;", conexion);
-        cmd.Parameters.AddWithValue("@desde", desde.Date);
-        cmd.Parameters.AddWithValue("@hasta", hasta.Date);
-        cmd.Parameters.AddWithValue("@usuarioId", ((object?)usuarioId) ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@empleadoId", ((object?)empleadoId) ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@ventaId", ((object?)ventaId) ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@limite", limite ?? int.MaxValue);
-        cmd.Parameters.AddWithValue("@desplazamiento", desplazamiento ?? 0);
+        cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+        cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
+        cmd.Parameters.Add(Parametros.EnteroNulo("@usuarioId", usuarioId));
+        cmd.Parameters.Add(Parametros.EnteroNulo("@empleadoId", empleadoId));
+        cmd.Parameters.Add(Parametros.EnteroNulo("@ventaId", ventaId));
+        cmd.Parameters.Add(Parametros.Entero("@limite", limite ?? int.MaxValue));
+        cmd.Parameters.Add(Parametros.Entero("@desplazamiento", desplazamiento ?? 0));
         using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
         DataTable tabla = new DataTable();
         adaptador.Fill(tabla);
@@ -170,11 +170,11 @@ public class VentaDatos
             "  AND (@usuarioId IS NULL OR v.id_usuario = @usuarioId) " +
             "  AND (@empleadoId IS NULL OR v.id_empleado = @empleadoId) " +
             "  AND (@ventaId IS NULL OR v.id_venta = @ventaId);", conexion);
-        cmd.Parameters.AddWithValue("@desde", desde.Date);
-        cmd.Parameters.AddWithValue("@hasta", hasta.Date);
-        cmd.Parameters.AddWithValue("@usuarioId", ((object?)usuarioId) ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@empleadoId", ((object?)empleadoId) ?? DBNull.Value);
-        cmd.Parameters.AddWithValue("@ventaId", ((object?)ventaId) ?? DBNull.Value);
+        cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+        cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
+        cmd.Parameters.Add(Parametros.EnteroNulo("@usuarioId", usuarioId));
+        cmd.Parameters.Add(Parametros.EnteroNulo("@empleadoId", empleadoId));
+        cmd.Parameters.Add(Parametros.EnteroNulo("@ventaId", ventaId));
         conexion.Open();
         return Convert.ToInt32(cmd.ExecuteScalar());
     }
@@ -204,7 +204,7 @@ public class VentaDatos
             "LEFT JOIN bancos AS b ON b.id_banco = t.id_banco " +
             "LEFT JOIN usuarios AS ua ON ua.id_usuario = v.id_usuario_anulacion " +
             "WHERE v.id_venta = @id;", conexion);
-        cmd.Parameters.AddWithValue("@id", ventaId);
+        cmd.Parameters.Add(Parametros.Entero("@id", ventaId));
         using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
         DataTable tabla = new DataTable();
         adaptador.Fill(tabla);
@@ -221,7 +221,7 @@ public class VentaDatos
 			"INNER JOIN items AS i ON i.id_item = d.id_item " +
 			"WHERE d.id_venta = @id " +
 			"ORDER BY d.id_detalle;", conexion);
-		cmd.Parameters.AddWithValue("@id", ventaId);
+		cmd.Parameters.Add(Parametros.Entero("@id", ventaId));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
@@ -244,7 +244,7 @@ public class VentaDatos
 				"SELECT medio_pago, total FROM ventas " +
 				"WHERE id_venta = @id AND anulada = 0 FOR UPDATE;", conexion, transaccion))
 			{
-				cmd.Parameters.AddWithValue("@id", ventaId);
+				cmd.Parameters.Add(Parametros.Entero("@id", ventaId));
 				using MySqlDataReader rd = cmd.ExecuteReader();
 				if (!rd.Read())
 				{
@@ -261,7 +261,7 @@ public class VentaDatos
 				"SET i.stock = i.stock + d.cantidad " +
 				"WHERE d.id_venta = @id AND i.tipo = 'producto';", conexion, transaccion))
 			{
-				cmd.Parameters.AddWithValue("@id", ventaId);
+				cmd.Parameters.Add(Parametros.Entero("@id", ventaId));
 				cmd.ExecuteNonQuery();
 			}
 
@@ -275,7 +275,7 @@ public class VentaDatos
 					"INNER JOIN ventas AS v ON v.id_cliente = c.id_cliente " +
 					"WHERE v.id_venta = @id FOR UPDATE;", conexion, transaccion))
 				{
-					cmd.Parameters.AddWithValue("@id", ventaId);
+					cmd.Parameters.Add(Parametros.Entero("@id", ventaId));
 					object? resultado = cmd.ExecuteScalar();
 					if (resultado == null || resultado == DBNull.Value)
 					{
@@ -290,11 +290,11 @@ public class VentaDatos
 					"VALUES (@cuenta, NOW(), 'abono', @monto, @concepto, @venta, @usuario);",
 					conexion, transaccion))
 				{
-					cmd.Parameters.AddWithValue("@cuenta", idCuenta);
-					cmd.Parameters.AddWithValue("@monto", total);
-					cmd.Parameters.AddWithValue("@concepto", $"Anulación venta #{ventaId}: {motivo}");
-					cmd.Parameters.AddWithValue("@venta", ventaId);
-					cmd.Parameters.AddWithValue("@usuario", usuarioId);
+					cmd.Parameters.Add(Parametros.Entero("@cuenta", idCuenta));
+					cmd.Parameters.Add(Parametros.Importe("@monto", total));
+					cmd.Parameters.Add(Parametros.Texto("@concepto", $"Anulación venta #{ventaId}: {motivo}"));
+					cmd.Parameters.Add(Parametros.Entero("@venta", ventaId));
+					cmd.Parameters.Add(Parametros.Entero("@usuario", usuarioId));
 					cmd.ExecuteNonQuery();
 				}
 
@@ -302,8 +302,8 @@ public class VentaDatos
 					"UPDATE cuentas_corrientes SET saldo = saldo - @monto, fecha_actualizacion = NOW() " +
 					"WHERE id_cuenta_corriente = @cuenta;", conexion, transaccion))
 				{
-					cmd.Parameters.AddWithValue("@monto", total);
-					cmd.Parameters.AddWithValue("@cuenta", idCuenta);
+					cmd.Parameters.Add(Parametros.Importe("@monto", total));
+					cmd.Parameters.Add(Parametros.Entero("@cuenta", idCuenta));
 					cmd.ExecuteNonQuery();
 				}
 			}
@@ -313,9 +313,9 @@ public class VentaDatos
 				"       id_usuario_anulacion = @usuario, motivo_anulacion = @motivo " +
 				"WHERE id_venta = @id AND anulada = 0;", conexion, transaccion))
 			{
-				cmd.Parameters.AddWithValue("@usuario", usuarioId);
-				cmd.Parameters.AddWithValue("@motivo", motivo);
-				cmd.Parameters.AddWithValue("@id", ventaId);
+				cmd.Parameters.Add(Parametros.Entero("@usuario", usuarioId));
+				cmd.Parameters.Add(Parametros.Texto("@motivo", motivo));
+				cmd.Parameters.Add(Parametros.Entero("@id", ventaId));
 				if (cmd.ExecuteNonQuery() == 0)
 				{
 					throw new InvalidOperationException("La venta ya fue anulada.");

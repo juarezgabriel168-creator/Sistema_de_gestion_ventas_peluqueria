@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using TFI_1.Models;
@@ -14,7 +14,7 @@ public class BancoDatos
         using MySqlCommand cmd = new MySqlCommand(
             "SELECT id_banco, nombre, activo FROM bancos " +
             "WHERE (@soloActivos = 0 OR activo = 1) ORDER BY nombre;", conexion);
-        cmd.Parameters.AddWithValue("@soloActivos", soloActivos ? 1 : 0);
+        cmd.Parameters.Add(Parametros.Entero("@soloActivos", soloActivos ? 1 : 0));
         conexion.Open();
         using MySqlDataReader rd = cmd.ExecuteReader();
         while (rd.Read())
@@ -33,8 +33,8 @@ public class BancoDatos
         using MySqlCommand cmd = new MySqlCommand(
             "SELECT COUNT(*) FROM bancos WHERE nombre = @nombre " +
             "AND (@exceptoId IS NULL OR id_banco <> @exceptoId);", conexion);
-        cmd.Parameters.AddWithValue("@nombre", nombre);
-        cmd.Parameters.AddWithValue("@exceptoId", ((object?)exceptoId) ?? DBNull.Value);
+        cmd.Parameters.Add(Parametros.Texto("@nombre", nombre));
+        cmd.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
         conexion.Open();
         return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
     }
@@ -45,8 +45,8 @@ public class BancoDatos
         using MySqlCommand cmd = new MySqlCommand(
             "INSERT INTO bancos (nombre, activo) VALUES (@nombre, @activo); " +
             "SELECT LAST_INSERT_ID();", conexion);
-        cmd.Parameters.AddWithValue("@nombre", banco.Nombre);
-        cmd.Parameters.AddWithValue("@activo", banco.Activo);
+        cmd.Parameters.Add(Parametros.Texto("@nombre", banco.Nombre));
+        cmd.Parameters.Add(Parametros.Booleano("@activo", banco.Activo));
         conexion.Open();
         return Convert.ToInt32(cmd.ExecuteScalar());
     }
@@ -56,9 +56,9 @@ public class BancoDatos
         using MySqlConnection conexion = ConexionBD.ObtenerConexion();
         using MySqlCommand cmd = new MySqlCommand(
             "UPDATE bancos SET nombre = @nombre, activo = @activo WHERE id_banco = @id;", conexion);
-        cmd.Parameters.AddWithValue("@id", banco.Id);
-        cmd.Parameters.AddWithValue("@nombre", banco.Nombre);
-        cmd.Parameters.AddWithValue("@activo", banco.Activo);
+        cmd.Parameters.Add(Parametros.Entero("@id", banco.Id));
+        cmd.Parameters.Add(Parametros.Texto("@nombre", banco.Nombre));
+        cmd.Parameters.Add(Parametros.Booleano("@activo", banco.Activo));
         conexion.Open();
         cmd.ExecuteNonQuery();
     }
@@ -70,7 +70,7 @@ public class BancoDatos
         using MySqlCommand cmd = new MySqlCommand(
             "UPDATE bancos SET activo = 0 WHERE id_banco = @id; " +
             "UPDATE tarjetas_credito SET activo = 0 WHERE id_banco = @id;", conexion);
-        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters.Add(Parametros.Entero("@id", id));
         conexion.Open();
         cmd.ExecuteNonQuery();
     }
@@ -82,7 +82,7 @@ public class BancoDatos
         using MySqlCommand cmd = new MySqlCommand(
             "UPDATE bancos SET activo = 1 WHERE id_banco = @id; " +
             "UPDATE tarjetas_credito SET activo = 1 WHERE id_banco = @id;", conexion);
-        cmd.Parameters.AddWithValue("@id", id);
+        cmd.Parameters.Add(Parametros.Entero("@id", id));
         conexion.Open();
         cmd.ExecuteNonQuery();
     }

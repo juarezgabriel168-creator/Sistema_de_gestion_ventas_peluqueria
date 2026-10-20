@@ -13,9 +13,9 @@ public class ItemDatos
 		using (MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion())
 		{
 			using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.costo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE (@filtro = '' OR i.nombre LIKE CONCAT('%', @filtro, '%'))\n                  AND (@categoriaId IS NULL OR i.id_categoria = @categoriaId)\n                  AND (@tipo IS NULL OR i.tipo = @tipo)\n                ORDER BY i.nombre;", mySqlConnection);
-			mySqlCommand.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
-			mySqlCommand.Parameters.AddWithValue("@categoriaId", ((object?)categoriaId) ?? DBNull.Value);
-			mySqlCommand.Parameters.AddWithValue("@tipo", (!tipo.HasValue) ? ((IConvertible)DBNull.Value) : ((IConvertible)ATexto(tipo.Value)));
+			mySqlCommand.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
+			mySqlCommand.Parameters.Add(Parametros.EnteroNulo("@categoriaId", categoriaId));
+			mySqlCommand.Parameters.Add(Parametros.Texto("@tipo", tipo.HasValue ? ATexto(tipo.Value) : null));
 			mySqlConnection.Open();
 			using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
 			while (mySqlDataReader.Read())
@@ -30,7 +30,7 @@ public class ItemDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.costo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE i.id_item = @id;", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@id", id);
+		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
 		mySqlConnection.Open();
 		using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
 		if (mySqlDataReader.Read())
@@ -44,8 +44,8 @@ public class ItemDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM items\n                WHERE nombre = @nombre\n                  AND (@exceptoId IS NULL OR id_item <> @exceptoId);", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@nombre", nombre);
-		mySqlCommand.Parameters.AddWithValue("@exceptoId", ((object?)exceptoId) ?? DBNull.Value);
+		mySqlCommand.Parameters.Add(Parametros.Texto("@nombre", nombre));
+		mySqlCommand.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
 		mySqlConnection.Open();
 		return Convert.ToInt32(mySqlCommand.ExecuteScalar()) > 0;
 	}
@@ -64,7 +64,7 @@ public class ItemDatos
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                UPDATE items\n                SET nombre = @nombre,\n                    tipo = @tipo,\n                    precio = @precio,\n                    costo = @costo,\n                    duracion_min = @duracion,\n                    stock = @stock,\n                    stock_minimo = @stockMinimo,\n                    id_categoria = @categoria,\n                    activo = @activo\n                WHERE id_item = @id;", mySqlConnection);
 		AgregarParametros(mySqlCommand, item);
-		mySqlCommand.Parameters.AddWithValue("@id", item.Id);
+		mySqlCommand.Parameters.Add(Parametros.Entero("@id", item.Id));
 		mySqlConnection.Open();
 		mySqlCommand.ExecuteNonQuery();
 	}
@@ -73,7 +73,7 @@ public class ItemDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE items SET activo = 0 WHERE id_item = @id;", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@id", id);
+		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
 		mySqlConnection.Open();
 		mySqlCommand.ExecuteNonQuery();
 	}
@@ -82,30 +82,30 @@ public class ItemDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE items SET activo = 1 WHERE id_item = @id;", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@id", id);
+		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
 		mySqlConnection.Open();
 		mySqlCommand.ExecuteNonQuery();
 	}
 
 	private static void AgregarParametros(MySqlCommand cmd, Item item)
 	{
-		cmd.Parameters.AddWithValue("@nombre", item.Nombre);
-		cmd.Parameters.AddWithValue("@tipo", ATexto(item.Tipo));
-		cmd.Parameters.AddWithValue("@precio", item.Precio);
-		cmd.Parameters.AddWithValue("@costo", ((object?)item.Costo) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@categoria", item.Categoria.Id);
-		cmd.Parameters.AddWithValue("@activo", item.Activo);
+		cmd.Parameters.Add(Parametros.Texto("@nombre", item.Nombre));
+		cmd.Parameters.Add(Parametros.Texto("@tipo", ATexto(item.Tipo)));
+		cmd.Parameters.Add(Parametros.Importe("@precio", item.Precio));
+		cmd.Parameters.Add(Parametros.ImporteNulo("@costo", item.Costo));
+		cmd.Parameters.Add(Parametros.Entero("@categoria", item.Categoria.Id));
+		cmd.Parameters.Add(Parametros.Booleano("@activo", item.Activo));
 		if (item.Tipo == TipoItem.Producto)
 		{
-			cmd.Parameters.AddWithValue("@duracion", DBNull.Value);
-			cmd.Parameters.AddWithValue("@stock", ((object?)item.Stock) ?? DBNull.Value);
-			cmd.Parameters.AddWithValue("@stockMinimo", ((object?)item.StockMinimo) ?? DBNull.Value);
+			cmd.Parameters.Add(Parametros.EnteroNulo("@duracion", null));
+			cmd.Parameters.Add(Parametros.EnteroNulo("@stock", item.Stock));
+			cmd.Parameters.Add(Parametros.EnteroNulo("@stockMinimo", item.StockMinimo));
 		}
 		else
 		{
-			cmd.Parameters.AddWithValue("@duracion", ((object?)item.DuracionMin) ?? DBNull.Value);
-			cmd.Parameters.AddWithValue("@stock", DBNull.Value);
-			cmd.Parameters.AddWithValue("@stockMinimo", DBNull.Value);
+			cmd.Parameters.Add(Parametros.EnteroNulo("@duracion", item.DuracionMin));
+			cmd.Parameters.Add(Parametros.EnteroNulo("@stock", null));
+			cmd.Parameters.Add(Parametros.EnteroNulo("@stockMinimo", null));
 		}
 	}
 

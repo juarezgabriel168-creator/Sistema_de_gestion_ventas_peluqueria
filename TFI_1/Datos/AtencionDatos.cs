@@ -27,8 +27,8 @@ public class AtencionDatos
 				"       OR i.nombre LIKE CONCAT('%', @filtro, '%')) " +
 				"  AND (@estado IS NULL OR a.estado = @estado) " +
 				"ORDER BY a.fecha_hora DESC;", conexion);
-			cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
-			cmd.Parameters.AddWithValue("@estado", ((object?)estado) ?? DBNull.Value);
+			cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
+			cmd.Parameters.Add(Parametros.Texto("@estado", estado));
 			conexion.Open();
 			using MySqlDataReader rd = cmd.ExecuteReader();
 			while (rd.Read())
@@ -60,7 +60,7 @@ public class AtencionDatos
 			"    tipo = @tipo, fecha_hora = @fecha, estado = @estado " +
 			"WHERE id_atencion = @id;", conexion);
 		AgregarParametros(cmd, atencion);
-		cmd.Parameters.AddWithValue("@id", atencion.Id);
+		cmd.Parameters.Add(Parametros.Entero("@id", atencion.Id));
 		conexion.Open();
 		cmd.ExecuteNonQuery();
 	}
@@ -70,8 +70,8 @@ public class AtencionDatos
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
 			"UPDATE atenciones SET estado = @estado WHERE id_atencion = @id;", conexion);
-		cmd.Parameters.AddWithValue("@estado", ATexto(estado));
-		cmd.Parameters.AddWithValue("@id", id);
+		cmd.Parameters.Add(Parametros.Texto("@estado", ATexto(estado)));
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
 		conexion.Open();
 		cmd.ExecuteNonQuery();
 	}
@@ -86,12 +86,12 @@ public class AtencionDatos
 			"  AND (@exceptoId IS NULL OR a.id_atencion <> @exceptoId) " +
 			"  AND @inicio < DATE_ADD(a.fecha_hora, INTERVAL GREATEST(COALESCE(i.duracion_min, 0), 1) MINUTE) " +
 			"  AND a.fecha_hora < @fin;", conexion);
-		cmd.Parameters.AddWithValue("@empleado", idEmpleado);
-		cmd.Parameters.AddWithValue("@inicio", fechaHora);
+		cmd.Parameters.Add(Parametros.Entero("@empleado", idEmpleado));
+		cmd.Parameters.Add(Parametros.Fecha("@inicio", fechaHora));
 		// Se usa un mínimo de 1 minuto para que dos turnos a la misma hora
 		// también se detecten aunque el servicio no tenga duración cargada.
-		cmd.Parameters.AddWithValue("@fin", fechaHora.AddMinutes(Math.Max(duracionMin, 1)));
-		cmd.Parameters.AddWithValue("@exceptoId", ((object?)exceptoId) ?? DBNull.Value);
+		cmd.Parameters.Add(Parametros.Fecha("@fin", fechaHora.AddMinutes(Math.Max(duracionMin, 1))));
+		cmd.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
 	}
@@ -108,12 +108,12 @@ public class AtencionDatos
 
 	private static void AgregarParametros(MySqlCommand cmd, Atencion atencion)
 	{
-		cmd.Parameters.AddWithValue("@cliente", atencion.Cliente.Id);
-		cmd.Parameters.AddWithValue("@empleado", atencion.Empleado.Id);
-		cmd.Parameters.AddWithValue("@item", atencion.Servicio.Id);
-		cmd.Parameters.AddWithValue("@tipo", ATexto(atencion.Tipo));
-		cmd.Parameters.AddWithValue("@fecha", atencion.FechaHora);
-		cmd.Parameters.AddWithValue("@estado", ATexto(atencion.Estado));
+		cmd.Parameters.Add(Parametros.Entero("@cliente", atencion.Cliente.Id));
+		cmd.Parameters.Add(Parametros.Entero("@empleado", atencion.Empleado.Id));
+		cmd.Parameters.Add(Parametros.Entero("@item", atencion.Servicio.Id));
+		cmd.Parameters.Add(Parametros.Texto("@tipo", ATexto(atencion.Tipo)));
+		cmd.Parameters.Add(Parametros.Fecha("@fecha", atencion.FechaHora));
+		cmd.Parameters.Add(Parametros.Texto("@estado", ATexto(atencion.Estado)));
 	}
 
 	private static Atencion Leer(MySqlDataReader rd)

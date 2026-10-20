@@ -17,7 +17,7 @@ public class ProveedorDatos
 			"WHERE (@filtro = '' OR nombre LIKE CONCAT('%', @filtro, '%') " +
 			"                  OR COALESCE(cuit, '') LIKE CONCAT('%', @filtro, '%')) " +
 			"ORDER BY nombre;", conexion);
-		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
+		cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		while (rd.Read())
@@ -31,7 +31,7 @@ public class ProveedorDatos
 		using MySqlCommand cmd = new MySqlCommand(
 			"SELECT id_proveedor, nombre, cuit, telefono, email, direccion, activo " +
 			"FROM proveedores WHERE id_proveedor = @id;", conexion);
-		cmd.Parameters.AddWithValue("@id", id);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		return rd.Read() ? Leer(rd) : null;
@@ -44,8 +44,8 @@ public class ProveedorDatos
 			"SELECT COUNT(*) FROM proveedores " +
 			"WHERE nombre = @nombre " +
 			"  AND (@exceptoId IS NULL OR id_proveedor <> @exceptoId);", conexion);
-		cmd.Parameters.AddWithValue("@nombre", nombre);
-		cmd.Parameters.AddWithValue("@exceptoId", ((object?)exceptoId) ?? DBNull.Value);
+		cmd.Parameters.Add(Parametros.Texto("@nombre", nombre));
+		cmd.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
 	}
@@ -71,7 +71,7 @@ public class ProveedorDatos
 			"    email = @email, direccion = @direccion, activo = @activo " +
 			"WHERE id_proveedor = @id;", conexion);
 		AgregarParametros(cmd, proveedor);
-		cmd.Parameters.AddWithValue("@id", proveedor.Id);
+		cmd.Parameters.Add(Parametros.Entero("@id", proveedor.Id));
 		conexion.Open();
 		cmd.ExecuteNonQuery();
 	}
@@ -81,7 +81,7 @@ public class ProveedorDatos
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
 			"UPDATE proveedores SET activo = 0 WHERE id_proveedor = @id;", conexion);
-		cmd.Parameters.AddWithValue("@id", id);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
 		conexion.Open();
 		cmd.ExecuteNonQuery();
 	}
@@ -91,19 +91,19 @@ public class ProveedorDatos
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
 			"UPDATE proveedores SET activo = 1 WHERE id_proveedor = @id;", conexion);
-		cmd.Parameters.AddWithValue("@id", id);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
 		conexion.Open();
 		cmd.ExecuteNonQuery();
 	}
 
 	private static void AgregarParametros(MySqlCommand cmd, Proveedor proveedor)
 	{
-		cmd.Parameters.AddWithValue("@nombre", proveedor.Nombre);
-		cmd.Parameters.AddWithValue("@cuit", (object?)proveedor.Cuit ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@telefono", (object?)proveedor.Telefono ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@email", (object?)proveedor.Email ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@direccion", (object?)proveedor.Direccion ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@activo", proveedor.Activo);
+		cmd.Parameters.Add(Parametros.Texto("@nombre", proveedor.Nombre));
+		cmd.Parameters.Add(Parametros.Texto("@cuit", proveedor.Cuit));
+		cmd.Parameters.Add(Parametros.Texto("@telefono", proveedor.Telefono));
+		cmd.Parameters.Add(Parametros.Texto("@email", proveedor.Email));
+		cmd.Parameters.Add(Parametros.Texto("@direccion", proveedor.Direccion));
+		cmd.Parameters.Add(Parametros.Booleano("@activo", proveedor.Activo));
 	}
 
 	private static Proveedor Leer(MySqlDataReader rd)

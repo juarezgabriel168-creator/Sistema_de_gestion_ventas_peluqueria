@@ -13,7 +13,7 @@ public class CategoriaDatos
 		using (MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion())
 		{
 			using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT id_categoria, nombre, activo\n                FROM categorias\n                WHERE (@filtro = '' OR nombre LIKE CONCAT('%', @filtro, '%'))\n                ORDER BY nombre;", mySqlConnection);
-			mySqlCommand.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
+			mySqlCommand.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
 			mySqlConnection.Open();
 			using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
 			while (mySqlDataReader.Read())
@@ -33,8 +33,8 @@ public class CategoriaDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM categorias\n                WHERE nombre = @nombre\n                  AND (@exceptoId IS NULL OR id_categoria <> @exceptoId);", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@nombre", nombre);
-		mySqlCommand.Parameters.AddWithValue("@exceptoId", ((object?)exceptoId) ?? DBNull.Value);
+		mySqlCommand.Parameters.Add(Parametros.Texto("@nombre", nombre));
+		mySqlCommand.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
 		mySqlConnection.Open();
 		return Convert.ToInt32(mySqlCommand.ExecuteScalar()) > 0;
 	}
@@ -43,8 +43,8 @@ public class CategoriaDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                INSERT INTO categorias (nombre, activo)\n                VALUES (@nombre, @activo);\n                SELECT LAST_INSERT_ID();", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@nombre", categoria.Nombre);
-		mySqlCommand.Parameters.AddWithValue("@activo", categoria.Activo);
+		mySqlCommand.Parameters.Add(Parametros.Texto("@nombre", categoria.Nombre));
+		mySqlCommand.Parameters.Add(Parametros.Booleano("@activo", categoria.Activo));
 		mySqlConnection.Open();
 		return Convert.ToInt32(mySqlCommand.ExecuteScalar());
 	}
@@ -53,9 +53,9 @@ public class CategoriaDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                UPDATE categorias\n                SET nombre = @nombre, activo = @activo\n                WHERE id_categoria = @id;", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@nombre", categoria.Nombre);
-		mySqlCommand.Parameters.AddWithValue("@activo", categoria.Activo);
-		mySqlCommand.Parameters.AddWithValue("@id", categoria.Id);
+		mySqlCommand.Parameters.Add(Parametros.Texto("@nombre", categoria.Nombre));
+		mySqlCommand.Parameters.Add(Parametros.Booleano("@activo", categoria.Activo));
+		mySqlCommand.Parameters.Add(Parametros.Entero("@id", categoria.Id));
 		mySqlConnection.Open();
 		mySqlCommand.ExecuteNonQuery();
 	}
@@ -64,7 +64,7 @@ public class CategoriaDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE categorias SET activo = 0 WHERE id_categoria = @id;", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@id", id);
+		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
 		mySqlConnection.Open();
 		mySqlCommand.ExecuteNonQuery();
 	}
@@ -73,7 +73,7 @@ public class CategoriaDatos
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE categorias SET activo = 1 WHERE id_categoria = @id;", mySqlConnection);
-		mySqlCommand.Parameters.AddWithValue("@id", id);
+		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
 		mySqlConnection.Open();
 		mySqlCommand.ExecuteNonQuery();
 	}

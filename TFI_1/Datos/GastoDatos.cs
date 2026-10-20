@@ -22,9 +22,9 @@ public class GastoDatos
 			"  AND (@filtro = '' OR g.concepto LIKE CONCAT('%', @filtro, '%') " +
 			"               OR g.categoria LIKE CONCAT('%', @filtro, '%')) " +
 			"ORDER BY g.fecha DESC, g.id_gasto DESC;", conexion);
-		cmd.Parameters.AddWithValue("@desde", ((object?)desde?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
+		cmd.Parameters.Add(Parametros.SoloFechaNula("@desde", desde?.Date));
+		cmd.Parameters.Add(Parametros.SoloFechaNula("@hasta", hasta?.Date));
+		cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		while (rd.Read())
@@ -41,7 +41,7 @@ public class GastoDatos
 			"FROM gastos AS g " +
 			"INNER JOIN usuarios AS u ON u.id_usuario = g.id_usuario " +
 			"WHERE g.id_gasto = @id;", conexion);
-		cmd.Parameters.AddWithValue("@id", id);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		return rd.Read() ? Leer(rd) : null;
@@ -54,12 +54,12 @@ public class GastoDatos
 			"INSERT INTO gastos (fecha, concepto, monto, categoria, observacion, id_usuario) " +
 			"VALUES (@fecha, @concepto, @monto, @categoria, @observacion, @idUsuario); " +
 			"SELECT LAST_INSERT_ID();", conexion);
-		cmd.Parameters.AddWithValue("@fecha", gasto.Fecha);
-		cmd.Parameters.AddWithValue("@concepto", gasto.Concepto);
-		cmd.Parameters.AddWithValue("@monto", gasto.Monto);
-		cmd.Parameters.AddWithValue("@categoria", (object?)gasto.Categoria ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@observacion", (object?)gasto.Observacion ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@idUsuario", gasto.IdUsuario);
+		cmd.Parameters.Add(Parametros.Fecha("@fecha", gasto.Fecha));
+		cmd.Parameters.Add(Parametros.Texto("@concepto", gasto.Concepto));
+		cmd.Parameters.Add(Parametros.Importe("@monto", gasto.Monto));
+		cmd.Parameters.Add(Parametros.Texto("@categoria", gasto.Categoria));
+		cmd.Parameters.Add(Parametros.Texto("@observacion", gasto.Observacion));
+		cmd.Parameters.Add(Parametros.Entero("@idUsuario", gasto.IdUsuario));
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
@@ -71,12 +71,12 @@ public class GastoDatos
 			"UPDATE gastos SET fecha = @fecha, concepto = @concepto, monto = @monto, " +
 			"    categoria = @categoria, observacion = @observacion " +
 			"WHERE id_gasto = @id;", conexion);
-		cmd.Parameters.AddWithValue("@id", gasto.Id);
-		cmd.Parameters.AddWithValue("@fecha", gasto.Fecha);
-		cmd.Parameters.AddWithValue("@concepto", gasto.Concepto);
-		cmd.Parameters.AddWithValue("@monto", gasto.Monto);
-		cmd.Parameters.AddWithValue("@categoria", (object?)gasto.Categoria ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@observacion", (object?)gasto.Observacion ?? DBNull.Value);
+		cmd.Parameters.Add(Parametros.Entero("@id", gasto.Id));
+		cmd.Parameters.Add(Parametros.Fecha("@fecha", gasto.Fecha));
+		cmd.Parameters.Add(Parametros.Texto("@concepto", gasto.Concepto));
+		cmd.Parameters.Add(Parametros.Importe("@monto", gasto.Monto));
+		cmd.Parameters.Add(Parametros.Texto("@categoria", gasto.Categoria));
+		cmd.Parameters.Add(Parametros.Texto("@observacion", gasto.Observacion));
 		conexion.Open();
 		cmd.ExecuteNonQuery();
 	}
@@ -109,8 +109,8 @@ public class GastoDatos
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
 			"SELECT COALESCE(SUM(monto), 0) FROM gastos WHERE fecha BETWEEN @desde AND @hasta;", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta));
 		conexion.Open();
 		return Convert.ToDecimal(cmd.ExecuteScalar());
 	}
@@ -123,8 +123,8 @@ public class GastoDatos
 			"       COALESCE(SUM(monto), 0) AS Total " +
 			"FROM gastos WHERE fecha BETWEEN @desde AND @hasta " +
 			"GROUP BY categoria ORDER BY Total DESC;", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new();
 		adaptador.Fill(tabla);

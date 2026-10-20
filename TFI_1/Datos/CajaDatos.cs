@@ -29,8 +29,8 @@ public class CajaDatos
 			"SELECT @usuario, NOW(), @monto, 'abierta' " +
 			"WHERE NOT EXISTS (SELECT 1 FROM cajas WHERE estado = 'abierta'); " +
 			"SELECT IF(ROW_COUNT() = 1, LAST_INSERT_ID(), 0);", conexion);
-		cmd.Parameters.AddWithValue("@usuario", usuarioId);
-		cmd.Parameters.AddWithValue("@monto", montoInicial);
+		cmd.Parameters.Add(Parametros.Entero("@usuario", usuarioId));
+		cmd.Parameters.Add(Parametros.Importe("@monto", montoInicial));
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
@@ -49,7 +49,7 @@ public class CajaDatos
 	{
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(SelectCaja + "WHERE c.id_caja = @id;", conexion);
-		cmd.Parameters.AddWithValue("@id", id);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		return rd.Read() ? Leer(rd) : null;
@@ -63,12 +63,11 @@ public class CajaDatos
 			"       monto_esperado = @esperado, monto_contado = @contado, " +
 			"       diferencia = @contado - @esperado, observacion = @observacion, estado = 'cerrada' " +
 			"WHERE id_caja = @id AND estado = 'abierta';", conexion);
-		cmd.Parameters.AddWithValue("@usuario", usuarioId);
-		cmd.Parameters.AddWithValue("@esperado", montoEsperado);
-		cmd.Parameters.AddWithValue("@contado", montoContado);
-		cmd.Parameters.AddWithValue("@observacion",
-			string.IsNullOrWhiteSpace(observacion) ? DBNull.Value : ((object?)observacion));
-		cmd.Parameters.AddWithValue("@id", idCaja);
+		cmd.Parameters.Add(Parametros.Entero("@usuario", usuarioId));
+		cmd.Parameters.Add(Parametros.Importe("@esperado", montoEsperado));
+		cmd.Parameters.Add(Parametros.Importe("@contado", montoContado));
+		cmd.Parameters.Add(Parametros.Texto("@observacion", string.IsNullOrWhiteSpace(observacion) ? null : observacion));
+		cmd.Parameters.Add(Parametros.Entero("@id", idCaja));
 		conexion.Open();
 		return cmd.ExecuteNonQuery() == 1;
 	}
@@ -80,11 +79,11 @@ public class CajaDatos
 			"INSERT INTO caja_movimientos (id_caja, fecha, tipo, monto, concepto, id_usuario) " +
 			"VALUES (@caja, NOW(), @tipo, @monto, @concepto, @usuario); " +
 			"SELECT LAST_INSERT_ID();", conexion);
-		cmd.Parameters.AddWithValue("@caja", idCaja);
-		cmd.Parameters.AddWithValue("@tipo", tipo);
-		cmd.Parameters.AddWithValue("@monto", monto);
-		cmd.Parameters.AddWithValue("@concepto", concepto);
-		cmd.Parameters.AddWithValue("@usuario", usuarioId);
+		cmd.Parameters.Add(Parametros.Entero("@caja", idCaja));
+		cmd.Parameters.Add(Parametros.Texto("@tipo", tipo));
+		cmd.Parameters.Add(Parametros.Importe("@monto", monto));
+		cmd.Parameters.Add(Parametros.Texto("@concepto", concepto));
+		cmd.Parameters.Add(Parametros.Entero("@usuario", usuarioId));
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
@@ -99,7 +98,7 @@ public class CajaDatos
 			"INNER JOIN usuarios AS u ON u.id_usuario = m.id_usuario " +
 			"WHERE m.id_caja = @caja " +
 			"ORDER BY m.fecha, m.id_movimiento_caja;", conexion);
-		cmd.Parameters.AddWithValue("@caja", idCaja);
+		cmd.Parameters.Add(Parametros.Entero("@caja", idCaja));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
@@ -119,8 +118,8 @@ public class CajaDatos
 			"  AND v.anulada = 0 " +
 			"GROUP BY v.medio_pago " +
 			"ORDER BY v.medio_pago;", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde);
-		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta) ?? DBNull.Value);
+		cmd.Parameters.Add(Parametros.Fecha("@desde", desde));
+		cmd.Parameters.Add(Parametros.FechaNula("@hasta", hasta));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
@@ -135,8 +134,8 @@ public class CajaDatos
 			"WHERE fecha >= @desde " +
 			"  AND (@hasta IS NULL OR fecha <= @hasta) " +
 			"  AND anulada = 0 AND medio_pago = 'efectivo';", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde);
-		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta) ?? DBNull.Value);
+		cmd.Parameters.Add(Parametros.Fecha("@desde", desde));
+		cmd.Parameters.Add(Parametros.FechaNula("@hasta", hasta));
 		conexion.Open();
 		return Convert.ToDecimal(cmd.ExecuteScalar());
 	}
@@ -147,8 +146,8 @@ public class CajaDatos
 		using MySqlCommand cmd = new MySqlCommand(
 			"SELECT COALESCE(SUM(monto), 0) FROM caja_movimientos " +
 			"WHERE id_caja = @caja AND tipo = @tipo;", conexion);
-		cmd.Parameters.AddWithValue("@caja", idCaja);
-		cmd.Parameters.AddWithValue("@tipo", tipo);
+		cmd.Parameters.Add(Parametros.Entero("@caja", idCaja));
+		cmd.Parameters.Add(Parametros.Texto("@tipo", tipo));
 		conexion.Open();
 		return Convert.ToDecimal(cmd.ExecuteScalar());
 	}
@@ -168,10 +167,10 @@ public class CajaDatos
 			"WHERE DATE(c.fecha_apertura) BETWEEN @desde AND @hasta " +
 			"ORDER BY c.fecha_apertura DESC, c.id_caja DESC " +
 			"LIMIT @limite OFFSET @desplazamiento;", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
-		cmd.Parameters.AddWithValue("@limite", limite ?? int.MaxValue);
-		cmd.Parameters.AddWithValue("@desplazamiento", desplazamiento ?? 0);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta));
+		cmd.Parameters.Add(Parametros.Entero("@limite", limite ?? int.MaxValue));
+		cmd.Parameters.Add(Parametros.Entero("@desplazamiento", desplazamiento ?? 0));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
@@ -185,8 +184,8 @@ public class CajaDatos
 		using MySqlCommand cmd = new MySqlCommand(
 			"SELECT COUNT(*) FROM cajas AS c " +
 			"WHERE DATE(c.fecha_apertura) BETWEEN @desde AND @hasta;", conexion);
-		cmd.Parameters.AddWithValue("@desde", desde.Date);
-		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta));
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
