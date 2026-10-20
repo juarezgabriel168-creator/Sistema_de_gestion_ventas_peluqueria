@@ -95,7 +95,22 @@ con todas sus tablas y datos de ejemplo.
 > cargados, se pierden. Usalo solo para la primera instalación o para
 > reiniciar la base desde cero.
 
-### 2. Configurar la conexión
+### 2. Crear el usuario de la base de datos
+
+La aplicación no se conecta como `root`, sino con un usuario propio que
+solo puede leer y escribir datos. Ejecutar como root el script
+`BaseDatos/crear_usuario_app.sql` (cambiando antes la contraseña de
+ejemplo por una propia):
+
+```bash
+mysql -u root -p < BaseDatos/crear_usuario_app.sql
+```
+
+El script crea el usuario `peluqueria_app` con permisos `SELECT`,
+`INSERT`, `UPDATE` y `DELETE` únicamente sobre la base `peluqueria`. No
+puede crear ni borrar tablas.
+
+### 3. Configurar la conexión
 
 Copiar el archivo de ejemplo y ajustar la cadena de conexión con los datos
 de tu MySQL. El archivo real (`App.config`) está excluido de Git para no
@@ -110,16 +125,16 @@ Luego editar `TFI_1/App.config`:
 ```xml
 <connectionStrings>
   <add name="Peluqueria"
-       connectionString="Server=localhost;Port=3306;Database=peluqueria;Uid=root;Pwd=TU_CONTRASEÑA;CharSet=utf8mb4;"
+       connectionString="Server=localhost;Port=3306;Database=peluqueria;Uid=peluqueria_app;Pwd=TU_CONTRASEÑA;CharSet=utf8mb4;"
        providerName="MySql.Data.MySqlClient" />
 </connectionStrings>
 ```
 
 - `Server` → dónde está MySQL (normalmente `localhost`).
-- `Uid` / `Pwd` → usuario y contraseña de MySQL.
+- `Uid` / `Pwd` → el usuario y la contraseña creados en el paso anterior.
 - `Database` → dejar `peluqueria`.
 
-### 3. Compilar y ejecutar
+### 4. Compilar y ejecutar
 
 Desde la carpeta raíz del proyecto:
 
@@ -132,7 +147,7 @@ dotnet run --project TFI_1/TFI_1.csproj
 O, desde **Visual Studio**: abrir la solución `TFI_1.slnx`, y presionar
 **F5** (o el botón ▶ Iniciar).
 
-### 4. Iniciar sesión
+### 5. Iniciar sesión
 
 Al arrancar aparece la pantalla de login. Usuarios de prueba:
 
@@ -167,7 +182,8 @@ rol del usuario:
 ```
 TFI_1/
 ├── BaseDatos/
-│   └── peluqueria.sql        # Script de creación de la base de datos
+│   ├── peluqueria.sql        # Script de creación de la base de datos
+│   └── crear_usuario_app.sql # Usuario de MySQL con permisos acotados
 ├── TFI_1/
 │   ├── App.config            # Cadena de conexión a MySQL
 │   ├── Program.cs            # Punto de entrada (abre el login)
@@ -189,11 +205,10 @@ Cada formulario se compone de tres archivos:
 
 ## Notas y limitaciones conocidas
 
-- La contraseña de MySQL está escrita en texto plano en `App.config`
-  (práctica habitual en proyectos de práctica, pero **no** recomendable en
-  producción).
-- El usuario `root` de MySQL se usa directamente; lo ideal sería crear un
-  usuario con permisos acotados solo sobre la base `peluqueria`.
+- La contraseña de la base se guarda en texto plano en `TFI_1/App.config`
+  (archivo local, excluido de Git). La aplicación se conecta con el usuario
+  `peluqueria_app`, que solo tiene permisos de lectura y escritura sobre la
+  base `peluqueria`.
 - Las ventas **no se pueden anular ni editar** una vez registradas.
 - Cambiar las contraseñas de los usuarios de prueba después de la primera
   instalación (menú **Administración → Usuarios**).
