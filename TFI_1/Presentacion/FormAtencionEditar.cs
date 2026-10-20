@@ -165,6 +165,15 @@ public partial class FormAtencionEditar : Form
 			errProvider.SetError(cboServicio, "Seleccione un servicio.");
 			valido = false;
 		}
+		if (cboEmpleado.SelectedItem is Empleado empleado && empleado.AtiendeConTurno())
+		{
+			bool fechaModificada = !_esNueva && _atencion is not null && dtpFechaHora.Value != _atencion.FechaHora;
+			if ((_esNueva || fechaModificada) && dtpFechaHora.Value < DateTime.Now.AddMinutes(-5))
+			{
+				errProvider.SetError(dtpFechaHora, "La fecha y hora no puede ser anterior a la actual.");
+				valido = false;
+			}
+		}
 		return valido;
 	}
 }

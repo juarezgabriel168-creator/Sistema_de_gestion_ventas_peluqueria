@@ -20,7 +20,7 @@ base de datos **MySQL**.
 | Productos | Categorías | Administrar las categorías de productos y servicios. |
 | Clientes | Clientes | Alta, edición, activación/desactivación y búsqueda de clientes. |
 | Clientes | Cuenta corriente | Ver el saldo y los movimientos de cada cliente y registrar pagos (abonos). |
-| Turnos | Atenciones | Registrar turnos y órdenes de llegada, y cambiar su estado (pendiente, en atención, finalizada, cancelada). |
+| Turnos | Atenciones | Registrar turnos y órdenes de llegada, y cambiar su estado (pendiente, en atención, finalizada, cancelada). No permite turnos en el pasado ni superpuestos para el mismo peluquero. |
 | Administración | Usuarios | Crear y editar usuarios y asignarles un rol. |
 | Administración | Empleados | Alta y edición de empleados (con turnos u orden de llegada). |
 | Administración | Tarjetas de crédito | Administrar bancos y tarjetas, con su porcentaje de recargo y cantidad de cuotas. |

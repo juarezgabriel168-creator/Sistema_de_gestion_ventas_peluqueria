@@ -76,16 +76,22 @@ public class AtencionDatos
 		cmd.ExecuteNonQuery();
 	}
 
-	public bool ExisteConflictoHorario(int idEmpleado, DateTime fechaHora, int? exceptoId = null)
+	public bool ExisteConflictoHorario(int idEmpleado, DateTime fechaHora, int duracionMin, int? exceptoId = null)
 	{
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
-			"SELECT COUNT(*) FROM atenciones " +
-			"WHERE id_empleado = @empleado AND fecha_hora = @fecha AND estado <> 'cancelada' " +
-			"  AND (@exceptoId IS NULL OR id_atencion <> @exceptoId);", conexion);
+			"SELECT COUNT(*) FROM atenciones AS a " +
+			"INNER JOIN items AS i ON i.id_item = a.id_item " +
+			"WHERE a.id_empleado = @empleado AND a.estado <> 'cancelada' " +
+			"  AND (@exceptoId IS NULL OR a.id_atencion <> @exceptoId) " +
+			"  AND @inicio < DATE_ADD(a.fecha_hora, INTERVAL GREATEST(COALESCE(i.duracion_min, 0), 1) MINUTE) " +
+			"  AND a.fecha_hora < @fin;", conexion);
 		cmd.Parameters.AddWithValue("@empleado", idEmpleado);
-		cmd.Parameters.AddWithValue("@fecha", fechaHora);
-		cmd.Parameters.AddWithValue("@exceptoId", ((object)exceptoId) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@inicio", fechaHora);
+		// Se usa un mínimo de 1 minuto para que dos turnos a la misma hora
+		// también se detecten aunque el servicio no tenga duración cargada.
+		cmd.Parameters.AddWithValue("@fin", fechaHora.AddMinutes(Math.Max(duracionMin, 1)));
+		cmd.Parameters.AddWithValue("@exceptoId", ((object?)exceptoId) ?? DBNull.Value);
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
 	}

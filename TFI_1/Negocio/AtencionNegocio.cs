@@ -45,10 +45,20 @@ public class AtencionNegocio
 			atencion.FechaHora = DateTime.Now;
 		}
 
-		// Advertencia: no permitir dos atenciones del mismo empleado en el mismo horario.
-		if (_datos.ExisteConflictoHorario(atencion.Empleado.Id, atencion.FechaHora, atencion.Id))
+		// Un turno nuevo no puede quedar agendado en el pasado. Se permite
+		// editar atenciones viejas para cambiarles el estado.
+		if (atencion.Tipo == TipoAtencion.Turno && atencion.Id == 0 &&
+			atencion.FechaHora < DateTime.Now.AddMinutes(-5))
 		{
-			throw new ArgumentException("El empleado ya tiene una atención registrada en ese horario.");
+			throw new ArgumentException("La fecha y hora del turno no puede ser anterior a la actual.");
+		}
+
+		// No permitir dos atenciones del mismo empleado que se superpongan
+		// (se tiene en cuenta la duración del servicio).
+		int duracion = atencion.Servicio.DuracionMin ?? 0;
+		if (_datos.ExisteConflictoHorario(atencion.Empleado.Id, atencion.FechaHora, duracion, atencion.Id))
+		{
+			throw new ArgumentException("El empleado ya tiene otra atención que se superpone con ese horario.");
 		}
 
 		if (atencion.Id == 0)
