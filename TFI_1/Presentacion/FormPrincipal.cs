@@ -104,6 +104,11 @@ public partial class FormPrincipal : Form
 		AbrirFormulario(new FormHistorialVentas());
 	}
 
+	private void mnuVentasCaja_Click(object sender, EventArgs e)
+	{
+		AbrirFormulario(new FormCaja());
+	}
+
 	private void mnuProductosItems_Click(object sender, EventArgs e)
 	{
 		AbrirFormulario(new FormItems());

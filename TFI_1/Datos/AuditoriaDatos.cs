@@ -23,6 +23,10 @@ public class AuditoriaDatos
 		"  WHEN 'usuario_edicion' THEN 'Edición de usuario' " +
 		"  WHEN 'usuario_desactivacion' THEN 'Desactivación de usuario' " +
 		"  WHEN 'usuario_reactivacion' THEN 'Reactivación de usuario' " +
+		"  WHEN 'caja_apertura' THEN 'Apertura de caja' " +
+		"  WHEN 'caja_cierre' THEN 'Cierre de caja' " +
+		"  WHEN 'caja_ingreso' THEN 'Ingreso de caja' " +
+		"  WHEN 'caja_egreso' THEN 'Egreso de caja' " +
 		"  ELSE {0} END";
 
 	public void Registrar(int usuarioId, string accion, string entidad, int? idEntidad, string? detalle)

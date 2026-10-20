@@ -272,6 +272,33 @@
     <EmbeddedResource Update="Presentacion\FormAuditoria.resx">
       <DependentUpon>FormAuditoria.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Update="Presentacion\FormCaja.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormCaja.Designer.cs">
+      <DependentUpon>FormCaja.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormCaja.resx">
+      <DependentUpon>FormCaja.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormCerrarCaja.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormCerrarCaja.Designer.cs">
+      <DependentUpon>FormCerrarCaja.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormCerrarCaja.resx">
+      <DependentUpon>FormCerrarCaja.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormHistorialCaja.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormHistorialCaja.Designer.cs">
+      <DependentUpon>FormHistorialCaja.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormHistorialCaja.resx">
+      <DependentUpon>FormHistorialCaja.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Update="Presentacion\FormCuentaCorriente.cs">
       <SubType>Form</SubType>
     </Compile>

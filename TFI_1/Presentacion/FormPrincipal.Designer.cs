@@ -23,6 +23,8 @@ partial class FormPrincipal : Form
 
 	private ToolStripMenuItem mnuVentasHistorial;
 
+	private ToolStripMenuItem mnuVentasCaja;
+
 	private ToolStripMenuItem menuProductos;
 
 	private ToolStripMenuItem mnuProductosItems;
@@ -90,6 +92,7 @@ partial class FormPrincipal : Form
 		this.menuVentas = new System.Windows.Forms.ToolStripMenuItem();
 		this.mnuVentasNueva = new System.Windows.Forms.ToolStripMenuItem();
 		this.mnuVentasHistorial = new System.Windows.Forms.ToolStripMenuItem();
+		this.mnuVentasCaja = new System.Windows.Forms.ToolStripMenuItem();
 		this.menuProductos = new System.Windows.Forms.ToolStripMenuItem();
 		this.mnuProductosItems = new System.Windows.Forms.ToolStripMenuItem();
 		this.mnuProductosCategorias = new System.Windows.Forms.ToolStripMenuItem();
@@ -609,7 +612,7 @@ partial class FormPrincipal : Form
 		this.mnuInicioDashboard.Size = new System.Drawing.Size(131, 22);
 		this.mnuInicioDashboard.Text = "Dashboard";
 		this.mnuInicioDashboard.Click += new System.EventHandler(this.mnuInicioDashboard_Click);
-		this.menuVentas.DropDownItems.AddRangeSafe(this.mnuVentasNueva, this.mnuVentasHistorial);
+		this.menuVentas.DropDownItems.AddRangeSafe(this.mnuVentasNueva, this.mnuVentasHistorial, this.mnuVentasCaja);
 		this.menuVentas.Name = "menuVentas";
 		this.menuVentas.Size = new System.Drawing.Size(53, 20);
 		this.menuVentas.Text = "Ventas";
@@ -621,6 +624,13 @@ partial class FormPrincipal : Form
 		this.mnuVentasHistorial.Size = new System.Drawing.Size(171, 22);
 		this.mnuVentasHistorial.Text = "Historial de ventas";
 		this.mnuVentasHistorial.Click += new System.EventHandler(this.mnuVentasHistorial_Click);
+		//
+		// mnuVentasCaja
+		//
+		this.mnuVentasCaja.Name = "mnuVentasCaja";
+		this.mnuVentasCaja.Size = new System.Drawing.Size(171, 22);
+		this.mnuVentasCaja.Text = "Caja";
+		this.mnuVentasCaja.Click += new System.EventHandler(this.mnuVentasCaja_Click);
 		this.menuProductos.DropDownItems.AddRangeSafe(this.mnuProductosItems, this.mnuProductosCategorias);
 		this.menuProductos.Name = "menuProductos";
 		this.menuProductos.Size = new System.Drawing.Size(73, 20);

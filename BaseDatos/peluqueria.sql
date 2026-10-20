@@ -37,6 +37,8 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS auditoria;
+DROP TABLE IF EXISTS caja_movimientos;
+DROP TABLE IF EXISTS cajas;
 DROP TABLE IF EXISTS ingresos_mercaderia_detalle;
 DROP TABLE IF EXISTS ingresos_mercaderia;
 DROP TABLE IF EXISTS movimientos_cuenta_corriente;
@@ -375,7 +377,56 @@ CREATE TABLE auditoria (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 -- =====================================================================
---  10. DATOS INICIALES
+--  10. CAJA
+-- =====================================================================
+
+-- Turnos de caja: se abren con un fondo inicial y se cierran con el
+-- efectivo contado. Los movimientos son ingresos y egresos de efectivo.
+CREATE TABLE cajas (
+    id_caja             INT           NOT NULL AUTO_INCREMENT,
+    id_usuario_apertura INT           NOT NULL,
+    fecha_apertura      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    monto_inicial       DECIMAL(12,2) NOT NULL DEFAULT 0,
+    id_usuario_cierre   INT           NULL,
+    fecha_cierre        DATETIME      NULL,
+    monto_esperado      DECIMAL(12,2) NULL,
+    monto_contado       DECIMAL(12,2) NULL,
+    diferencia          DECIMAL(12,2) NULL,
+    observacion         VARCHAR(255)  NULL,
+    estado              ENUM('abierta', 'cerrada') NOT NULL DEFAULT 'abierta',
+    PRIMARY KEY (id_caja),
+    KEY ix_cajas_estado (estado),
+    KEY ix_cajas_apertura (fecha_apertura),
+    CONSTRAINT fk_cajas_usuario_apertura FOREIGN KEY (id_usuario_apertura) REFERENCES usuarios (id_usuario)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_cajas_usuario_cierre FOREIGN KEY (id_usuario_cierre) REFERENCES usuarios (id_usuario)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT chk_cajas_montos CHECK (
+        monto_inicial >= 0
+        AND (monto_esperado IS NULL OR monto_esperado >= 0)
+        AND (monto_contado IS NULL OR monto_contado >= 0)
+    )
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE caja_movimientos (
+    id_movimiento_caja INT           NOT NULL AUTO_INCREMENT,
+    id_caja            INT           NOT NULL,
+    fecha              DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    tipo               ENUM('ingreso', 'egreso') NOT NULL,
+    monto              DECIMAL(12,2) NOT NULL,
+    concepto           VARCHAR(150)  NOT NULL,
+    id_usuario         INT           NOT NULL,
+    PRIMARY KEY (id_movimiento_caja),
+    KEY ix_caja_movimientos_caja (id_caja, fecha),
+    CONSTRAINT fk_caja_movimientos_caja FOREIGN KEY (id_caja) REFERENCES cajas (id_caja)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_caja_movimientos_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT chk_caja_movimientos_monto CHECK (monto > 0)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+-- =====================================================================
+--  11. DATOS INICIALES
 -- =====================================================================
 
 -- Roles (los identificadores 1, 2 y 3 son los que usa el sistema).
