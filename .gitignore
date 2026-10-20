@@ -480,3 +480,16 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# ---------------------------------------------------------------------------
+# Configuración local y paquetes del proyecto
+# ---------------------------------------------------------------------------
+
+# Cadena de conexión con credenciales reales (usar App.config.example).
+TFI_1/App.config
+
+# Paquetes comprimidos del proyecto.
+*.zip
+
+# Script local de subida (no forma parte del sistema).
+push-git.sh

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <connectionStrings>
+    <!-- Copiar este archivo como App.config (misma carpeta) y completar la
+         contraseña real de MySQL. App.config no se sube al repositorio. -->
+    <add name="Peluqueria"
+         connectionString="Server=localhost;Port=3306;Database=peluqueria;Uid=root;Pwd=CAMBIAR_ESTA_CONTRASENA;CharSet=utf8mb4;"
+         providerName="MySql.Data.MySqlClient" />
+  </connectionStrings>
+</configuration>
