@@ -16,6 +16,7 @@ public partial class FormIngresoMercaderia : Form
 	public FormIngresoMercaderia()
 	{
 		InitializeComponent();
+		txtObservacion.MaxLength = 255;
 	}
 
 	private void FormIngresoMercaderia_Load(object sender, EventArgs e)

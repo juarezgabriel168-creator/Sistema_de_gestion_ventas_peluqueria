@@ -37,6 +37,8 @@ partial class FormItems : Form
 
 	private CheckBox chkSoloActivos;
 
+	private CheckBox chkStockBajo;
+
 	protected override void Dispose(bool disposing)
 	{
 		if (disposing && components != null)
@@ -62,6 +64,7 @@ partial class FormItems : Form
         btnDesactivar = new Button();
         btnRefrescar = new Button();
         chkSoloActivos = new CheckBox();
+        chkStockBajo = new CheckBox();
         dgvItems = new DataGridView();
         ((ISupportInitialize)dgvItems).BeginInit();
         SuspendLayout();
@@ -189,6 +192,18 @@ partial class FormItems : Form
         chkSoloActivos.UseVisualStyleBackColor = true;
         chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
         // 
+        // chkStockBajo
+        //
+        chkStockBajo.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        chkStockBajo.AutoSize = true;
+        chkStockBajo.Location = new Point(540, 16);
+        chkStockBajo.Name = "chkStockBajo";
+        chkStockBajo.Size = new Size(105, 19);
+        chkStockBajo.TabIndex = 12;
+        chkStockBajo.Text = "Solo stock bajo";
+        chkStockBajo.UseVisualStyleBackColor = true;
+        chkStockBajo.CheckedChanged += Filtro_Changed;
+        //
         // dgvItems
         // 
         dgvItems.AllowUserToAddRows = false;
@@ -231,6 +246,7 @@ partial class FormItems : Form
         BackColor = SystemColors.ActiveCaption;
         ClientSize = new Size(860, 500);
         Controls.Add(dgvItems);
+        Controls.Add(chkStockBajo);
         Controls.Add(chkSoloActivos);
         Controls.Add(btnRefrescar);
         Controls.Add(btnDesactivar);

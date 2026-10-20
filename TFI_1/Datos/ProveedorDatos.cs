@@ -50,6 +50,19 @@ public class ProveedorDatos
 		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
 	}
 
+	public bool ExisteCuit(string cuit, int? exceptoId = null)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT COUNT(*) FROM proveedores " +
+			"WHERE cuit = @cuit " +
+			"  AND (@exceptoId IS NULL OR id_proveedor <> @exceptoId);", conexion);
+		cmd.Parameters.Add(Parametros.Texto("@cuit", cuit));
+		cmd.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+	}
+
 	public int Insertar(Proveedor proveedor)
 	{
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();

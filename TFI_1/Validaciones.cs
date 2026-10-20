@@ -92,6 +92,18 @@ public static class Validaciones
 		}
 	}
 
+	public static void ExigirLongitudMaxima(string? valor, int maximo, string mensaje)
+	{
+		if (maximo <= 0)
+		{
+			throw new ArgumentOutOfRangeException(nameof(maximo), "El máximo debe ser mayor a cero.");
+		}
+		if (valor != null && valor.Length > maximo)
+		{
+			throw new ArgumentException(mensaje);
+		}
+	}
+
 	public static void ExigirImporteNoNegativo(decimal valor, string mensaje)
 	{
 		if (valor < 0)

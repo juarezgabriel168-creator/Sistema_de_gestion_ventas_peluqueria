@@ -17,7 +17,7 @@ base de datos **MySQL**.
 | Ventas | Nueva venta | Armar el carrito con productos y servicios, elegir medio de pago (efectivo, tarjeta, transferencia o cuenta corriente) y registrar la venta. Al registrar, ofrece ver el ticket. |
 | Ventas | Historial de ventas | Buscar y ver las ventas realizadas por rango de fechas, empleado o número de venta, ver el detalle de cada una y ver/imprimir el ticket. Permite **anular** una venta indicando el motivo: se devuelve el stock, se revierte el cargo de la cuenta corriente y la venta queda marcada como anulada (no se borra). |
 | Ventas | Caja | Abrir el turno con un fondo inicial, registrar ingresos y egresos de efectivo, ver las ventas del turno por medio de pago y cerrar la caja con el efectivo contado y la diferencia contra lo esperado. Incluye el historial de cierres. |
-| Productos | Productos y servicios | Alta, edición, activación/desactivación y filtros de productos y servicios. Los **servicios** exigen una duración y no manejan stock ni costo; los **productos** manejan stock, stock mínimo y costo de compra, y no duración. |
+| Productos | Productos y servicios | Alta, edición, activación/desactivación y filtros de productos y servicios. Incluye el filtro **Solo stock bajo** para ver los productos que llegaron a su stock mínimo. Los **servicios** exigen una duración y no manejan stock ni costo; los **productos** manejan stock, stock mínimo y costo de compra, y no duración. |
 | Productos | Categorías | Administrar las categorías de productos y servicios. |
 | Clientes | Clientes | Alta, edición, activación/desactivación y búsqueda de clientes. |
 | Clientes | Cuenta corriente | Ver el saldo y los movimientos de cada cliente y registrar pagos (abonos). Avisa cuando la deuda supera los **$50.000** (al vender a cuenta corriente y al consultar la cuenta). El aviso no bloquea la venta. |
@@ -32,6 +32,7 @@ base de datos **MySQL**.
 | Administración | Auditoría | Consultar quién hizo cada operación sensible (ventas, anulaciones, pagos de cuenta corriente, gastos, mercadería y usuarios), filtrando por rango de fechas, usuario y tipo de acción. |
 | Administración | Copia de seguridad | Generar un archivo `.sql` con toda la base (tablas y datos) en la carpeta elegida, con fecha y hora en el nombre. Solo para administradores; incluye cómo restaurarla. |
 | Reportes | Reporte diario / mensual | Ver ventas, gastos e ingresos por período. |
+| Reportes | Reportes avanzados | Ranking de clientes con más compras, ventas por usuario y servicios más solicitados, con rango de fechas. |
 
 En la barra de menú también están **Cerrar sesión** (vuelve a la pantalla de
 login para cambiar de usuario, sin cerrar el programa) y **Salir** (cierra
@@ -45,6 +46,10 @@ volver a activar sin tener que entrar a editar.
 Cada listado tiene además un tilde **Solo Activos** (viene marcado por
 defecto): si lo dejás marcado, solo se ven los registros activos; si lo
 desmarcás, aparecen también los inactivos (para poder reactivarlos).
+
+En **Productos y servicios** hay un tilde **Solo stock bajo** que muestra
+únicamente los productos cuyo stock es igual o menor al stock mínimo
+configurado.
 
 ---
 
@@ -229,7 +234,7 @@ TFI_1/
 ├── TFI_1/
 │   ├── App.config            # Cadena de conexión y configuración
 │   ├── Program.cs            # Punto de entrada (abre el login)
-│   ├── Validaciones.cs       # Reglas compartidas (DNI, email, importes, fechas)
+│   ├── Validaciones.cs       # Reglas compartidas (DNI, email, importes, fechas, longitudes)
 │   ├── Models/               # Clases del dominio (Cliente, Venta, Item, ...)
 │   ├── Datos/                # Acceso a MySQL (consultas y parámetros tipados)
 │   ├── Negocio/              # Reglas de negocio y validaciones
@@ -263,7 +268,7 @@ MySQL ni modifica datos.
 dotnet test TFI_1.Tests/TFI_1.Tests.csproj
 ```
 
-Son 99 pruebas de unidad; si alguna falla, el comando termina con error y
+Son 101 pruebas de unidad; si alguna falla, el comando termina con error y
 muestra el detalle.
 
 La solución completa compila **sin advertencias** (`0 advertencias`), lo que

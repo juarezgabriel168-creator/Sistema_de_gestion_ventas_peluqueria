@@ -67,6 +67,8 @@ partial class FormPrincipal : Form
 
 	private ToolStripMenuItem mnuReportesMensual;
 
+	private ToolStripMenuItem mnuReportesAvanzado;
+
 	private ToolStripMenuItem mnuCerrarSesion;
 
 	private ToolStripMenuItem mnuSalir;
@@ -593,6 +595,7 @@ partial class FormPrincipal : Form
 
 		this.mnuReportesDiario = new System.Windows.Forms.ToolStripMenuItem();
 		this.mnuReportesMensual = new System.Windows.Forms.ToolStripMenuItem();
+		this.mnuReportesAvanzado = new System.Windows.Forms.ToolStripMenuItem();
 		this.mnuCerrarSesion = new System.Windows.Forms.ToolStripMenuItem();
 		this.mnuSalir = new System.Windows.Forms.ToolStripMenuItem();
 		this.statusPrincipal = new System.Windows.Forms.StatusStrip();
@@ -602,12 +605,12 @@ partial class FormPrincipal : Form
 		this.statusPrincipal.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)this.pibMenu).BeginInit();
 		this.SuspendLayout();
-		this.menuPrincipal.Items.AddRangeSafe(this.menuInicio, this.menuVentas, this.menuProductos, this.menuClientes, this.menuTurnos, this.menuAdministracion, this.menuReportes, this.mnuCerrarSesion, this.mnuSalir);
+		this.menuPrincipal.Items.AddRange(this.menuInicio, this.menuVentas, this.menuProductos, this.menuClientes, this.menuTurnos, this.menuAdministracion, this.menuReportes, this.mnuCerrarSesion, this.mnuSalir);
 		this.menuPrincipal.Location = new System.Drawing.Point(0, 0);
 		this.menuPrincipal.Name = "menuPrincipal";
 		this.menuPrincipal.Size = new System.Drawing.Size(1000, 24);
 		this.menuPrincipal.TabIndex = 0;
-		this.menuInicio.DropDownItems.AddRangeSafe(this.mnuInicioDashboard);
+		this.menuInicio.DropDownItems.AddRange(this.mnuInicioDashboard);
 		this.menuInicio.Name = "menuInicio";
 		this.menuInicio.Size = new System.Drawing.Size(48, 20);
 		this.menuInicio.Text = "Inicio";
@@ -615,7 +618,7 @@ partial class FormPrincipal : Form
 		this.mnuInicioDashboard.Size = new System.Drawing.Size(131, 22);
 		this.mnuInicioDashboard.Text = "Dashboard";
 		this.mnuInicioDashboard.Click += new System.EventHandler(this.mnuInicioDashboard_Click);
-		this.menuVentas.DropDownItems.AddRangeSafe(this.mnuVentasNueva, this.mnuVentasHistorial, this.mnuVentasCaja);
+		this.menuVentas.DropDownItems.AddRange(this.mnuVentasNueva, this.mnuVentasHistorial, this.mnuVentasCaja);
 		this.menuVentas.Name = "menuVentas";
 		this.menuVentas.Size = new System.Drawing.Size(53, 20);
 		this.menuVentas.Text = "Ventas";
@@ -634,7 +637,7 @@ partial class FormPrincipal : Form
 		this.mnuVentasCaja.Size = new System.Drawing.Size(171, 22);
 		this.mnuVentasCaja.Text = "Caja";
 		this.mnuVentasCaja.Click += new System.EventHandler(this.mnuVentasCaja_Click);
-		this.menuProductos.DropDownItems.AddRangeSafe(this.mnuProductosItems, this.mnuProductosCategorias);
+		this.menuProductos.DropDownItems.AddRange(this.mnuProductosItems, this.mnuProductosCategorias);
 		this.menuProductos.Name = "menuProductos";
 		this.menuProductos.Size = new System.Drawing.Size(73, 20);
 		this.menuProductos.Text = "Productos";
@@ -646,7 +649,7 @@ partial class FormPrincipal : Form
 		this.mnuProductosCategorias.Size = new System.Drawing.Size(185, 22);
 		this.mnuProductosCategorias.Text = "Categorías";
 		this.mnuProductosCategorias.Click += new System.EventHandler(this.mnuProductosCategorias_Click);
-		this.menuClientes.DropDownItems.AddRangeSafe(this.mnuClientesListado, this.mnuClientesCuentaCorriente);
+		this.menuClientes.DropDownItems.AddRange(this.mnuClientesListado, this.mnuClientesCuentaCorriente);
 		this.menuClientes.Name = "menuClientes";
 		this.menuClientes.Size = new System.Drawing.Size(61, 20);
 		this.menuClientes.Text = "Clientes";
@@ -658,7 +661,7 @@ partial class FormPrincipal : Form
 		this.mnuClientesCuentaCorriente.Size = new System.Drawing.Size(171, 22);
 		this.mnuClientesCuentaCorriente.Text = "Cuenta corriente";
 		this.mnuClientesCuentaCorriente.Click += new System.EventHandler(this.mnuClientesCuentaCorriente_Click);
-		this.menuTurnos.DropDownItems.AddRangeSafe(this.mnuTurnosAtenciones);
+		this.menuTurnos.DropDownItems.AddRange(this.mnuTurnosAtenciones);
 		this.menuTurnos.Name = "menuTurnos";
 		this.menuTurnos.Size = new System.Drawing.Size(56, 20);
 		this.menuTurnos.Text = "Turnos";
@@ -666,7 +669,7 @@ partial class FormPrincipal : Form
 		this.mnuTurnosAtenciones.Size = new System.Drawing.Size(133, 22);
 		this.mnuTurnosAtenciones.Text = "Atenciones";
 		this.mnuTurnosAtenciones.Click += new System.EventHandler(this.mnuTurnosAtenciones_Click);
-		this.menuAdministracion.DropDownItems.AddRangeSafe(this.mnuAdminUsuarios, this.mnuAdminEmpleados, this.mnuAdminTarjetas, this.mnuAdminGastos, this.mnuAdminProveedores, this.mnuAdminIngresoMercaderia, this.mnuAdminHistorialMercaderia, this.mnuAdminAuditoria, this.mnuAdminBackup);
+		this.menuAdministracion.DropDownItems.AddRange(this.mnuAdminUsuarios, this.mnuAdminEmpleados, this.mnuAdminTarjetas, this.mnuAdminGastos, this.mnuAdminProveedores, this.mnuAdminIngresoMercaderia, this.mnuAdminHistorialMercaderia, this.mnuAdminAuditoria, this.mnuAdminBackup);
 		this.menuAdministracion.Name = "menuAdministracion";
 		this.menuAdministracion.Size = new System.Drawing.Size(100, 20);
 		this.menuAdministracion.Text = "Administración";
@@ -727,7 +730,7 @@ partial class FormPrincipal : Form
 		this.mnuAdminBackup.Size = new System.Drawing.Size(132, 22);
 		this.mnuAdminBackup.Text = "Copia de seguridad";
 		this.mnuAdminBackup.Click += new System.EventHandler(this.mnuAdminBackup_Click);
-		this.menuReportes.DropDownItems.AddRangeSafe(this.mnuReportesDiario, this.mnuReportesMensual);
+		this.menuReportes.DropDownItems.AddRange(this.mnuReportesDiario, this.mnuReportesMensual, this.mnuReportesAvanzado);
 		this.menuReportes.Name = "menuReportes";
 		this.menuReportes.Size = new System.Drawing.Size(65, 20);
 		this.menuReportes.Text = "Reportes";
@@ -739,6 +742,13 @@ partial class FormPrincipal : Form
 		this.mnuReportesMensual.Size = new System.Drawing.Size(163, 22);
 		this.mnuReportesMensual.Text = "Reporte mensual";
 		this.mnuReportesMensual.Click += new System.EventHandler(this.mnuReportesMensual_Click);
+		//
+		// mnuReportesAvanzado
+		//
+		this.mnuReportesAvanzado.Name = "mnuReportesAvanzado";
+		this.mnuReportesAvanzado.Size = new System.Drawing.Size(163, 22);
+		this.mnuReportesAvanzado.Text = "Reportes avanzados";
+		this.mnuReportesAvanzado.Click += new System.EventHandler(this.mnuReportesAvanzado_Click);
 		this.mnuCerrarSesion.Name = "mnuCerrarSesion";
 		this.mnuCerrarSesion.Size = new System.Drawing.Size(95, 20);
 		this.mnuCerrarSesion.Text = "Cerrar sesión";
@@ -747,7 +757,7 @@ partial class FormPrincipal : Form
 		this.mnuSalir.Size = new System.Drawing.Size(41, 20);
 		this.mnuSalir.Text = "Salir";
 		this.mnuSalir.Click += new System.EventHandler(this.mnuSalir_Click);
-		this.statusPrincipal.Items.AddRangeSafe(this.lblUsuario);
+		this.statusPrincipal.Items.AddRange(this.lblUsuario);
 		this.statusPrincipal.Location = new System.Drawing.Point(0, 566);
 		this.statusPrincipal.Name = "statusPrincipal";
 		this.statusPrincipal.Size = new System.Drawing.Size(1000, 22);

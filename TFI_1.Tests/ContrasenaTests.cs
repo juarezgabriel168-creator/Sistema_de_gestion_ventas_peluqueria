@@ -45,6 +45,15 @@ public class ContrasenaTests
 	}
 
 	[Fact]
+	public void Contrasena_DemasiadoLarga_InformaElLimite()
+	{
+		string clave = "Aa1" + new string('x', UsuarioNegocio.LargoMaximoContrasena);
+		List<string> problemas = UsuarioNegocio.ValidarContrasena("admin", clave);
+
+		Assert.Contains(problemas, p => p.Contains("100", StringComparison.OrdinalIgnoreCase));
+	}
+
+	[Fact]
 	public void Contrasena_ConUsuarioYComun_InformaAmbos()
 	{
 		List<string> problemas = UsuarioNegocio.ValidarContrasena("vendedor", "Vendedor123");

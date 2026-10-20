@@ -21,6 +21,8 @@ public partial class FormUsuarioEditar : Form
 	public FormUsuarioEditar(Usuario? usuario)
 	{
 		InitializeComponent();
+		txtContrasena.MaxLength = UsuarioNegocio.LargoMaximoContrasena;
+		txtConfirmar.MaxLength = UsuarioNegocio.LargoMaximoContrasena;
 		_usuario = usuario;
 		_esNuevo = usuario == null;
 		_ayuda.SetToolTip(txtContrasena,

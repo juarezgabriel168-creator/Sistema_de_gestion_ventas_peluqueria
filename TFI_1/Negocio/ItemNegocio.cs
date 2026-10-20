@@ -11,9 +11,10 @@ public class ItemNegocio
 
 	private readonly CategoriaNegocio _categoriaNegocio = new CategoriaNegocio();
 
-	public List<Item> Listar(string? filtro = null, int? categoriaId = null, TipoItem? tipo = null)
+	public List<Item> Listar(string? filtro = null, int? categoriaId = null, TipoItem? tipo = null,
+		bool soloStockBajo = false)
 	{
-		return _datos.Listar(filtro, categoriaId, tipo);
+		return _datos.Listar(filtro, categoriaId, tipo, soloStockBajo);
 	}
 
 	public List<Categoria> ListarCategorias()

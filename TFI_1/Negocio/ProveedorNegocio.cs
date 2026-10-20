@@ -34,11 +34,25 @@ public class ProveedorNegocio
 
 		Validaciones.ExigirTexto(proveedor.Nombre, "El nombre del proveedor es obligatorio.");
 		Validaciones.ExigirEmail(proveedor.Email);
+		Validaciones.ExigirLongitudMaxima(proveedor.Nombre, 150,
+			"El nombre del proveedor no puede superar los 150 caracteres.");
+		Validaciones.ExigirLongitudMaxima(proveedor.Cuit, 20,
+			"El CUIT no puede superar los 20 caracteres.");
+		Validaciones.ExigirLongitudMaxima(proveedor.Telefono, 40,
+			"El teléfono no puede superar los 40 caracteres.");
+		Validaciones.ExigirLongitudMaxima(proveedor.Email, 120,
+			"El email no puede superar los 120 caracteres.");
+		Validaciones.ExigirLongitudMaxima(proveedor.Direccion, 200,
+			"La dirección no puede superar los 200 caracteres.");
 
 		int? exceptoId = (proveedor.Id == 0) ? null : new int?(proveedor.Id);
 		if (_datos.ExisteNombre(proveedor.Nombre, exceptoId))
 		{
 			throw new ArgumentException("Ya existe un proveedor llamado '" + proveedor.Nombre + "'.");
+		}
+		if (!Validaciones.TextoVacio(proveedor.Cuit) && _datos.ExisteCuit(proveedor.Cuit, exceptoId))
+		{
+			throw new ArgumentException("Ya existe un proveedor con el CUIT '" + proveedor.Cuit + "'.");
 		}
 
 		if (proveedor.Id == 0)

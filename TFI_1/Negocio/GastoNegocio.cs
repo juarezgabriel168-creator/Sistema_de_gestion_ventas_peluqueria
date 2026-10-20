@@ -22,6 +22,12 @@ public class GastoNegocio
 		if (gasto == null)
 			throw new ArgumentException("El gasto es obligatorio.");
 		Validaciones.ExigirTexto(gasto.Concepto, "Debe ingresar un concepto.");
+		Validaciones.ExigirLongitudMaxima(gasto.Concepto, 150,
+			"El concepto no puede superar los 150 caracteres.");
+		Validaciones.ExigirLongitudMaxima(gasto.Categoria, 100,
+			"La categoría no puede superar los 100 caracteres.");
+		Validaciones.ExigirLongitudMaxima(gasto.Observacion, 255,
+			"La observación no puede superar los 255 caracteres.");
 		Validaciones.ExigirImportePositivo(gasto.Monto, "El monto debe ser mayor a cero.");
 		Validaciones.ExigirFechaNoFutura(gasto.Fecha, "La fecha no puede ser futura.");
 
@@ -36,6 +42,12 @@ public class GastoNegocio
 		if (gasto == null || gasto.Id <= 0)
 			throw new ArgumentException("Gasto inválido.");
 		Validaciones.ExigirTexto(gasto.Concepto, "Debe ingresar un concepto.");
+		Validaciones.ExigirLongitudMaxima(gasto.Concepto, 150,
+			"El concepto no puede superar los 150 caracteres.");
+		Validaciones.ExigirLongitudMaxima(gasto.Categoria, 100,
+			"La categoría no puede superar los 100 caracteres.");
+		Validaciones.ExigirLongitudMaxima(gasto.Observacion, 255,
+			"La observación no puede superar los 255 caracteres.");
 		Validaciones.ExigirImportePositivo(gasto.Monto, "El monto debe ser mayor a cero.");
 
 		_datos.Actualizar(gasto);

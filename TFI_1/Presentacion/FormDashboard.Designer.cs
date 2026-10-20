@@ -13,6 +13,8 @@ partial class FormDashboard : Form
 
 	private Label lblSubtitulo;
 
+	private Label lblUsuario;
+
 	private Button btnActualizar;
 
 	private Label lblMayorStock;
@@ -78,6 +80,7 @@ partial class FormDashboard : Form
     {
         lblTitulo = new Label();
         lblSubtitulo = new Label();
+        lblUsuario = new Label();
         btnActualizar = new Button();
         panelCard1 = new Panel();
         lblValorVendido = new Label();
@@ -133,6 +136,17 @@ partial class FormDashboard : Form
         lblSubtitulo.TabIndex = 1;
         lblSubtitulo.Text = "Indicadores en vivo desde la base Peluquería";
         // 
+        // lblUsuario
+        //
+        lblUsuario.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        lblUsuario.AutoSize = true;
+        lblUsuario.ForeColor = Color.FromArgb(64, 64, 64);
+        lblUsuario.Location = new Point(600, 46);
+        lblUsuario.Name = "lblUsuario";
+        lblUsuario.Size = new Size(0, 15);
+        lblUsuario.TabIndex = 9;
+        lblUsuario.Text = "Usuario: —";
+        //
         // btnActualizar
         // 
         btnActualizar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
@@ -427,6 +441,7 @@ partial class FormDashboard : Form
         Controls.Add(panelCard2);
         Controls.Add(panelCard1);
         Controls.Add(btnActualizar);
+        Controls.Add(lblUsuario);
         Controls.Add(lblSubtitulo);
         Controls.Add(lblTitulo);
         Font = new Font("Segoe UI", 9F);

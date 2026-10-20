@@ -15,6 +15,9 @@ public partial class FormGastos : Form
 	public FormGastos()
 	{
 		InitializeComponent();
+		txtConcepto.MaxLength = 150;
+		txtCategoria.MaxLength = 100;
+		txtObservacion.MaxLength = 255;
 	}
 
 	private void FormGastos_Load(object sender, EventArgs e)

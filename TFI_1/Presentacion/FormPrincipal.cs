@@ -222,6 +222,11 @@ public partial class FormPrincipal : Form
 		AbrirFormulario(new FormReporteMensual());
 	}
 
+	private void mnuReportesAvanzado_Click(object sender, EventArgs e)
+	{
+		AbrirFormulario(new FormReporteAvanzado());
+	}
+
 	private void mnuCerrarSesion_Click(object sender, EventArgs e)
 	{
 		DialogResult respuesta = MessageBox.Show(

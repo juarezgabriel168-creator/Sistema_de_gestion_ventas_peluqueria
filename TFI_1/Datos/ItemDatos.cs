@@ -7,15 +7,17 @@ namespace TFI_1.Datos;
 
 public class ItemDatos
 {
-	public List<Item> Listar(string? filtro = null, int? categoriaId = null, TipoItem? tipo = null)
+	public List<Item> Listar(string? filtro = null, int? categoriaId = null, TipoItem? tipo = null,
+		bool soloStockBajo = false)
 	{
 		List<Item> lista = new List<Item>();
 		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
 		{
-			using MySqlCommand cmd = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.costo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE (@filtro = '' OR i.nombre LIKE CONCAT('%', @filtro, '%'))\n                  AND (@categoriaId IS NULL OR i.id_categoria = @categoriaId)\n                  AND (@tipo IS NULL OR i.tipo = @tipo)\n                ORDER BY i.nombre;", conexion);
+			using MySqlCommand cmd = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.costo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE (@filtro = '' OR i.nombre LIKE CONCAT('%', @filtro, '%'))\n                  AND (@categoriaId IS NULL OR i.id_categoria = @categoriaId)\n                  AND (@tipo IS NULL OR i.tipo = @tipo)\n                  AND (@soloStockBajo = 0 OR (i.tipo = 'producto' AND i.stock <= i.stock_minimo))\n                ORDER BY i.nombre;", conexion);
 			cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
 			cmd.Parameters.Add(Parametros.EnteroNulo("@categoriaId", categoriaId));
 			cmd.Parameters.Add(Parametros.Texto("@tipo", tipo.HasValue ? ATexto(tipo.Value) : null));
+			cmd.Parameters.Add(Parametros.Entero("@soloStockBajo", soloStockBajo ? 1 : 0));
 			conexion.Open();
 			using MySqlDataReader rd = cmd.ExecuteReader();
 			while (rd.Read())

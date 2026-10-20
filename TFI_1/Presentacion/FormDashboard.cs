@@ -27,6 +27,9 @@ public partial class FormDashboard : Form
 
 	private void FormDashboard_Load(object sender, EventArgs e)
 	{
+		lblUsuario.Text = Sesion.HaySesion
+			? $"Usuario: {Sesion.NombreUsuario} ({Sesion.RolNombre})"
+			: "Sin sesión";
 		Refrescar();
 	}
 

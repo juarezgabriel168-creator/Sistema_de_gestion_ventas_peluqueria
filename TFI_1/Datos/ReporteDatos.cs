@@ -88,6 +88,74 @@ public class ReporteDatos
 		adaptador.Fill(tabla);
 		return tabla;
 	}
+	// Clientes que más compras hicieron en el período (top 20 por cantidad).
+	public DataTable ClientesConMasCompras(DateTime desde, DateTime hasta)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT CONCAT(c.apellido, ', ', c.nombre) AS Cliente, c.dni AS DNI, " +
+			"       COUNT(*) AS Compras, COALESCE(SUM(v.total), 0) AS Total " +
+			"FROM ventas AS v " +
+			"INNER JOIN clientes AS c ON c.id_cliente = v.id_cliente " +
+			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
+			"  AND v.anulada = 0 " +
+			"GROUP BY c.id_cliente, c.apellido, c.nombre, c.dni " +
+			"ORDER BY Compras DESC, Total DESC " +
+			"LIMIT 20;", conexion);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
+		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
+		DataTable tabla = new DataTable();
+		adaptador.Fill(tabla);
+		return tabla;
+	}
+
+	// Ventas agrupadas por usuario del sistema (quién registró la venta).
+	public DataTable VentasPorUsuario(DateTime desde, DateTime hasta)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT u.nombre_usuario AS Usuario, r.nombre AS Rol, " +
+			"       COUNT(*) AS Cantidad, COALESCE(SUM(v.total), 0) AS Total " +
+			"FROM ventas AS v " +
+			"INNER JOIN usuarios AS u ON u.id_usuario = v.id_usuario " +
+			"INNER JOIN roles AS r ON r.id_rol = u.id_rol " +
+			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
+			"  AND v.anulada = 0 " +
+			"GROUP BY u.id_usuario, u.nombre_usuario, r.nombre " +
+			"ORDER BY Total DESC;", conexion);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
+		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
+		DataTable tabla = new DataTable();
+		adaptador.Fill(tabla);
+		return tabla;
+	}
+
+	// Servicios más solicitados en el período (top 20 por cantidad).
+	public DataTable ServiciosMasSolicitados(DateTime desde, DateTime hasta)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT i.nombre AS Servicio, COUNT(*) AS Veces, " +
+			"       SUM(d.cantidad) AS Cantidad, SUM(d.subtotal) AS Total " +
+			"FROM detalle_venta AS d " +
+			"INNER JOIN ventas AS v ON v.id_venta = d.id_venta " +
+			"INNER JOIN items AS i ON i.id_item = d.id_item " +
+			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
+			"  AND v.anulada = 0 " +
+			"  AND i.tipo = 'servicio' " +
+			"GROUP BY i.id_item, i.nombre " +
+			"ORDER BY Cantidad DESC, Total DESC " +
+			"LIMIT 20;", conexion);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
+		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
+		DataTable tabla = new DataTable();
+		adaptador.Fill(tabla);
+		return tabla;
+	}
+
 	// Ventas agrupadas por empleado (quien realizó la venta).
 	public DataTable VentasPorEmpleado(DateTime desde, DateTime hasta)
 	{

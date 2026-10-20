@@ -16,6 +16,9 @@ public class UsuarioNegocio
 	/// <summary>Largo mínimo exigido a las contraseñas nuevas.</summary>
 	public const int LargoMinimoContrasena = 8;
 
+	/// <summary>Largo máximo aceptado para una contraseña nueva.</summary>
+	public const int LargoMaximoContrasena = 100;
+
 	// Contraseñas habituales que no se aceptan aunque cumplan el largo.
 	private static readonly string[] ContrasenasDebiles =
 	{
@@ -42,6 +45,10 @@ public class UsuarioNegocio
 		if (contrasena.Length < LargoMinimoContrasena)
 		{
 			problemas.Add($"Debe tener al menos {LargoMinimoContrasena} caracteres.");
+		}
+		if (contrasena.Length > LargoMaximoContrasena)
+		{
+			problemas.Add($"No puede superar los {LargoMaximoContrasena} caracteres.");
 		}
 		if (!contrasena.Any(char.IsUpper))
 		{
@@ -109,6 +116,8 @@ public class UsuarioNegocio
 
 		if (Validaciones.TextoVacio(usuario.NombreUsuario))
 			throw new ArgumentException("El nombre de usuario es obligatorio.");
+		Validaciones.ExigirLongitudMaxima(usuario.NombreUsuario, 50,
+			"El nombre de usuario no puede superar los 50 caracteres.");
 
 		if (usuario.Rol == null || usuario.Rol.Id <= 0)
 			throw new ArgumentException("Debe seleccionar un rol.");

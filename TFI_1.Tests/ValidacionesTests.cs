@@ -131,6 +131,15 @@ public class ValidacionesTests
 	}
 
 	[Fact]
+	public void ExigirLongitudMaxima_AceptaElLimiteYRechazaElExceso()
+	{
+		Validaciones.ExigirLongitudMaxima(null, 3, "Demasiado largo.");
+		Validaciones.ExigirLongitudMaxima("abc", 3, "Demasiado largo.");
+		Assert.Throws<ArgumentException>(() =>
+			Validaciones.ExigirLongitudMaxima("abcd", 3, "Demasiado largo."));
+	}
+
+	[Fact]
 	public void ExigirImportePositivo_LanzaConCeroONegativo()
 	{
 		Assert.Throws<ArgumentException>(() => Validaciones.ExigirImportePositivo(0m, "Debe ser mayor a cero."));

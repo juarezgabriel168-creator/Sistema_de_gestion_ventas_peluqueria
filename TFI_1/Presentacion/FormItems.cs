@@ -65,7 +65,7 @@ public partial class FormItems : Form
 			{
 			}
 			TipoItem? tipo = tipoItem;
-			var lista = _negocio.Listar(filtro, categoriaId, tipo);
+			var lista = _negocio.Listar(filtro, categoriaId, tipo, chkStockBajo.Checked);
 			dgvItems.DataSource = chkSoloActivos.Checked ? lista.Where(x => x.Activo).ToList() : lista;
 			ActualizarBotonEstado();
 		}

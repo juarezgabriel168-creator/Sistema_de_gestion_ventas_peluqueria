@@ -32,6 +32,10 @@ public class IngresoMercaderiaNegocio
 			throw new ArgumentException("Debe seleccionar un proveedor.");
 		if (string.IsNullOrWhiteSpace(ingreso.Proveedor))
 			throw new ArgumentException("Debe ingresar el proveedor.");
+		Validaciones.ExigirLongitudMaxima(ingreso.Proveedor, 150,
+			"El nombre del proveedor no puede superar los 150 caracteres.");
+		Validaciones.ExigirLongitudMaxima(ingreso.Observacion, 255,
+			"La observación no puede superar los 255 caracteres.");
 		if (ingreso.Detalles.Count == 0)
 			throw new ArgumentException("Debe agregar al menos un producto al ingreso.");
 		if (ingreso.IdUsuario <= 0)

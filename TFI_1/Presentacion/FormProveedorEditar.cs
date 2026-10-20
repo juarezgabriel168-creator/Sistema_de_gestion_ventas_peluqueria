@@ -18,6 +18,11 @@ public partial class FormProveedorEditar : Form
 	public FormProveedorEditar(Proveedor? proveedor)
 	{
 		InitializeComponent();
+		txtNombre.MaxLength = 150;
+		txtCuit.MaxLength = 20;
+		txtTelefono.MaxLength = 40;
+		txtEmail.MaxLength = 120;
+		txtDireccion.MaxLength = 200;
 		_proveedor = proveedor;
 		_esNuevo = proveedor == null;
 	}

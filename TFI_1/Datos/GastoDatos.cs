@@ -81,13 +81,6 @@ public class GastoDatos
 		cmd.ExecuteNonQuery();
 	}
 
-	public void Desactivar(int id)
-	{
-		// Los gastos no se borran físicamente; se deja un registro histórico.
-		// Si se necesita, se podría agregar una columna 'activo' a la tabla gastos.
-		throw new NotSupportedException("Los gastos no se desactivan; se conservan como historial.");
-	}
-
 	private static Gasto Leer(MySqlDataReader rd)
 	{
 		return new Gasto

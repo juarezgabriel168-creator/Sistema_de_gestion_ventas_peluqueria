@@ -31,6 +31,25 @@ public class ReporteNegocio
 		ValidarRango(desde, hasta);
 		return _datos.VentasPorDia(desde, hasta);
 	}
+
+	public DataTable ClientesConMasCompras(DateTime desde, DateTime hasta)
+	{
+		ValidarRango(desde, hasta);
+		return _datos.ClientesConMasCompras(desde, hasta);
+	}
+
+	public DataTable VentasPorUsuario(DateTime desde, DateTime hasta)
+	{
+		ValidarRango(desde, hasta);
+		return _datos.VentasPorUsuario(desde, hasta);
+	}
+
+	public DataTable ServiciosMasSolicitados(DateTime desde, DateTime hasta)
+	{
+		ValidarRango(desde, hasta);
+		return _datos.ServiciosMasSolicitados(desde, hasta);
+	}
+
 	private static void ValidarRango(DateTime desde, DateTime hasta)
 	{
 		if (desde.Date > hasta.Date)
