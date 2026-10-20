@@ -16,7 +16,8 @@ public partial class FormTicket : Form
 	// Ancho de cada línea del ticket, en caracteres (se usa una letra de ancho fijo).
 	private const int Ancho = 37;
 
-	private const string NombreNegocio = "PELUQUERÍA";
+	// Nombre del negocio configurado en App.config, en mayúsculas para el ticket.
+	private static string NombreNegocio => Configuracion.NombreNegocio.ToUpperInvariant();
 
 	private readonly VentaNegocio _negocio = new VentaNegocio();
 	private readonly int _ventaId;

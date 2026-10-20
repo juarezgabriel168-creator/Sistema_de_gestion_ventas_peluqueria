@@ -23,6 +23,8 @@ public partial class FormPrincipal : Form
 
 	private void FormPrincipal_Load(object sender, EventArgs e)
 	{
+		Text = Configuracion.NombreNegocio + " - Sistema de Gestión";
+
 		if (Sesion.UsuarioActual == null)
 		{
 			return;

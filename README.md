@@ -136,6 +136,23 @@ Luego editar `TFI_1/App.config`:
 - `Uid` / `Pwd` → el usuario y la contraseña creados en el paso anterior.
 - `Database` → dejar `peluqueria`.
 
+### 3.1. Configuración opcional (`appSettings`)
+
+El mismo `App.config` permite ajustar dos valores sin recompilar. Si se omiten,
+la aplicación usa los valores por defecto:
+
+| Clave | Por defecto | Para qué sirve |
+| --- | --- | --- |
+| `NombreNegocio` | `Peluquería` | Título de la ventana principal y encabezado del ticket. |
+| `LimiteDeudaCuentaCorriente` | `50000` | Deuda a partir de la cual se avisa al vender a cuenta corriente (solo avisa, no bloquea). |
+
+```xml
+<appSettings>
+  <add key="NombreNegocio" value="Peluquería" />
+  <add key="LimiteDeudaCuentaCorriente" value="50000" />
+</appSettings>
+```
+
 ### 4. Compilar y ejecutar
 
 Desde la carpeta raíz del proyecto:
@@ -218,8 +235,9 @@ Cada formulario se compone de tres archivos:
 - La **caja** no bloquea la venta cuando está cerrada: se puede vender igual,
   pero esa venta no queda asociada a ningún turno de caja. Conviene abrir la
   caja antes de empezar a vender para poder controlar el efectivo del turno.
-- El **límite de aviso de deuda** en cuenta corriente es de **$50.000** y se
-  cambia en `CuentaCorrienteNegocio.LimiteDeudaAviso`. Es solo un aviso: si el
+- El **límite de aviso de deuda** en cuenta corriente es de **$50.000** por
+  defecto y se cambia con la clave `LimiteDeudaCuentaCorriente` de
+  `App.config` (ver la sección de configuración). Es solo un aviso: si el
   cliente supera el límite, la venta se puede confirmar igual.
 - Cambiar las contraseñas de los usuarios de prueba después de la primera
   instalación (menú **Administración → Usuarios**). Los usuarios del script

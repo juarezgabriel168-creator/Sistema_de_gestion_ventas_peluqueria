@@ -10,9 +10,10 @@ public class CuentaCorrienteNegocio
 {
 	/// <summary>
 	/// Saldo a partir del cual se avisa (no se bloquea) antes de seguir
-	/// cargando deuda en la cuenta corriente de un cliente.
+	/// cargando deuda en la cuenta corriente de un cliente. Se configura
+	/// en App.config (clave LimiteDeudaCuentaCorriente).
 	/// </summary>
-	public const decimal LimiteDeudaAviso = 50000m;
+	public static decimal LimiteDeudaAviso => Configuracion.LimiteDeudaCuentaCorriente;
 
 	private readonly CuentaCorrienteDatos _datos = new();
 

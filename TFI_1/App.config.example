@@ -8,4 +8,13 @@
          connectionString="Server=localhost;Port=3306;Database=peluqueria;Uid=peluqueria_app;Pwd=CAMBIAR_ESTA_CONTRASENA;CharSet=utf8mb4;"
          providerName="MySql.Data.MySqlClient" />
   </connectionStrings>
+  <appSettings>
+    <!-- Nombre del negocio: aparece en el título de la ventana y en el ticket.
+         Si se omite, se usa "Peluquería". -->
+    <add key="NombreNegocio" value="Peluquería" />
+
+    <!-- Deuda a partir de la cual se avisa (no se bloquea) en cuenta corriente.
+         Si se omite, se usa 50000. -->
+    <add key="LimiteDeudaCuentaCorriente" value="50000" />
+  </appSettings>
 </configuration>
