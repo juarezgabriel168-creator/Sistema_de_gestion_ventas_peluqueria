@@ -346,8 +346,9 @@ partial class FormDashboard : Form
         // 
         dgvUltimasVentas.AllowUserToAddRows = false;
         dgvUltimasVentas.AllowUserToDeleteRows = false;
-        dgvUltimasVentas.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+        dgvUltimasVentas.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         dgvUltimasVentas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        dgvUltimasVentas.BackgroundColor = SystemColors.ButtonHighlight;
         dgvUltimasVentas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         dgvUltimasVentas.Location = new Point(15, 238);
         dgvUltimasVentas.Name = "dgvUltimasVentas";
@@ -359,12 +360,16 @@ partial class FormDashboard : Form
         // 
         // pnlGrafico
         // 
+        pnlGrafico.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         pnlGrafico.BorderStyle = BorderStyle.FixedSingle;
-        pnlGrafico.Location = new Point(12, 474);
+        pnlGrafico.Location = new Point(12, 448);
         pnlGrafico.Name = "pnlGrafico";
-        pnlGrafico.Size = new Size(1056, 104);
+        pnlGrafico.Size = new Size(1056, 140);
         pnlGrafico.TabIndex = 14;
         pnlGrafico.Paint += pnlGrafico_Paint;
+        pnlGrafico.MouseMove += pnlGrafico_MouseMove;
+        pnlGrafico.MouseLeave += pnlGrafico_MouseLeave;
+        pnlGrafico.Resize += pnlGrafico_Resize;
         // 
         // lblMayorStock
         // 

@@ -13,7 +13,7 @@ base de datos **MySQL**.
 
 | Módulo | Pantalla | Qué permite hacer |
 |---|---|---|
-| Inicio | Dashboard | Ver totales del día (vendido, ventas, clientes, stock bajo) y un gráfico de los últimos días. |
+| Inicio | Dashboard | Ver totales del día (vendido, ventas, clientes, stock bajo) y un gráfico de las últimas 10 ventas, con escala, importes y detalle al pasar el mouse. |
 | Ventas | Nueva venta | Armar el carrito con productos y servicios, elegir medio de pago (efectivo, tarjeta, transferencia o cuenta corriente) y registrar la venta. Al registrar, ofrece ver el ticket. |
 | Ventas | Historial de ventas | Buscar y ver las ventas realizadas por rango de fechas, empleado o número de venta, ver el detalle de cada una y ver/imprimir el ticket. Permite **anular** una venta indicando el motivo: se devuelve el stock, se revierte el cargo de la cuenta corriente y la venta queda marcada como anulada (no se borra). |
 | Ventas | Caja | Abrir el turno con un fondo inicial, registrar ingresos y egresos de efectivo, ver las ventas del turno por medio de pago y cerrar la caja con el efectivo contado y la diferencia contra lo esperado. Incluye el historial de cierres. |
