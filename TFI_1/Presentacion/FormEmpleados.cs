@@ -30,7 +30,7 @@ public partial class FormEmpleados : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo cargar la lista de empleados: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cargar la lista de empleados", ex);
 		}
 	}
 
@@ -125,7 +125,7 @@ public partial class FormEmpleados : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cambiar el estado", ex);
 		}
 	}
 }

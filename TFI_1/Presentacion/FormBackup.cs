@@ -81,8 +81,7 @@ public partial class FormBackup : Form
 		{
 			lblResultado.ForeColor = Color.Firebrick;
 			lblResultado.Text = "No se pudo generar la copia.";
-			MessageBox.Show(ex.Message, "Copia de seguridad",
-				MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			Mensajes.Error(this, "No se pudo generar la copia de seguridad", ex);
 		}
 		finally
 		{
@@ -108,8 +107,7 @@ public partial class FormBackup : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo abrir la carpeta: " + ex.Message, "Copia de seguridad",
-				MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			Mensajes.Error(this, "No se pudo abrir la carpeta", ex);
 		}
 	}
 

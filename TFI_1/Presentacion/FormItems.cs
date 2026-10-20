@@ -70,7 +70,7 @@ public partial class FormItems : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo cargar el catálogo: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cargar el catálogo", ex);
 		}
 	}
 
@@ -174,7 +174,7 @@ public partial class FormItems : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cambiar el estado", ex);
 		}
 	}
 }

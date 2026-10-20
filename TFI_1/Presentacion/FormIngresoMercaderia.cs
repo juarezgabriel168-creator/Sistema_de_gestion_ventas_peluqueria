@@ -40,8 +40,7 @@ public partial class FormIngresoMercaderia : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudieron cargar los proveedores: " + ex.Message, "Error",
-				MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudieron cargar los proveedores", ex);
 		}
 	}
 
@@ -58,8 +57,7 @@ public partial class FormIngresoMercaderia : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudieron cargar los productos: " + ex.Message, "Error",
-				MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudieron cargar los productos", ex);
 		}
 	}
 
@@ -202,8 +200,7 @@ public partial class FormIngresoMercaderia : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo registrar el ingreso: " + ex.Message, "Error",
-				MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo registrar el ingreso", ex);
 		}
 	}
 

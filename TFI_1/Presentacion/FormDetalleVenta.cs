@@ -92,7 +92,7 @@ public partial class FormDetalleVenta : Form
         }
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo cargar el detalle: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cargar el detalle", ex);
 		}
 	}
 
@@ -127,7 +127,7 @@ public partial class FormDetalleVenta : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo anular la venta: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo anular la venta", ex);
 		}
 	}
 
@@ -141,7 +141,7 @@ public partial class FormDetalleVenta : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo imprimir el detalle: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo imprimir el detalle", ex);
 		}
 	}
 
@@ -156,7 +156,7 @@ public partial class FormDetalleVenta : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo abrir el ticket: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo abrir el ticket", ex);
 		}
 	}
 

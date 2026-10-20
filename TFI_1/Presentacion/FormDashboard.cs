@@ -66,7 +66,7 @@ public partial class FormDashboard : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudieron cargar los indicadores: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudieron cargar los indicadores", ex);
 		}
 	}
 

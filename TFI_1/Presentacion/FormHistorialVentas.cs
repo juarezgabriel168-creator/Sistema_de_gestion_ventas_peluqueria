@@ -75,7 +75,7 @@ public partial class FormHistorialVentas : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            Mensajes.Error(this, "No se pudo iniciar el historial de ventas", ex);
         }
     }
 
@@ -113,7 +113,7 @@ public partial class FormHistorialVentas : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            Mensajes.Error(this, "No se pudo cargar el historial", ex);
         }
     }
 
@@ -202,7 +202,7 @@ public partial class FormHistorialVentas : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show("No se pudo refrescar el historial: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            Mensajes.Error(this, "No se pudo refrescar el historial", ex);
         }
     }
 
@@ -223,7 +223,7 @@ public partial class FormHistorialVentas : Form
         }
         catch (Exception ex)
         {
-            MessageBox.Show("No se pudo abrir el detalle: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+            Mensajes.Error(this, "No se pudo abrir el detalle", ex);
         }
     }
 }

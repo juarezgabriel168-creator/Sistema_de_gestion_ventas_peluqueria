@@ -77,7 +77,7 @@ public partial class FormReporteDiario : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo generar el reporte: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo generar el reporte", ex);
 		}
 	}
 

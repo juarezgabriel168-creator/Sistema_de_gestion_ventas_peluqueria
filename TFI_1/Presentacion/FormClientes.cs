@@ -30,7 +30,7 @@ public partial class FormClientes : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo cargar la lista de clientes: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cargar la lista de clientes", ex);
 		}
 	}
 
@@ -125,7 +125,7 @@ public partial class FormClientes : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cambiar el estado", ex);
 		}
 	}
 }

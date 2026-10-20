@@ -72,8 +72,7 @@ public partial class FormCaja : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo cargar la caja: " + ex.Message, "Caja",
-				MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cargar la caja", ex);
 		}
 	}
 

@@ -35,8 +35,7 @@ public partial class FormGastos : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudieron cargar los gastos: " + ex.Message, "Error",
-				MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudieron cargar los gastos", ex);
 		}
 		finally
 		{

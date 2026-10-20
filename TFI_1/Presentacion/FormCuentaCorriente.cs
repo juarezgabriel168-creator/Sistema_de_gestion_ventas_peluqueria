@@ -45,8 +45,7 @@ public partial class FormCuentaCorriente : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo abrir la cuenta corriente: " + ex.Message, "Error",
-				MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo abrir la cuenta corriente", ex);
 		}
 	}
 
@@ -132,8 +131,7 @@ public partial class FormCuentaCorriente : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudieron cargar los movimientos: " + ex.Message, "Error",
-				MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudieron cargar los movimientos", ex);
 		}
 	}
 
@@ -209,8 +207,7 @@ public partial class FormCuentaCorriente : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo registrar el abono: " + ex.Message, "Error",
-				MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo registrar el abono", ex);
 		}
 	}
 }

@@ -44,7 +44,7 @@ public partial class FormAtenciones : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudieron cargar las atenciones: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudieron cargar las atenciones", ex);
 		}
 	}
 
@@ -116,7 +116,7 @@ public partial class FormAtenciones : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cancelar la atención", ex);
 		}
 	}
 }

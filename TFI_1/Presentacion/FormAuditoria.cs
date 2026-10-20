@@ -35,8 +35,7 @@ public partial class FormAuditoria : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo cargar la auditoría: " + ex.Message, "Error",
-				MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cargar la auditoría", ex);
 		}
 	}
 
@@ -99,8 +98,7 @@ public partial class FormAuditoria : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo cargar la auditoría: " + ex.Message, "Error",
-				MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cargar la auditoría", ex);
 		}
 	}
 

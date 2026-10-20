@@ -55,7 +55,7 @@ namespace TFI_1
             }
             catch (ArgumentNullException ex)
             {
-                MessageBox.Show($"Valor nulo inesperado: {ex.Message}\nParámetro: {ex.ParamName}\n\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Mensajes.Error(this, "No se pudo iniciar sesión", ex);
             }
             catch (ArgumentException ex)
             {
@@ -65,13 +65,13 @@ namespace TFI_1
             {
                 MessageBox.Show(ex.Message, "Acceso denegado", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            catch (MySqlException)
+            catch (MySqlException ex)
             {
-                MessageBox.Show("No se pudo conectar con la base de datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Mensajes.Error(this, "No se pudo conectar con la base de datos", ex);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error inesperado: {ex.GetType().Name}\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Mensajes.ErrorGlobal(ex);
             }
         }
 

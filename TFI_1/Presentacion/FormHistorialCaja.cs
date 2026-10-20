@@ -51,8 +51,7 @@ public partial class FormHistorialCaja : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo cargar el historial: " + ex.Message, "Caja",
-				MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo cargar el historial", ex);
 		}
 	}
 

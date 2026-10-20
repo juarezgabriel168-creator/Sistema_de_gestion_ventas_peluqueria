@@ -225,7 +225,7 @@ public partial class FormTarjetaDeCredito : Form
         MessageBox.Show(mensaje, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
     private static void Error(string prefijo, Exception ex) =>
-        MessageBox.Show(prefijo + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        Mensajes.Error(null, prefijo, ex);
 
     private void btnBancoEditar_Click(object sender, EventArgs e)
     {

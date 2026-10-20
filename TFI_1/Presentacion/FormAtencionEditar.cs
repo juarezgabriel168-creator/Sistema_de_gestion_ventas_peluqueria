@@ -80,7 +80,7 @@ public partial class FormAtencionEditar : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudieron cargar los datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudieron cargar los datos", ex);
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}
@@ -136,7 +136,7 @@ public partial class FormAtencionEditar : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo guardar la atención: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo guardar la atención", ex);
 		}
 	}
 

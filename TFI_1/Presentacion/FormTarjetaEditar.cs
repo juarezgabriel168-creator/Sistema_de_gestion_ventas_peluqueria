@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -48,8 +48,7 @@ namespace TFI_1.Presentacion
             }
             catch (Exception ex)
             {
-                MessageBox.Show("No se pudo guardar la tarjeta: " + ex.Message, "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Mensajes.Error(this, "No se pudo guardar la tarjeta", ex);
             }
         }
 

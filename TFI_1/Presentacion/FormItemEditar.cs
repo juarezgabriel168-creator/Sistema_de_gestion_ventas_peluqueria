@@ -68,7 +68,7 @@ public partial class FormItemEditar : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudieron cargar los datos: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudieron cargar los datos", ex);
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}

@@ -247,7 +247,7 @@ necesita MySQL ni modifica datos.
 dotnet test TFI_1.Tests/TFI_1.Tests.csproj
 ```
 
-Son 52 pruebas de unidad; si alguna falla, el comando termina con error y
+Son 55 pruebas de unidad; si alguna falla, el comando termina con error y
 muestra el detalle.
 
 Cada formulario se compone de tres archivos:
@@ -283,6 +283,10 @@ Cada formulario se compone de tres archivos:
   muestran **50 filas por página** con botones **Anterior/Siguiente**. El total
   y los importes siempre se calculan sobre todos los registros del período,
   no solo sobre la página visible.
+- Los **errores** se muestran siempre con el mismo formato: una frase que
+  explica qué se estaba haciendo y el detalle del problema. Los errores
+  inesperados se registran en
+  `%LocalAppData%\Peluqueria\errores.log` para poder revisarlos después.
 - Cambiar las contraseñas de los usuarios de prueba después de la primera
   instalación (menú **Administración → Usuarios**). Los usuarios del script
   (`admin`/`admin123`, `vendedor`/`vendedor123`, `supervisor`/`supervisor123`)

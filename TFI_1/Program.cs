@@ -15,13 +15,27 @@ namespace TFI_1
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.ThreadException += (s, e) =>
-            {
-                MessageBox.Show($"Error no controlado: {e.Exception.GetType().Name}\n{e.Exception.Message}\n\n{e.Exception.StackTrace}",
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            };
+
+            // Los errores no controlados se muestran con el mismo formato que el
+            // resto de la aplicación y se registran en %LocalAppData%\Peluqueria\errores.log.
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-            Application.Run(new FormLog());
+            Application.ThreadException += (s, e) => Mensajes.ErrorGlobal(e.Exception);
+            AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+            {
+                if (e.ExceptionObject is Exception ex)
+                {
+                    Mensajes.ErrorGlobal(ex);
+                }
+            };
+
+            try
+            {
+                Application.Run(new FormLog());
+            }
+            catch (Exception ex)
+            {
+                Mensajes.ErrorGlobal(ex);
+            }
         }
     }
 }

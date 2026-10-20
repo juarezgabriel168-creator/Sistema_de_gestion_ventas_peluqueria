@@ -59,7 +59,7 @@ public partial class FormNuevaVenta : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo iniciar la venta: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo iniciar la venta", ex);
 		}
 	}
 
@@ -352,7 +352,7 @@ public partial class FormNuevaVenta : Form
 		}
 		catch (Exception ex)
 		{
-			MessageBox.Show("No se pudo registrar la venta: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			Mensajes.Error(this, "No se pudo registrar la venta", ex);
 		}
 	}
 
