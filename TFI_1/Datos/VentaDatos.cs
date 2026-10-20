@@ -133,7 +133,7 @@ public class VentaDatos
 			"       v.cantidad_cuotas AS Cuotas, " +
 			"       (SELECT COALESCE(SUM(d.subtotal), 0) FROM detalle_venta AS d WHERE d.id_venta = v.id_venta) AS Subtotal, " +
 			"       v.descuento AS Descuento, " +
-            "       v.recargo AS Recargo, v.total AS Total " +
+            "       v.recargo AS Recargo, v.total AS Total, v.anulada AS Anulada " +
             "FROM ventas AS v " +
             "INNER JOIN clientes AS c ON c.id_cliente = v.id_cliente " +
             "INNER JOIN usuarios AS u ON u.id_usuario = v.id_usuario " +
@@ -169,6 +169,9 @@ public class VentaDatos
 			"       v.cantidad_cuotas AS Cuotas, " +
 			"       (SELECT COALESCE(SUM(d.subtotal), 0) FROM detalle_venta AS d WHERE d.id_venta = v.id_venta) AS Subtotal, " +
 			"       v.descuento AS Descuento, " +
+            "       v.anulada AS Anulada, v.fecha_anulacion AS FechaAnulacion, " +
+            "       v.motivo_anulacion AS MotivoAnulacion, " +
+            "       ua.nombre_usuario AS UsuarioAnulacion, " +
             "       v.recargo AS Recargo, v.total AS Total " +
             "FROM ventas AS v " +
             "INNER JOIN clientes AS c ON c.id_cliente = v.id_cliente " +
@@ -176,6 +179,7 @@ public class VentaDatos
             "LEFT JOIN empleados AS e ON e.id_empleado = v.id_empleado " +
             "LEFT JOIN tarjetas_credito AS t ON t.id_tarjeta_credito = v.id_tarjeta_credito " +
             "LEFT JOIN bancos AS b ON b.id_banco = t.id_banco " +
+            "LEFT JOIN usuarios AS ua ON ua.id_usuario = v.id_usuario_anulacion " +
             "WHERE v.id_venta = @id;", conexion);
         cmd.Parameters.AddWithValue("@id", ventaId);
         using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
@@ -199,5 +203,108 @@ public class VentaDatos
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
 		return tabla;
+	}
+
+	// Anula una venta dentro de una transacción: devuelve el stock de los
+	// productos, revierte el cargo de la cuenta corriente (si corresponde) y
+	// deja la venta marcada como anulada. No se borra ningún registro.
+	public void Anular(int ventaId, int usuarioId, string motivo)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		conexion.Open();
+		using MySqlTransaction transaccion = conexion.BeginTransaction();
+		try
+		{
+			string medioPago;
+			decimal total;
+			using (MySqlCommand cmd = new MySqlCommand(
+				"SELECT medio_pago, total FROM ventas " +
+				"WHERE id_venta = @id AND anulada = 0 FOR UPDATE;", conexion, transaccion))
+			{
+				cmd.Parameters.AddWithValue("@id", ventaId);
+				using MySqlDataReader rd = cmd.ExecuteReader();
+				if (!rd.Read())
+				{
+					throw new InvalidOperationException("La venta no existe o ya fue anulada.");
+				}
+				medioPago = rd.GetString("medio_pago");
+				total = rd.GetDecimal("total");
+			}
+
+			// Devuelve al stock solamente los productos (los servicios no mueven stock).
+			using (MySqlCommand cmd = new MySqlCommand(
+				"UPDATE items AS i " +
+				"INNER JOIN detalle_venta AS d ON d.id_item = i.id_item " +
+				"SET i.stock = i.stock + d.cantidad " +
+				"WHERE d.id_venta = @id AND i.tipo = 'producto';", conexion, transaccion))
+			{
+				cmd.Parameters.AddWithValue("@id", ventaId);
+				cmd.ExecuteNonQuery();
+			}
+
+			// Si se pagó a cuenta corriente, se registra un abono por el total
+			// y se descuenta de la deuda (queda el movimiento para el historial).
+			if (medioPago == "cuenta_corriente")
+			{
+				int idCuenta;
+				using (MySqlCommand cmd = new MySqlCommand(
+					"SELECT c.id_cuenta_corriente FROM cuentas_corrientes AS c " +
+					"INNER JOIN ventas AS v ON v.id_cliente = c.id_cliente " +
+					"WHERE v.id_venta = @id FOR UPDATE;", conexion, transaccion))
+				{
+					cmd.Parameters.AddWithValue("@id", ventaId);
+					object? resultado = cmd.ExecuteScalar();
+					if (resultado == null || resultado == DBNull.Value)
+					{
+						throw new InvalidOperationException("No se encontró la cuenta corriente del cliente.");
+					}
+					idCuenta = Convert.ToInt32(resultado);
+				}
+
+				using (MySqlCommand cmd = new MySqlCommand(
+					"INSERT INTO movimientos_cuenta_corriente " +
+					"    (id_cuenta, fecha, tipo, monto, concepto, id_venta, id_usuario) " +
+					"VALUES (@cuenta, NOW(), 'abono', @monto, @concepto, @venta, @usuario);",
+					conexion, transaccion))
+				{
+					cmd.Parameters.AddWithValue("@cuenta", idCuenta);
+					cmd.Parameters.AddWithValue("@monto", total);
+					cmd.Parameters.AddWithValue("@concepto", $"Anulación venta #{ventaId}: {motivo}");
+					cmd.Parameters.AddWithValue("@venta", ventaId);
+					cmd.Parameters.AddWithValue("@usuario", usuarioId);
+					cmd.ExecuteNonQuery();
+				}
+
+				using (MySqlCommand cmd = new MySqlCommand(
+					"UPDATE cuentas_corrientes SET saldo = saldo - @monto, fecha_actualizacion = NOW() " +
+					"WHERE id_cuenta_corriente = @cuenta;", conexion, transaccion))
+				{
+					cmd.Parameters.AddWithValue("@monto", total);
+					cmd.Parameters.AddWithValue("@cuenta", idCuenta);
+					cmd.ExecuteNonQuery();
+				}
+			}
+
+			using (MySqlCommand cmd = new MySqlCommand(
+				"UPDATE ventas SET anulada = 1, fecha_anulacion = NOW(), " +
+				"       id_usuario_anulacion = @usuario, motivo_anulacion = @motivo " +
+				"WHERE id_venta = @id AND anulada = 0;", conexion, transaccion))
+			{
+				cmd.Parameters.AddWithValue("@usuario", usuarioId);
+				cmd.Parameters.AddWithValue("@motivo", motivo);
+				cmd.Parameters.AddWithValue("@id", ventaId);
+				if (cmd.ExecuteNonQuery() == 0)
+				{
+					throw new InvalidOperationException("La venta ya fue anulada.");
+				}
+			}
+
+			transaccion.Commit();
+		}
+		catch
+		{
+			transaccion.Rollback();
+			throw;
+		}
 	}
 }

@@ -15,7 +15,9 @@ public class ReporteDatos
 			"       COUNT(*) AS Cantidad, " +
 			"       COALESCE(AVG(v.total), 0) AS TicketPromedio " +
 			"FROM ventas AS v " +
-			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta;", conexion);
+			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
+			"  AND v.anulada = 0 " +
+			"  AND v.anulada = 0;", conexion);
 		cmd.Parameters.AddWithValue("@desde", desde.Date);
 		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
@@ -33,6 +35,7 @@ public class ReporteDatos
 			"       COALESCE(SUM(v.total), 0) AS Total " +
 			"FROM ventas AS v " +
 			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
+			"  AND v.anulada = 0 " +
 			"GROUP BY v.medio_pago " +
 			"ORDER BY Total DESC;", conexion);
 		cmd.Parameters.AddWithValue("@desde", desde.Date);
@@ -54,6 +57,7 @@ public class ReporteDatos
 			"INNER JOIN ventas AS v ON v.id_venta = d.id_venta " +
 			"INNER JOIN items AS i ON i.id_item = d.id_item " +
 			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
+			"  AND v.anulada = 0 " +
 			"GROUP BY i.id_item " +
 			"ORDER BY Cantidad DESC, Total DESC " +
 			"LIMIT 10;", conexion);
@@ -74,6 +78,7 @@ public class ReporteDatos
 			"       COALESCE(SUM(v.total), 0) AS Total " +
 			"FROM ventas AS v " +
 			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
+			"  AND v.anulada = 0 " +
 			"GROUP BY DATE(v.fecha) " +
 			"ORDER BY Fecha;", conexion);
 		cmd.Parameters.AddWithValue("@desde", desde.Date);

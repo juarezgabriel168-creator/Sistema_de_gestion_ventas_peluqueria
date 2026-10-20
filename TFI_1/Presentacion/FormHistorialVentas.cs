@@ -117,6 +117,21 @@ public partial class FormHistorialVentas : Form
         foreach (string columna in new[] { "Subtotal", "Descuento", "Recargo", "Total" })
             if (dgvVentas.Columns.Contains(columna))
                 dgvVentas.Columns[columna].DefaultCellStyle.Format = "C2";
+
+        DataGridViewColumn? columnaAnulada = dgvVentas.Columns["Anulada"];
+        if (columnaAnulada != null)
+        {
+            columnaAnulada.HeaderText = "Anulada";
+            // Las ventas anuladas se muestran en gris para distinguirlas.
+            foreach (DataGridViewRow fila in dgvVentas.Rows)
+            {
+                object? valor = fila.Cells["Anulada"].Value;
+                if (valor != null && valor != DBNull.Value && Convert.ToBoolean(valor))
+                {
+                    fila.DefaultCellStyle.ForeColor = Color.Gray;
+                }
+            }
+        }
     }
 
     private void btnBuscar_Click(object sender, EventArgs e)
@@ -155,6 +170,8 @@ public partial class FormHistorialVentas : Form
             int idVenta = Convert.ToInt32(dgvVentas.CurrentRow.Cells["Venta"].Value);
             using FormDetalleVenta formulario = new FormDetalleVenta(idVenta);
             formulario.ShowDialog(this);
+            // Puede haberse anulado la venta desde el detalle: se refresca la lista.
+            Buscar();
         }
         catch (Exception ex)
         {

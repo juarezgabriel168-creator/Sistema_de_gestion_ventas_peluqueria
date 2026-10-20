@@ -15,7 +15,7 @@ base de datos **MySQL**.
 |---|---|---|
 | Inicio | Dashboard | Ver totales del día (vendido, ventas, clientes, stock bajo) y un gráfico de los últimos días. |
 | Ventas | Nueva venta | Armar el carrito con productos y servicios, elegir medio de pago (efectivo, tarjeta, transferencia o cuenta corriente) y registrar la venta. Al registrar, ofrece ver el ticket. |
-| Ventas | Historial de ventas | Buscar y ver las ventas realizadas por rango de fechas, empleado o número de venta, ver el detalle de cada una y ver/imprimir el ticket. |
+| Ventas | Historial de ventas | Buscar y ver las ventas realizadas por rango de fechas, empleado o número de venta, ver el detalle de cada una y ver/imprimir el ticket. Permite **anular** una venta indicando el motivo: se devuelve el stock, se revierte el cargo de la cuenta corriente y la venta queda marcada como anulada (no se borra). |
 | Productos | Productos y servicios | Alta, edición, activación/desactivación y filtros de productos y servicios. |
 | Productos | Categorías | Administrar las categorías de productos y servicios. |
 | Clientes | Clientes | Alta, edición, activación/desactivación y búsqueda de clientes. |
@@ -209,7 +209,10 @@ Cada formulario se compone de tres archivos:
   (archivo local, excluido de Git). La aplicación se conecta con el usuario
   `peluqueria_app`, que solo tiene permisos de lectura y escritura sobre la
   base `peluqueria`.
-- Las ventas **no se pueden anular ni editar** una vez registradas.
+- Las ventas **no se pueden editar** una vez registradas. Si hubo un error,
+  se pueden **anular** (con motivo): se devuelve el stock y, si se pagó a cuenta
+  corriente, se revierte el cargo. La venta anulada queda en el historial y no
+  suma en los totales ni reportes.
 - Cambiar las contraseñas de los usuarios de prueba después de la primera
   instalación (menú **Administración → Usuarios**).
 

@@ -26,6 +26,11 @@ public partial class FormDetalleVenta : Form
 
 	private void FormDetalleVenta_Load(object sender, EventArgs e)
 	{
+		Cargar();
+	}
+
+	private void Cargar()
+	{
 		if (_ventaId <= 0)
 		{
 			return;
@@ -64,10 +69,65 @@ public partial class FormDetalleVenta : Form
 				   $"Descuento: {Convert.ToDecimal(fila["Descuento"]):C2}      " +
 					(recargo > 0 ? $"Recargo: {recargo:C2}      " : string.Empty) +
 				   $"TOTAL: {Convert.ToDecimal(fila["Total"]):C2}";
+
+			// Estado de la venta: si está anulada se muestra el aviso y se
+			// deshabilita el botón para que no se pueda anular dos veces.
+			bool anulada = fila.Table.Columns.Contains("Anulada") && fila["Anulada"] != DBNull.Value
+				&& Convert.ToBoolean(fila["Anulada"]);
+			lblAnulada.Visible = anulada;
+			btnAnular.Enabled = !anulada;
+			btnAnular.Text = anulada ? "Anulada" : "Anular venta";
+
+			if (anulada)
+			{
+				string aviso = "\n\nVENTA ANULADA";
+				if (fila.Table.Columns.Contains("UsuarioAnulacion") && fila["UsuarioAnulacion"] != DBNull.Value)
+					aviso += $" por {fila["UsuarioAnulacion"]}";
+				if (fila.Table.Columns.Contains("FechaAnulacion") && fila["FechaAnulacion"] != DBNull.Value)
+					aviso += $" el {Convert.ToDateTime(fila["FechaAnulacion"]):g}";
+				if (fila.Table.Columns.Contains("MotivoAnulacion") && fila["MotivoAnulacion"] != DBNull.Value)
+					aviso += $"\nMotivo: {fila["MotivoAnulacion"]}";
+				lblCabecera.Text += aviso;
+			}
         }
 		catch (Exception ex)
 		{
 			MessageBox.Show("No se pudo cargar el detalle: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+		}
+	}
+
+	private void btnAnular_Click(object sender, EventArgs e)
+	{
+		if (_cabecera == null || _cabecera.Rows.Count == 0)
+			return;
+
+		DataRow fila = _cabecera.Rows[0];
+		string cliente = Convert.ToString(fila["Cliente"]) ?? string.Empty;
+		decimal total = Convert.ToDecimal(fila["Total"]);
+		bool cuentaCorriente = Convert.ToString(fila["Pago"]) == "cuenta_corriente";
+
+		using FormAnularVenta dialogo = new FormAnularVenta(_ventaId, cliente, total, cuentaCorriente);
+		if (dialogo.ShowDialog(this) != DialogResult.OK)
+			return;
+
+		if (Sesion.UsuarioActual == null)
+		{
+			MessageBox.Show("No hay un usuario en sesión.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+			return;
+		}
+
+		try
+		{
+			_negocio.Anular(_ventaId, Sesion.UsuarioActual.Id, dialogo.Motivo);
+			string mensaje = cuentaCorriente
+				? "La venta fue anulada. Se devolvió el stock y se revirtió el cargo en la cuenta corriente."
+				: "La venta fue anulada y se devolvió el stock de los productos.";
+			MessageBox.Show(mensaje, "Venta anulada", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			Cargar();
+		}
+		catch (Exception ex)
+		{
+			MessageBox.Show("No se pudo anular la venta: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
 		}
 	}
 

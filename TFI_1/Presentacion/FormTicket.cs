@@ -103,8 +103,15 @@ public partial class FormTicket : Form
 		string separador = new string('-', Ancho);
 		StringBuilder sb = new StringBuilder();
 
+		bool anulada = fila.Table.Columns.Contains("Anulada") && fila["Anulada"] != DBNull.Value
+			&& Convert.ToBoolean(fila["Anulada"]);
+
 		sb.AppendLine(Centrar(NombreNegocio));
 		sb.AppendLine(Centrar("Ticket de venta"));
+		if (anulada)
+		{
+			sb.AppendLine(Centrar("*** ANULADA ***"));
+		}
 		sb.AppendLine(separador);
 		sb.AppendLine("Venta Nº: " + fila["Venta"]);
 		sb.AppendLine("Fecha: " + Convert.ToDateTime(fila["Fecha"]).ToString("dd/MM/yyyy HH:mm"));
@@ -152,7 +159,22 @@ public partial class FormTicket : Form
 		}
 
 		sb.AppendLine(separador);
-		sb.AppendLine(Centrar("¡Gracias por su compra!"));
+		if (anulada)
+		{
+			sb.AppendLine(Centrar("VENTA ANULADA"));
+			if (fila.Table.Columns.Contains("FechaAnulacion") && fila["FechaAnulacion"] != DBNull.Value)
+			{
+				sb.AppendLine("Anulada: " + Convert.ToDateTime(fila["FechaAnulacion"]).ToString("dd/MM/yyyy HH:mm"));
+			}
+			if (fila.Table.Columns.Contains("MotivoAnulacion") && fila["MotivoAnulacion"] != DBNull.Value)
+			{
+				sb.AppendLine("Motivo: " + fila["MotivoAnulacion"]);
+			}
+		}
+		else
+		{
+			sb.AppendLine(Centrar("¡Gracias por su compra!"));
+		}
 		sb.AppendLine(separador);
 		sb.AppendLine("Emitido: " + DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
 

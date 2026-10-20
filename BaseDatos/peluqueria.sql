@@ -174,9 +174,15 @@ CREATE TABLE ventas (
     descuento          DECIMAL(12,2) NOT NULL DEFAULT 0,
     recargo            DECIMAL(12,2) NOT NULL DEFAULT 0,
     total              DECIMAL(12,2) NOT NULL DEFAULT 0,
+    -- La venta anulada no se borra: se marca para conservar el historial.
+    anulada            TINYINT(1)    NOT NULL DEFAULT 0,
+    fecha_anulacion    DATETIME      NULL,
+    id_usuario_anulacion INT         NULL,
+    motivo_anulacion   VARCHAR(255)  NULL,
     PRIMARY KEY (id_venta),
     KEY ix_ventas_cliente (id_cliente),
     KEY ix_ventas_fecha (fecha),
+    KEY ix_ventas_anulada (anulada),
     CONSTRAINT fk_ventas_cliente FOREIGN KEY (id_cliente) REFERENCES clientes (id_cliente)
         ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_ventas_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario)
@@ -184,6 +190,8 @@ CREATE TABLE ventas (
     CONSTRAINT fk_ventas_empleado FOREIGN KEY (id_empleado) REFERENCES empleados (id_empleado)
         ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_ventas_tarjeta FOREIGN KEY (id_tarjeta_credito) REFERENCES tarjetas_credito (id_tarjeta_credito)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_ventas_usuario_anulacion FOREIGN KEY (id_usuario_anulacion) REFERENCES usuarios (id_usuario)
         ON UPDATE CASCADE ON DELETE RESTRICT
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 

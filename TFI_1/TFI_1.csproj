@@ -254,6 +254,15 @@
     <EmbeddedResource Update="Presentacion\FormProveedorEditar.resx">
       <DependentUpon>FormProveedorEditar.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Update="Presentacion\FormAnularVenta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormAnularVenta.Designer.cs">
+      <DependentUpon>FormAnularVenta.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormAnularVenta.resx">
+      <DependentUpon>FormAnularVenta.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Update="Presentacion\FormCuentaCorriente.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -20,7 +20,11 @@ partial class FormDetalleVenta : Form
 
 	private Button btnTicket;
 
+	private Button btnAnular;
+
 	private Button btnCerrar;
+
+	private Label lblAnulada;
 
 	private System.Drawing.Printing.PrintDocument printDocument1;
 
@@ -44,7 +48,9 @@ partial class FormDetalleVenta : Form
         lblTotales = new Label();
         btnImprimir = new Button();
         btnTicket = new Button();
+        btnAnular = new Button();
         btnCerrar = new Button();
+        lblAnulada = new Label();
         printDocument1 = new System.Drawing.Printing.PrintDocument();
         printPreviewDialog1 = new PrintPreviewDialog();
         ((ISupportInitialize)dgvDetalle).BeginInit();
@@ -95,6 +101,19 @@ partial class FormDetalleVenta : Form
         lblTotales.Size = new Size(0, 20);
         lblTotales.TabIndex = 3;
         // 
+        // lblAnulada
+        // 
+        lblAnulada.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        lblAnulada.AutoSize = true;
+        lblAnulada.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+        lblAnulada.ForeColor = Color.Red;
+        lblAnulada.Location = new Point(640, 10);
+        lblAnulada.Name = "lblAnulada";
+        lblAnulada.Size = new Size(102, 25);
+        lblAnulada.TabIndex = 7;
+        lblAnulada.Text = "ANULADA";
+        lblAnulada.Visible = false;
+        // 
         // btnImprimir
         // 
         btnImprimir.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
@@ -117,6 +136,18 @@ partial class FormDetalleVenta : Form
         btnTicket.UseVisualStyleBackColor = true;
         btnTicket.Click += btnTicket_Click;
         // 
+        // btnAnular
+        // 
+        btnAnular.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        btnAnular.ForeColor = Color.DarkRed;
+        btnAnular.Location = new Point(252, 486);
+        btnAnular.Name = "btnAnular";
+        btnAnular.Size = new Size(112, 32);
+        btnAnular.TabIndex = 6;
+        btnAnular.Text = "Anular venta";
+        btnAnular.UseVisualStyleBackColor = true;
+        btnAnular.Click += btnAnular_Click;
+        // 
         // btnCerrar
         // 
         btnCerrar.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
@@ -124,7 +155,7 @@ partial class FormDetalleVenta : Form
         btnCerrar.Location = new Point(676, 486);
         btnCerrar.Name = "btnCerrar";
         btnCerrar.Size = new Size(112, 32);
-        btnCerrar.TabIndex = 6;
+        btnCerrar.TabIndex = 8;
         btnCerrar.Text = "Cerrar";
         btnCerrar.UseVisualStyleBackColor = true;
         // 
@@ -151,7 +182,9 @@ partial class FormDetalleVenta : Form
         BackColor = SystemColors.ActiveCaption;
         CancelButton = btnCerrar;
         ClientSize = new Size(800, 529);
+        Controls.Add(lblAnulada);
         Controls.Add(btnCerrar);
+        Controls.Add(btnAnular);
         Controls.Add(btnTicket);
         Controls.Add(btnImprimir);
         Controls.Add(lblTotales);

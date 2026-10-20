@@ -91,4 +91,22 @@ public class VentaNegocio
 	{
 		return _datos.ObtenerDetalle(ventaId);
 	}
+
+	public void Anular(int ventaId, int usuarioId, string motivo)
+	{
+		if (ventaId <= 0)
+			throw new ArgumentException("La venta es obligatoria.");
+		if (usuarioId <= 0)
+			throw new ArgumentException("No hay un usuario en sesión.");
+		if (string.IsNullOrWhiteSpace(motivo))
+			throw new ArgumentException("Indique el motivo de la anulación.");
+
+		motivo = motivo.Trim();
+		// El concepto del movimiento de cuenta corriente es VARCHAR(255):
+		// se acota el motivo para que siempre entre completo.
+		if (motivo.Length > 200)
+			motivo = motivo.Substring(0, 200);
+
+		_datos.Anular(ventaId, usuarioId, motivo);
+	}
 }
