@@ -7,6 +7,7 @@ using TFI_1.Models;
 using TFI_1.Negocio;
 
 namespace TFI_1.Presentacion;
+
 public partial class FormItemEditar : Form
 {
 	private readonly ItemNegocio _negocio = new ItemNegocio();

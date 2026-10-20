@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using TFI_1.Negocio;
 
 namespace TFI_1.Presentacion;
+
 public partial class FormDetalleVenta : Form
 {
 	private readonly VentaNegocio _negocio = new VentaNegocio();
@@ -46,26 +47,26 @@ public partial class FormDetalleVenta : Form
 			}
 			_detalle = _negocio.ObtenerDetalle(_ventaId);
 			DataRow fila = _cabecera.Rows[0];
-            string cabecera =
+			string cabecera =
 				$"Venta #{fila["Venta"]}\n" +
 				$"Fecha: {Convert.ToDateTime(fila["Fecha"]):g}\n" +
 				$"Cliente: {fila["Cliente"]}\n" +
 				$"Empleado: {fila["Empleado"]}\n" +
 				$"Usuario: {fila["Usuario"]}\n" +
 				$"Medio de pago: {Capitalizar(Convert.ToString(fila["Pago"]))}";
-            if (TieneTarjeta(fila))
-            {
-                cabecera += $"\nTarjeta: {TextoTarjeta(fila)}";
-                if (fila["Cuotas"] != DBNull.Value)
-                    cabecera += $"\nCuotas: {fila["Cuotas"]}";
-            }
-            lblCabecera.Text = cabecera;
+			if (TieneTarjeta(fila))
+			{
+				cabecera += $"\nTarjeta: {TextoTarjeta(fila)}";
+				if (fila["Cuotas"] != DBNull.Value)
+					cabecera += $"\nCuotas: {fila["Cuotas"]}";
+			}
+			lblCabecera.Text = cabecera;
 
-            dgvDetalle.DataSource = _detalle;
+			dgvDetalle.DataSource = _detalle;
 
-            decimal recargo = ObtenerRecargo(fila);
-            lblTotales.Text =
-                   $"Subtotal: {ObtenerSubtotal(fila):C2}      " +
+			decimal recargo = ObtenerRecargo(fila);
+			lblTotales.Text =
+				   $"Subtotal: {ObtenerSubtotal(fila):C2}      " +
 				   $"Descuento: {Convert.ToDecimal(fila["Descuento"]):C2}      " +
 					(recargo > 0 ? $"Recargo: {recargo:C2}      " : string.Empty) +
 				   $"TOTAL: {Convert.ToDecimal(fila["Total"]):C2}";
@@ -89,7 +90,7 @@ public partial class FormDetalleVenta : Form
 					aviso += $"\nMotivo: {fila["MotivoAnulacion"]}";
 				lblCabecera.Text += aviso;
 			}
-        }
+		}
 		catch (Exception ex)
 		{
 			Mensajes.Error(this, "No se pudo cargar el detalle", ex);
@@ -184,14 +185,14 @@ public partial class FormDetalleVenta : Form
 		g.DrawString($"Usuario: {fila["Usuario"]}", fuente, Brushes.Black, x, y);
 		g.DrawString($"Medio de pago: {Capitalizar(Convert.ToString(fila["Pago"]))}", fuente, Brushes.Black, x + 200, y);
 		y += 20;
-        if (TieneTarjeta(fila))
-        {
-            g.DrawString($"Tarjeta: {TextoTarjeta(fila)}", fuente, Brushes.Black, x, y);
-            if (fila["Cuotas"] != DBNull.Value)
-                g.DrawString($"Cuotas: {fila["Cuotas"]}", fuente, Brushes.Black, x + 300, y);
-            y += 20;
-        }
-        y += 10;
+		if (TieneTarjeta(fila))
+		{
+			g.DrawString($"Tarjeta: {TextoTarjeta(fila)}", fuente, Brushes.Black, x, y);
+			if (fila["Cuotas"] != DBNull.Value)
+				g.DrawString($"Cuotas: {fila["Cuotas"]}", fuente, Brushes.Black, x + 300, y);
+			y += 20;
+		}
+		y += 10;
 
 		// Encabezado de columnas del detalle.
 		g.DrawString("Ítem", fuenteNegrita, Brushes.Black, x, y);
@@ -219,15 +220,15 @@ public partial class FormDetalleVenta : Form
 		y += 10;
 		g.DrawLine(Pens.Gray, x, y, x + ancho, y);
 		y += 20;
-        decimal recargo = ObtenerRecargo(fila);
-        g.DrawString($"Subtotal: {ObtenerSubtotal(fila):C2}", fuenteNegrita, Brushes.Black, x, y);
-        g.DrawString($"Descuento: {Convert.ToDecimal(fila["Descuento"]):C2}", fuenteNegrita, Brushes.Black, x + 200, y);
-        y += 20;
-        if (recargo > 0)
-            g.DrawString($"Recargo: {recargo:C2}", fuenteNegrita, Brushes.Black, x, y);
-        g.DrawString($"TOTAL: {Convert.ToDecimal(fila["Total"]):C2}", fuenteNegrita, Brushes.Black, x + 200, y);
+		decimal recargo = ObtenerRecargo(fila);
+		g.DrawString($"Subtotal: {ObtenerSubtotal(fila):C2}", fuenteNegrita, Brushes.Black, x, y);
+		g.DrawString($"Descuento: {Convert.ToDecimal(fila["Descuento"]):C2}", fuenteNegrita, Brushes.Black, x + 200, y);
+		y += 20;
+		if (recargo > 0)
+			g.DrawString($"Recargo: {recargo:C2}", fuenteNegrita, Brushes.Black, x, y);
+		g.DrawString($"TOTAL: {Convert.ToDecimal(fila["Total"]):C2}", fuenteNegrita, Brushes.Black, x + 200, y);
 
-        fuente.Dispose();
+		fuente.Dispose();
 		fuenteNegrita.Dispose();
 		fuenteTitulo.Dispose();
 	}
@@ -249,9 +250,9 @@ public partial class FormDetalleVenta : Form
 	private static decimal ObtenerRecargo(DataRow fila) =>
 		fila.Table.Columns.Contains("Recargo") && fila["Recargo"] != DBNull.Value
 			? Convert.ToDecimal(fila["Recargo"])
-            : 0m;
-    private static decimal ObtenerSubtotal(DataRow fila) =>
-    fila.Table.Columns.Contains("Subtotal") && fila["Subtotal"] != DBNull.Value
-        ? Convert.ToDecimal(fila["Subtotal"])
-        : 0m;
+			: 0m;
+	private static decimal ObtenerSubtotal(DataRow fila) =>
+	fila.Table.Columns.Contains("Subtotal") && fila["Subtotal"] != DBNull.Value
+		? Convert.ToDecimal(fila["Subtotal"])
+		: 0m;
 }

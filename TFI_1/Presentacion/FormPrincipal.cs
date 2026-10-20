@@ -7,6 +7,7 @@ using TFI_1.Negocio;
 using TFI_1.Properties;
 
 namespace TFI_1.Presentacion;
+
 public partial class FormPrincipal : Form
 {
 	/// <summary>

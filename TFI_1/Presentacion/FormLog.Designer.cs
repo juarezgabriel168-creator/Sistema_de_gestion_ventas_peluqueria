@@ -1,4 +1,4 @@
-﻿namespace TFI_1
+﻿namespace TFI_1.Presentacion
 {
     partial class FormLog
     {

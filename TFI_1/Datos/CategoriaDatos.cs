@@ -9,72 +9,72 @@ public class CategoriaDatos
 {
 	public List<Categoria> Listar(string? filtro = null)
 	{
-		List<Categoria> list = new List<Categoria>();
-		using (MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion())
+		List<Categoria> lista = new List<Categoria>();
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
 		{
-			using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT id_categoria, nombre, activo\n                FROM categorias\n                WHERE (@filtro = '' OR nombre LIKE CONCAT('%', @filtro, '%'))\n                ORDER BY nombre;", mySqlConnection);
-			mySqlCommand.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
-			mySqlConnection.Open();
-			using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-			while (mySqlDataReader.Read())
+			using MySqlCommand cmd = new MySqlCommand("\n                SELECT id_categoria, nombre, activo\n                FROM categorias\n                WHERE (@filtro = '' OR nombre LIKE CONCAT('%', @filtro, '%'))\n                ORDER BY nombre;", conexion);
+			cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
+			conexion.Open();
+			using MySqlDataReader rd = cmd.ExecuteReader();
+			while (rd.Read())
 			{
-				list.Add(new Categoria
+				lista.Add(new Categoria
 				{
-					Id = mySqlDataReader.GetInt32("id_categoria"),
-					Nombre = mySqlDataReader.GetString("nombre"),
-					Activo = mySqlDataReader.GetBoolean("activo")
+					Id = rd.GetInt32("id_categoria"),
+					Nombre = rd.GetString("nombre"),
+					Activo = rd.GetBoolean("activo")
 				});
 			}
 		}
-		return list;
+		return lista;
 	}
 
 	public bool ExisteNombre(string nombre, int? exceptoId = null)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM categorias\n                WHERE nombre = @nombre\n                  AND (@exceptoId IS NULL OR id_categoria <> @exceptoId);", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Texto("@nombre", nombre));
-		mySqlCommand.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
-		mySqlConnection.Open();
-		return Convert.ToInt32(mySqlCommand.ExecuteScalar()) > 0;
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM categorias\n                WHERE nombre = @nombre\n                  AND (@exceptoId IS NULL OR id_categoria <> @exceptoId);", conexion);
+		cmd.Parameters.Add(Parametros.Texto("@nombre", nombre));
+		cmd.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
 	}
 
 	public int Insertar(Categoria categoria)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                INSERT INTO categorias (nombre, activo)\n                VALUES (@nombre, @activo);\n                SELECT LAST_INSERT_ID();", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Texto("@nombre", categoria.Nombre));
-		mySqlCommand.Parameters.Add(Parametros.Booleano("@activo", categoria.Activo));
-		mySqlConnection.Open();
-		return Convert.ToInt32(mySqlCommand.ExecuteScalar());
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                INSERT INTO categorias (nombre, activo)\n                VALUES (@nombre, @activo);\n                SELECT LAST_INSERT_ID();", conexion);
+		cmd.Parameters.Add(Parametros.Texto("@nombre", categoria.Nombre));
+		cmd.Parameters.Add(Parametros.Booleano("@activo", categoria.Activo));
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
 
 	public void Actualizar(Categoria categoria)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                UPDATE categorias\n                SET nombre = @nombre, activo = @activo\n                WHERE id_categoria = @id;", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Texto("@nombre", categoria.Nombre));
-		mySqlCommand.Parameters.Add(Parametros.Booleano("@activo", categoria.Activo));
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", categoria.Id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                UPDATE categorias\n                SET nombre = @nombre, activo = @activo\n                WHERE id_categoria = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Texto("@nombre", categoria.Nombre));
+		cmd.Parameters.Add(Parametros.Booleano("@activo", categoria.Activo));
+		cmd.Parameters.Add(Parametros.Entero("@id", categoria.Id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 
 	public void Desactivar(int id)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE categorias SET activo = 0 WHERE id_categoria = @id;", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("UPDATE categorias SET activo = 0 WHERE id_categoria = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 
 	public void Reactivar(int id)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE categorias SET activo = 1 WHERE id_categoria = @id;", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("UPDATE categorias SET activo = 1 WHERE id_categoria = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 }

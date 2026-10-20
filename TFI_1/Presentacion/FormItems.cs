@@ -7,6 +7,7 @@ using TFI_1.Models;
 using TFI_1.Negocio;
 
 namespace TFI_1.Presentacion;
+
 public partial class FormItems : Form
 {
 	private readonly ItemNegocio _negocio = new ItemNegocio();
@@ -29,15 +30,15 @@ public partial class FormItems : Form
 		cboTipo.Items.Clear();
 		cboTipo.Items.AddRange("Todos", "Servicio", "Producto");
 		cboTipo.SelectedIndex = 0;
-		List<Categoria> list = new List<Categoria>
+		List<Categoria> categorias = new()
 		{
 			new Categoria("Todas")
 			{
 				Id = 0
 			}
 		};
-		list.AddRange(_negocio.ListarCategorias());
-		cboCategoria.DataSource = list;
+		categorias.AddRange(_negocio.ListarCategorias());
+		cboCategoria.DataSource = categorias;
 		cboCategoria.DisplayMember = "Nombre";
 		cboCategoria.ValueMember = "Id";
 		cboCategoria.SelectedIndex = 0;
@@ -49,16 +50,16 @@ public partial class FormItems : Form
 		try
 		{
 			string filtro = txtBuscar.Text.Trim();
-			int? categoriaId = ((cboCategoria.SelectedItem is Categoria { Id: >0 } categoria) ? new int?(categoria.Id) : ((int?)null));
+			int? categoriaId = ((cboCategoria.SelectedItem is Categoria { Id: > 0 } categoria) ? new int?(categoria.Id) : ((int?)null));
 			int selectedIndex = cboTipo.SelectedIndex;
 			if (1 == 0)
 			{
 			}
 			TipoItem? tipoItem = selectedIndex switch
 			{
-				1 => (TipoItem?)TipoItem.Servicio, 
-				2 => TipoItem.Producto, 
-				_ => null, 
+				1 => (TipoItem?)TipoItem.Servicio,
+				2 => TipoItem.Producto,
+				_ => null,
 			};
 			if (1 == 0)
 			{

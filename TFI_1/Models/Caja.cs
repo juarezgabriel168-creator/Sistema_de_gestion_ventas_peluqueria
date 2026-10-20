@@ -36,5 +36,4 @@ public class Caja
 
 	public bool Abierta => Estado == "abierta";
 
-	public Caja() { }
 }

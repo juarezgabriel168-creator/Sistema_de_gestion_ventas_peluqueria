@@ -9,80 +9,80 @@ public class ClienteDatos
 {
 	public List<Cliente> Listar(string? filtro = null)
 	{
-		List<Cliente> list = new List<Cliente>();
-		using (MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion())
+		List<Cliente> lista = new List<Cliente>();
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
 		{
-			using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT id_cliente, nombre, apellido, dni, telefono, activo\n                FROM clientes\n                WHERE (@filtro = ''\n                       OR dni LIKE CONCAT('%', @filtro, '%')\n                       OR apellido LIKE CONCAT('%', @filtro, '%')\n                       OR nombre LIKE CONCAT('%', @filtro, '%'))\n                ORDER BY apellido, nombre;", mySqlConnection);
-			mySqlCommand.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
-			mySqlConnection.Open();
-			using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-			while (mySqlDataReader.Read())
+			using MySqlCommand cmd = new MySqlCommand("\n                SELECT id_cliente, nombre, apellido, dni, telefono, activo\n                FROM clientes\n                WHERE (@filtro = ''\n                       OR dni LIKE CONCAT('%', @filtro, '%')\n                       OR apellido LIKE CONCAT('%', @filtro, '%')\n                       OR nombre LIKE CONCAT('%', @filtro, '%'))\n                ORDER BY apellido, nombre;", conexion);
+			cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
+			conexion.Open();
+			using MySqlDataReader rd = cmd.ExecuteReader();
+			while (rd.Read())
 			{
-				list.Add(Leer(mySqlDataReader));
+				lista.Add(Leer(rd));
 			}
 		}
-		return list;
+		return lista;
 	}
 
 	public bool ExisteDni(string dni, int? exceptoId = null)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM clientes\n                WHERE dni = @dni\n                  AND (@exceptoId IS NULL OR id_cliente <> @exceptoId);", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Texto("@dni", dni));
-		mySqlCommand.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
-		mySqlConnection.Open();
-		return Convert.ToInt32(mySqlCommand.ExecuteScalar()) > 0;
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM clientes\n                WHERE dni = @dni\n                  AND (@exceptoId IS NULL OR id_cliente <> @exceptoId);", conexion);
+		cmd.Parameters.Add(Parametros.Texto("@dni", dni));
+		cmd.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
 	}
 
 	public Cliente? ObtenerPorDni(string dni)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand(
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
 			"SELECT id_cliente, nombre, apellido, dni, telefono, activo " +
-			"FROM clientes WHERE dni = @dni LIMIT 1;", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Texto("@dni", dni));
-		mySqlConnection.Open();
-		using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-		if (mySqlDataReader.Read())
-			return Leer(mySqlDataReader);
+			"FROM clientes WHERE dni = @dni LIMIT 1;", conexion);
+		cmd.Parameters.Add(Parametros.Texto("@dni", dni));
+		conexion.Open();
+		using MySqlDataReader rd = cmd.ExecuteReader();
+		if (rd.Read())
+			return Leer(rd);
 		return null;
 	}
 
 	public int Insertar(Cliente cliente)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                INSERT INTO clientes (nombre, apellido, dni, telefono, activo)\n                VALUES (@nombre, @apellido, @dni, @telefono, @activo);\n                SELECT LAST_INSERT_ID();", mySqlConnection);
-		AgregarParametros(mySqlCommand, cliente);
-		mySqlConnection.Open();
-		return Convert.ToInt32(mySqlCommand.ExecuteScalar());
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                INSERT INTO clientes (nombre, apellido, dni, telefono, activo)\n                VALUES (@nombre, @apellido, @dni, @telefono, @activo);\n                SELECT LAST_INSERT_ID();", conexion);
+		AgregarParametros(cmd, cliente);
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
 
 	public void Actualizar(Cliente cliente)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                UPDATE clientes\n                SET nombre = @nombre,\n                    apellido = @apellido,\n                    dni = @dni,\n                    telefono = @telefono,\n                    activo = @activo\n                WHERE id_cliente = @id;", mySqlConnection);
-		AgregarParametros(mySqlCommand, cliente);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", cliente.Id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                UPDATE clientes\n                SET nombre = @nombre,\n                    apellido = @apellido,\n                    dni = @dni,\n                    telefono = @telefono,\n                    activo = @activo\n                WHERE id_cliente = @id;", conexion);
+		AgregarParametros(cmd, cliente);
+		cmd.Parameters.Add(Parametros.Entero("@id", cliente.Id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 
 	public void Desactivar(int id)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE clientes SET activo = 0 WHERE id_cliente = @id;", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("UPDATE clientes SET activo = 0 WHERE id_cliente = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 
 	public void Reactivar(int id)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE clientes SET activo = 1 WHERE id_cliente = @id;", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("UPDATE clientes SET activo = 1 WHERE id_cliente = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 
 	private static void AgregarParametros(MySqlCommand cmd, Cliente cliente)

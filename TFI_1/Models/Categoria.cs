@@ -1,25 +1,24 @@
 using System;
 
-namespace TFI_1.Models
+namespace TFI_1.Models;
+
+public class Categoria
 {
-    public class Categoria
-    {
-        private string _nombre = string.Empty;
+	private string _nombre = string.Empty;
 
-        public int Id { get; set; }
-        public bool Activo { get; set; } = true;
+	public int Id { get; set; }
+	public bool Activo { get; set; } = true;
 
-        public string Nombre
-        {
-            get => _nombre;
-            set
-            {
-                Validaciones.ExigirTexto(value, "El nombre de la categoría es obligatorio.");
-                _nombre = value.Trim();
-            }
-        }
+	public string Nombre
+	{
+		get => _nombre;
+		set
+		{
+			Validaciones.ExigirTexto(value, "El nombre de la categoría es obligatorio.");
+			_nombre = value.Trim();
+		}
+	}
 
-        public Categoria() { }
-        public Categoria(string nombre) { Nombre = nombre; }
-    }
+	public Categoria() { }
+	public Categoria(string nombre) { Nombre = nombre; }
 }

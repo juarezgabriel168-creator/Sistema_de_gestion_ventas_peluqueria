@@ -9,82 +9,82 @@ public class ItemDatos
 {
 	public List<Item> Listar(string? filtro = null, int? categoriaId = null, TipoItem? tipo = null)
 	{
-		List<Item> list = new List<Item>();
-		using (MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion())
+		List<Item> lista = new List<Item>();
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
 		{
-			using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.costo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE (@filtro = '' OR i.nombre LIKE CONCAT('%', @filtro, '%'))\n                  AND (@categoriaId IS NULL OR i.id_categoria = @categoriaId)\n                  AND (@tipo IS NULL OR i.tipo = @tipo)\n                ORDER BY i.nombre;", mySqlConnection);
-			mySqlCommand.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
-			mySqlCommand.Parameters.Add(Parametros.EnteroNulo("@categoriaId", categoriaId));
-			mySqlCommand.Parameters.Add(Parametros.Texto("@tipo", tipo.HasValue ? ATexto(tipo.Value) : null));
-			mySqlConnection.Open();
-			using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-			while (mySqlDataReader.Read())
+			using MySqlCommand cmd = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.costo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE (@filtro = '' OR i.nombre LIKE CONCAT('%', @filtro, '%'))\n                  AND (@categoriaId IS NULL OR i.id_categoria = @categoriaId)\n                  AND (@tipo IS NULL OR i.tipo = @tipo)\n                ORDER BY i.nombre;", conexion);
+			cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
+			cmd.Parameters.Add(Parametros.EnteroNulo("@categoriaId", categoriaId));
+			cmd.Parameters.Add(Parametros.Texto("@tipo", tipo.HasValue ? ATexto(tipo.Value) : null));
+			conexion.Open();
+			using MySqlDataReader rd = cmd.ExecuteReader();
+			while (rd.Read())
 			{
-				list.Add(Leer(mySqlDataReader));
+				lista.Add(Leer(rd));
 			}
 		}
-		return list;
+		return lista;
 	}
 
 	public Item? ObtenerPorId(int id)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.costo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE i.id_item = @id;", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
-		mySqlConnection.Open();
-		using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-		if (mySqlDataReader.Read())
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.costo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE i.id_item = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		using MySqlDataReader rd = cmd.ExecuteReader();
+		if (rd.Read())
 		{
-			return Leer(mySqlDataReader);
+			return Leer(rd);
 		}
 		return null;
 	}
 
 	public bool ExisteNombre(string nombre, int? exceptoId = null)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM items\n                WHERE nombre = @nombre\n                  AND (@exceptoId IS NULL OR id_item <> @exceptoId);", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Texto("@nombre", nombre));
-		mySqlCommand.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
-		mySqlConnection.Open();
-		return Convert.ToInt32(mySqlCommand.ExecuteScalar()) > 0;
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM items\n                WHERE nombre = @nombre\n                  AND (@exceptoId IS NULL OR id_item <> @exceptoId);", conexion);
+		cmd.Parameters.Add(Parametros.Texto("@nombre", nombre));
+		cmd.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
 	}
 
 	public int Insertar(Item item)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                INSERT INTO items (nombre, tipo, precio, duracion_min, stock, stock_minimo, costo, id_categoria, activo)\n                VALUES (@nombre, @tipo, @precio, @duracion, @stock, @stockMinimo, @costo, @categoria, @activo);\n                SELECT LAST_INSERT_ID();", mySqlConnection);
-		AgregarParametros(mySqlCommand, item);
-		mySqlConnection.Open();
-		return Convert.ToInt32(mySqlCommand.ExecuteScalar());
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                INSERT INTO items (nombre, tipo, precio, duracion_min, stock, stock_minimo, costo, id_categoria, activo)\n                VALUES (@nombre, @tipo, @precio, @duracion, @stock, @stockMinimo, @costo, @categoria, @activo);\n                SELECT LAST_INSERT_ID();", conexion);
+		AgregarParametros(cmd, item);
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
 
 	public void Actualizar(Item item)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                UPDATE items\n                SET nombre = @nombre,\n                    tipo = @tipo,\n                    precio = @precio,\n                    costo = @costo,\n                    duracion_min = @duracion,\n                    stock = @stock,\n                    stock_minimo = @stockMinimo,\n                    id_categoria = @categoria,\n                    activo = @activo\n                WHERE id_item = @id;", mySqlConnection);
-		AgregarParametros(mySqlCommand, item);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", item.Id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                UPDATE items\n                SET nombre = @nombre,\n                    tipo = @tipo,\n                    precio = @precio,\n                    costo = @costo,\n                    duracion_min = @duracion,\n                    stock = @stock,\n                    stock_minimo = @stockMinimo,\n                    id_categoria = @categoria,\n                    activo = @activo\n                WHERE id_item = @id;", conexion);
+		AgregarParametros(cmd, item);
+		cmd.Parameters.Add(Parametros.Entero("@id", item.Id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 
 	public void Desactivar(int id)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE items SET activo = 0 WHERE id_item = @id;", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("UPDATE items SET activo = 0 WHERE id_item = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 
 	public void Reactivar(int id)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE items SET activo = 1 WHERE id_item = @id;", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("UPDATE items SET activo = 1 WHERE id_item = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 
 	private static void AgregarParametros(MySqlCommand cmd, Item item)

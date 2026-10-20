@@ -6,12 +6,13 @@ using System.Windows.Forms;
 using TFI_1.Negocio;
 
 namespace TFI_1.Presentacion;
+
 public partial class FormReporteMensual : Form
 {
 	private readonly ReporteNegocio _negocio = new ReporteNegocio();
-    private readonly GastoNegocio _gastos = new GastoNegocio();
+	private readonly GastoNegocio _gastos = new GastoNegocio();
 
-    private PrintDocument printDocument1 = null!;
+	private PrintDocument printDocument1 = null!;
 	private PrintPreviewDialog printPreviewDialog1 = null!;
 
 	public FormReporteMensual()
@@ -60,20 +61,20 @@ public partial class FormReporteMensual : Form
 			lblDias.Text = $"Días con ventas: {porDia.Rows.Count}";
 
 			dgvMasVendidos.DataSource = _negocio.ProductosMasVendidos(primeroDelMes, ultimoDelMes);
-            dgvPorEmpleado.DataSource = _negocio.VentasPorEmpleado(primeroDelMes, ultimoDelMes);
+			dgvPorEmpleado.DataSource = _negocio.VentasPorEmpleado(primeroDelMes, ultimoDelMes);
 
-            if (dgvPorEmpleado.Columns.Contains("Total"))
-                dgvPorEmpleado.Columns["Total"]!.DefaultCellStyle.Format = "C2";
+			if (dgvPorEmpleado.Columns.Contains("Total"))
+				dgvPorEmpleado.Columns["Total"]!.DefaultCellStyle.Format = "C2";
 
-            decimal vendido = resumen.Rows.Count > 0 ? Convert.ToDecimal(resumen.Rows[0]["Total"]) : 0m;
-            decimal gastos = _gastos.TotalGastos(primeroDelMes, ultimoDelMes);
-            lblGastos.Text = $"Gastos del mes: {gastos:C2}";
-            lblGananciaNeta.Text = $"Ganancia neta del mes: {vendido - gastos:C2}";
+			decimal vendido = resumen.Rows.Count > 0 ? Convert.ToDecimal(resumen.Rows[0]["Total"]) : 0m;
+			decimal gastos = _gastos.TotalGastos(primeroDelMes, ultimoDelMes);
+			lblGastos.Text = $"Gastos del mes: {gastos:C2}";
+			lblGananciaNeta.Text = $"Ganancia neta del mes: {vendido - gastos:C2}";
 
-            dgvGastosCategoria.DataSource = _gastos.GastosPorCategoria(primeroDelMes, ultimoDelMes);
-            if (dgvGastosCategoria.Columns.Contains("Total"))
-                dgvGastosCategoria.Columns["Total"]!.DefaultCellStyle.Format = "C2";
-        }
+			dgvGastosCategoria.DataSource = _gastos.GastosPorCategoria(primeroDelMes, ultimoDelMes);
+			if (dgvGastosCategoria.Columns.Contains("Total"))
+				dgvGastosCategoria.Columns["Total"]!.DefaultCellStyle.Format = "C2";
+		}
 		catch (Exception ex)
 		{
 			Mensajes.Error(this, "No se pudo generar el reporte", ex);
@@ -127,46 +128,46 @@ public partial class FormReporteMensual : Form
 				return;
 			}
 		}
-        y += 20;
-        g.DrawString("VENTAS POR EMPLEADO", fuenteNegrita, Brushes.Black, x, y);
-        y += 20;
-        g.DrawString("Empleado", fuenteNegrita, Brushes.Black, x, y);
-        g.DrawString("Cantidad", fuenteNegrita, Brushes.Black, x + 250, y);
-        g.DrawString("Total", fuenteNegrita, Brushes.Black, x + 350, y);
-        y += 20;
-        g.DrawLine(Pens.Gray, x, y, x + 500, y);
-        y += 6;
-        foreach (DataRow fila in _negocio.VentasPorEmpleado(primeroDelMes, ultimoDelMes).Rows)
-        {
-            g.DrawString(Convert.ToString(fila["Empleado"]), fuente, Brushes.Black, x, y);
-            g.DrawString(Convert.ToString(fila["Cantidad"]), fuente, Brushes.Black, x + 250, y);
-            g.DrawString(Convert.ToDecimal(fila["Total"]).ToString("C2"), fuente, Brushes.Black, x + 350, y);
-            y += 20;
-        }
-        y += 20;
-        g.DrawString("GASTOS POR CATEGORÍA", fuenteNegrita, Brushes.Black, x, y);
-        y += 20;
-        g.DrawString("Categoría", fuenteNegrita, Brushes.Black, x, y);
-        g.DrawString("Cantidad", fuenteNegrita, Brushes.Black, x + 250, y);
-        g.DrawString("Total", fuenteNegrita, Brushes.Black, x + 350, y);
-        y += 20;
-        g.DrawLine(Pens.Gray, x, y, x + 500, y);
-        y += 6;
-        foreach (DataRow fila in _gastos.GastosPorCategoria(primeroDelMes, ultimoDelMes).Rows)
-        {
-            g.DrawString(Convert.ToString(fila["Categoria"]), fuente, Brushes.Black, x, y);
-            g.DrawString(Convert.ToString(fila["Cantidad"]), fuente, Brushes.Black, x + 250, y);
-            g.DrawString(Convert.ToDecimal(fila["Total"]).ToString("C2"), fuente, Brushes.Black, x + 350, y);
-            y += 20;
-        }
-        decimal vendidoMes = resumen.Rows.Count > 0 ? Convert.ToDecimal(resumen.Rows[0]["Total"]) : 0m;
-        decimal gastosMes = _gastos.TotalGastos(primeroDelMes, ultimoDelMes);
-        y += 10;
-        g.DrawString($"TOTAL GASTOS: {gastosMes:C2}", fuenteNegrita, Brushes.Black, x, y);
-        y += 20;
-        g.DrawString($"GANANCIA NETA: {vendidoMes - gastosMes:C2}", fuenteNegrita, Brushes.Black, x, y);
+		y += 20;
+		g.DrawString("VENTAS POR EMPLEADO", fuenteNegrita, Brushes.Black, x, y);
+		y += 20;
+		g.DrawString("Empleado", fuenteNegrita, Brushes.Black, x, y);
+		g.DrawString("Cantidad", fuenteNegrita, Brushes.Black, x + 250, y);
+		g.DrawString("Total", fuenteNegrita, Brushes.Black, x + 350, y);
+		y += 20;
+		g.DrawLine(Pens.Gray, x, y, x + 500, y);
+		y += 6;
+		foreach (DataRow fila in _negocio.VentasPorEmpleado(primeroDelMes, ultimoDelMes).Rows)
+		{
+			g.DrawString(Convert.ToString(fila["Empleado"]), fuente, Brushes.Black, x, y);
+			g.DrawString(Convert.ToString(fila["Cantidad"]), fuente, Brushes.Black, x + 250, y);
+			g.DrawString(Convert.ToDecimal(fila["Total"]).ToString("C2"), fuente, Brushes.Black, x + 350, y);
+			y += 20;
+		}
+		y += 20;
+		g.DrawString("GASTOS POR CATEGORÍA", fuenteNegrita, Brushes.Black, x, y);
+		y += 20;
+		g.DrawString("Categoría", fuenteNegrita, Brushes.Black, x, y);
+		g.DrawString("Cantidad", fuenteNegrita, Brushes.Black, x + 250, y);
+		g.DrawString("Total", fuenteNegrita, Brushes.Black, x + 350, y);
+		y += 20;
+		g.DrawLine(Pens.Gray, x, y, x + 500, y);
+		y += 6;
+		foreach (DataRow fila in _gastos.GastosPorCategoria(primeroDelMes, ultimoDelMes).Rows)
+		{
+			g.DrawString(Convert.ToString(fila["Categoria"]), fuente, Brushes.Black, x, y);
+			g.DrawString(Convert.ToString(fila["Cantidad"]), fuente, Brushes.Black, x + 250, y);
+			g.DrawString(Convert.ToDecimal(fila["Total"]).ToString("C2"), fuente, Brushes.Black, x + 350, y);
+			y += 20;
+		}
+		decimal vendidoMes = resumen.Rows.Count > 0 ? Convert.ToDecimal(resumen.Rows[0]["Total"]) : 0m;
+		decimal gastosMes = _gastos.TotalGastos(primeroDelMes, ultimoDelMes);
+		y += 10;
+		g.DrawString($"TOTAL GASTOS: {gastosMes:C2}", fuenteNegrita, Brushes.Black, x, y);
+		y += 20;
+		g.DrawString($"GANANCIA NETA: {vendidoMes - gastosMes:C2}", fuenteNegrita, Brushes.Black, x, y);
 
-        fuente.Dispose();
+		fuente.Dispose();
 		fuenteNegrita.Dispose();
 		fuenteTitulo.Dispose();
 	}

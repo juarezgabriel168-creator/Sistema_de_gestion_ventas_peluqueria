@@ -222,6 +222,7 @@ rol del usuario:
 
 ```
 TFI_1/
+├── .editorconfig             # Reglas de estilo del código
 ├── BaseDatos/
 │   ├── peluqueria.sql        # Script de creación de la base de datos
 │   └── crear_usuario_app.sql # Usuario de MySQL con permisos acotados
@@ -236,6 +237,19 @@ TFI_1/
 ├── TFI_1.Tests/              # Pruebas automatizadas de la lógica
 ├── TFI_1.slnx                # Solución de Visual Studio
 └── README.md
+```
+
+## Estilo del código
+
+El proyecto sigue un estilo único definido en `.editorconfig`: indentación con
+tabulaciones, archivos UTF-8, saltos de línea CRLF y `namespace` en una sola
+línea. Los formularios generados por Visual Studio (`.Designer.cs`) conservan
+la indentación con espacios.
+
+Para comprobar que todo el código respeta el formato:
+
+```bash
+dotnet format whitespace TFI_1.slnx --verify-no-changes --exclude "**/*.Designer.cs"
 ```
 
 ## Pruebas automatizadas

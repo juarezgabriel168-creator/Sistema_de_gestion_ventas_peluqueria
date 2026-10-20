@@ -38,9 +38,9 @@ public class ReporteNegocio
 			throw new ArgumentException("La fecha 'desde' no puede ser posterior a la fecha 'hasta'.");
 		}
 	}
-    public DataTable VentasPorEmpleado(DateTime desde, DateTime hasta)
-    {
-        ValidarRango(desde, hasta);
-        return _datos.VentasPorEmpleado(desde, hasta);
-    }
+	public DataTable VentasPorEmpleado(DateTime desde, DateTime hasta)
+	{
+		ValidarRango(desde, hasta);
+		return _datos.VentasPorEmpleado(desde, hasta);
+	}
 }

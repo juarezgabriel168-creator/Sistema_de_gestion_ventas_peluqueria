@@ -88,24 +88,24 @@ public class ReporteDatos
 		adaptador.Fill(tabla);
 		return tabla;
 	}
-    // Ventas agrupadas por empleado (quien realizó la venta).
-    public DataTable VentasPorEmpleado(DateTime desde, DateTime hasta)
-    {
-        using MySqlConnection conexion = ConexionBD.ObtenerConexion();
-        using MySqlCommand cmd = new MySqlCommand(
-            "SELECT COALESCE(CONCAT(e.apellido, ', ', e.nombre), 'Sin empleado') AS Empleado, " +
-            "       COUNT(*) AS Cantidad, " +
-            "       COALESCE(SUM(v.total), 0) AS Total " +
-            "FROM ventas AS v " +
-            "LEFT JOIN empleados AS e ON e.id_empleado = v.id_empleado " +
-            "WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
-            "GROUP BY v.id_empleado, e.apellido, e.nombre " +
-            "ORDER BY Total DESC;", conexion);
-        cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
-        cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
-        using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
-        DataTable tabla = new DataTable();
-        adaptador.Fill(tabla);
-        return tabla;
-    }
+	// Ventas agrupadas por empleado (quien realizó la venta).
+	public DataTable VentasPorEmpleado(DateTime desde, DateTime hasta)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT COALESCE(CONCAT(e.apellido, ', ', e.nombre), 'Sin empleado') AS Empleado, " +
+			"       COUNT(*) AS Cantidad, " +
+			"       COALESCE(SUM(v.total), 0) AS Total " +
+			"FROM ventas AS v " +
+			"LEFT JOIN empleados AS e ON e.id_empleado = v.id_empleado " +
+			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
+			"GROUP BY v.id_empleado, e.apellido, e.nombre " +
+			"ORDER BY Total DESC;", conexion);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
+		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
+		DataTable tabla = new DataTable();
+		adaptador.Fill(tabla);
+		return tabla;
+	}
 }

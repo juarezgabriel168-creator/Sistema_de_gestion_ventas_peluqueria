@@ -9,63 +9,63 @@ public class EmpleadoDatos
 {
 	public List<Empleado> Listar(string? filtro = null)
 	{
-		List<Empleado> list = new List<Empleado>();
-		using (MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion())
+		List<Empleado> lista = new List<Empleado>();
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
 		{
-			using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT id_empleado, nombre, apellido, modalidad, activo\n                FROM empleados\n                WHERE (@filtro = ''\n                       OR apellido LIKE CONCAT('%', @filtro, '%')\n                       OR nombre LIKE CONCAT('%', @filtro, '%'))\n                ORDER BY apellido, nombre;", mySqlConnection);
-			mySqlCommand.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
-			mySqlConnection.Open();
-			using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
-			while (mySqlDataReader.Read())
+			using MySqlCommand cmd = new MySqlCommand("\n                SELECT id_empleado, nombre, apellido, modalidad, activo\n                FROM empleados\n                WHERE (@filtro = ''\n                       OR apellido LIKE CONCAT('%', @filtro, '%')\n                       OR nombre LIKE CONCAT('%', @filtro, '%'))\n                ORDER BY apellido, nombre;", conexion);
+			cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
+			conexion.Open();
+			using MySqlDataReader rd = cmd.ExecuteReader();
+			while (rd.Read())
 			{
-				list.Add(new Empleado
+				lista.Add(new Empleado
 				{
-					Id = mySqlDataReader.GetInt32("id_empleado"),
-					Nombre = mySqlDataReader.GetString("nombre"),
-					Apellido = mySqlDataReader.GetString("apellido"),
-					Modalidad = AModalidad(mySqlDataReader.GetString("modalidad")),
-					Activo = mySqlDataReader.GetBoolean("activo")
+					Id = rd.GetInt32("id_empleado"),
+					Nombre = rd.GetString("nombre"),
+					Apellido = rd.GetString("apellido"),
+					Modalidad = AModalidad(rd.GetString("modalidad")),
+					Activo = rd.GetBoolean("activo")
 				});
 			}
 		}
-		return list;
+		return lista;
 	}
 
 	public int Insertar(Empleado empleado)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                INSERT INTO empleados (nombre, apellido, modalidad, activo)\n                VALUES (@nombre, @apellido, @modalidad, @activo);\n                SELECT LAST_INSERT_ID();", mySqlConnection);
-		AgregarParametros(mySqlCommand, empleado);
-		mySqlConnection.Open();
-		return Convert.ToInt32(mySqlCommand.ExecuteScalar());
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                INSERT INTO empleados (nombre, apellido, modalidad, activo)\n                VALUES (@nombre, @apellido, @modalidad, @activo);\n                SELECT LAST_INSERT_ID();", conexion);
+		AgregarParametros(cmd, empleado);
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
 
 	public void Actualizar(Empleado empleado)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                UPDATE empleados\n                SET nombre = @nombre, apellido = @apellido, modalidad = @modalidad, activo = @activo\n                WHERE id_empleado = @id;", mySqlConnection);
-		AgregarParametros(mySqlCommand, empleado);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", empleado.Id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("\n                UPDATE empleados\n                SET nombre = @nombre, apellido = @apellido, modalidad = @modalidad, activo = @activo\n                WHERE id_empleado = @id;", conexion);
+		AgregarParametros(cmd, empleado);
+		cmd.Parameters.Add(Parametros.Entero("@id", empleado.Id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 
 	public void Desactivar(int id)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE empleados SET activo = 0 WHERE id_empleado = @id;", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("UPDATE empleados SET activo = 0 WHERE id_empleado = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 
 	public void Reactivar(int id)
 	{
-		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("UPDATE empleados SET activo = 1 WHERE id_empleado = @id;", mySqlConnection);
-		mySqlCommand.Parameters.Add(Parametros.Entero("@id", id));
-		mySqlConnection.Open();
-		mySqlCommand.ExecuteNonQuery();
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("UPDATE empleados SET activo = 1 WHERE id_empleado = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
 	}
 
 	private static void AgregarParametros(MySqlCommand cmd, Empleado empleado)

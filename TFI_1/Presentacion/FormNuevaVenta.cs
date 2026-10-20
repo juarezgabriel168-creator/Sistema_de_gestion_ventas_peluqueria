@@ -7,6 +7,7 @@ using TFI_1.Models;
 using TFI_1.Negocio;
 
 namespace TFI_1.Presentacion;
+
 public partial class FormNuevaVenta : Form
 {
 	private readonly VentaNegocio _ventaNegocio = new VentaNegocio();
@@ -21,10 +22,10 @@ public partial class FormNuevaVenta : Form
 
 	private bool _recalculando;
 
-    private readonly BancoNegocio _bancoNegocio = new BancoNegocio();
-    private List<TarjetaCredito> _tarjetasActivas = new List<TarjetaCredito>();
+	private readonly BancoNegocio _bancoNegocio = new BancoNegocio();
+	private List<TarjetaCredito> _tarjetasActivas = new List<TarjetaCredito>();
 
-    public FormNuevaVenta()
+	public FormNuevaVenta()
 	{
 		InitializeComponent();
 	}
@@ -63,77 +64,77 @@ public partial class FormNuevaVenta : Form
 		}
 	}
 
-        private void CargarEmpleadosYTarjetas()
-    {
-        List<Empleado> empleados = new List<Empleado> { new Empleado { Id = 0, Nombre = "—", Apellido = "Seleccione" } };
-        empleados.AddRange(_empleadoNegocio.Listar().Where((Empleado em) => em.Activo).ToList());
-        cboEmpleado.DataSource = empleados;
-        cboEmpleado.DisplayMember = "NombreCompleto";
-        cboEmpleado.ValueMember = "Id";
-        cboEmpleado.SelectedIndex = 0;
+	private void CargarEmpleadosYTarjetas()
+	{
+		List<Empleado> empleados = new List<Empleado> { new Empleado { Id = 0, Nombre = "—", Apellido = "Seleccione" } };
+		empleados.AddRange(_empleadoNegocio.Listar().Where((Empleado em) => em.Activo).ToList());
+		cboEmpleado.DataSource = empleados;
+		cboEmpleado.DisplayMember = "NombreCompleto";
+		cboEmpleado.ValueMember = "Id";
+		cboEmpleado.SelectedIndex = 0;
 
-        // Solo bancos activos que tengan al menos una tarjeta activa.
-        _tarjetasActivas = _tarjetaNegocio.Listar(soloActivas: true);
-        List<Banco> bancos = new List<Banco> { new Banco { Id = 0, Nombre = "Seleccione" } };
-        bancos.AddRange(_bancoNegocio.Listar(soloActivos: true)
-            .Where((Banco b) => _tarjetasActivas.Any((TarjetaCredito t) => t.IdBanco == b.Id)));
-        cboBanco.DisplayMember = "Nombre";
-        cboBanco.ValueMember = "Id";
-        cboBanco.DataSource = bancos;
-        cboBanco.SelectedIndex = 0;
+		// Solo bancos activos que tengan al menos una tarjeta activa.
+		_tarjetasActivas = _tarjetaNegocio.Listar(soloActivas: true);
+		List<Banco> bancos = new List<Banco> { new Banco { Id = 0, Nombre = "Seleccione" } };
+		bancos.AddRange(_bancoNegocio.Listar(soloActivos: true)
+			.Where((Banco b) => _tarjetasActivas.Any((TarjetaCredito t) => t.IdBanco == b.Id)));
+		cboBanco.DisplayMember = "Nombre";
+		cboBanco.ValueMember = "Id";
+		cboBanco.DataSource = bancos;
+		cboBanco.SelectedIndex = 0;
 
-        CargarTiposDeBanco();
+		CargarTiposDeBanco();
 
-        // Se conectan al final para que la carga inicial no dispare recálculos a medias.
-        cboBanco.SelectedIndexChanged += (s, e) => CargarTiposDeBanco();
-        cboTarjeta.SelectedIndexChanged += cboTarjeta_SelectedIndexChanged;
-        numCuotas.ValueChanged += (s, e) => RecalcularTotales();
-    }
+		// Se conectan al final para que la carga inicial no dispare recálculos a medias.
+		cboBanco.SelectedIndexChanged += (s, e) => CargarTiposDeBanco();
+		cboTarjeta.SelectedIndexChanged += cboTarjeta_SelectedIndexChanged;
+		numCuotas.ValueChanged += (s, e) => RecalcularTotales();
+	}
 
-    private void CargarTiposDeBanco()
-    {
-        int idBanco = cboBanco.SelectedItem is Banco banco ? banco.Id : 0;
-        List<TarjetaCredito> tipos = new List<TarjetaCredito> { new TarjetaCredito { Id = 0, TipoTarjeta = "Seleccione" } };
-        tipos.AddRange(_tarjetasActivas.Where((TarjetaCredito t) => t.IdBanco == idBanco));
-        cboTarjeta.DisplayMember = "TipoTarjeta";
-        cboTarjeta.ValueMember = "Id";
-        cboTarjeta.DataSource = tipos;
-        cboTarjeta.SelectedIndex = 0;
-        cboTarjeta_SelectedIndexChanged(null, EventArgs.Empty);
-    }
+	private void CargarTiposDeBanco()
+	{
+		int idBanco = cboBanco.SelectedItem is Banco banco ? banco.Id : 0;
+		List<TarjetaCredito> tipos = new List<TarjetaCredito> { new TarjetaCredito { Id = 0, TipoTarjeta = "Seleccione" } };
+		tipos.AddRange(_tarjetasActivas.Where((TarjetaCredito t) => t.IdBanco == idBanco));
+		cboTarjeta.DisplayMember = "TipoTarjeta";
+		cboTarjeta.ValueMember = "Id";
+		cboTarjeta.DataSource = tipos;
+		cboTarjeta.SelectedIndex = 0;
+		cboTarjeta_SelectedIndexChanged(null, EventArgs.Empty);
+	}
 
-    private void cboTarjeta_SelectedIndexChanged(object? sender, EventArgs e)
-    {
-        // Las cuotas no pueden superar el máximo de la tarjeta elegida.
-        numCuotas.Maximum = TarjetaElegida?.CuotasMax ?? 1;
-        numCuotas.Value = 1;
-        RecalcularTotales();
-    }
+	private void cboTarjeta_SelectedIndexChanged(object? sender, EventArgs e)
+	{
+		// Las cuotas no pueden superar el máximo de la tarjeta elegida.
+		numCuotas.Maximum = TarjetaElegida?.CuotasMax ?? 1;
+		numCuotas.Value = 1;
+		RecalcularTotales();
+	}
 
-    private TarjetaCredito? TarjetaElegida =>
-        cboTarjeta != null && cboTarjeta.SelectedItem is TarjetaCredito t && t.Id > 0 ? t : null;
+	private TarjetaCredito? TarjetaElegida =>
+		cboTarjeta != null && cboTarjeta.SelectedItem is TarjetaCredito t && t.Id > 0 ? t : null;
 
-    private decimal CalcularRecargo(decimal baseCobro)
-    {
-        if (cboMedioPago.SelectedIndex != 1)
-            return 0m;
-        TarjetaCredito? t = TarjetaElegida;
-        return t == null ? 0m : Math.Round(baseCobro * t.PorcentajeRecargo / 100m, 2);
-    }
+	private decimal CalcularRecargo(decimal baseCobro)
+	{
+		if (cboMedioPago.SelectedIndex != 1)
+			return 0m;
+		TarjetaCredito? t = TarjetaElegida;
+		return t == null ? 0m : Math.Round(baseCobro * t.PorcentajeRecargo / 100m, 2);
+	}
 
-    private void ActualizarInfoTarjeta(decimal recargo, decimal total)
-    {
-        if (lblTarjetaInfo == null)
-            return;
-        TarjetaCredito? t = TarjetaElegida;
-        if (cboMedioPago.SelectedIndex != 1 || t == null)
-        {
-            lblTarjetaInfo.Text = string.Empty;
-            return;
-        }
-        int cuotas = (int)numCuotas.Value;
-        lblTarjetaInfo.Text = $"Interés {t.PorcentajeRecargo:N2} %: +{recargo:C2}   |   {cuotas} cuota(s) de {total / cuotas:C2}   (máx. {t.CuotasMax})";
-    }
+	private void ActualizarInfoTarjeta(decimal recargo, decimal total)
+	{
+		if (lblTarjetaInfo == null)
+			return;
+		TarjetaCredito? t = TarjetaElegida;
+		if (cboMedioPago.SelectedIndex != 1 || t == null)
+		{
+			lblTarjetaInfo.Text = string.Empty;
+			return;
+		}
+		int cuotas = (int)numCuotas.Value;
+		lblTarjetaInfo.Text = $"Interés {t.PorcentajeRecargo:N2} %: +{recargo:C2}   |   {cuotas} cuota(s) de {total / cuotas:C2}   (máx. {t.CuotasMax})";
+	}
 
 	private void cboMedioPago_SelectedIndexChanged(object sender, EventArgs e)
 	{
@@ -142,15 +143,15 @@ public partial class FormNuevaVenta : Form
 
 	private void ActualizarVisibilidadPago()
 	{
-        bool esTarjeta = cboMedioPago.SelectedIndex == 1; // "Tarjeta"
-        lblBanco.Visible = esTarjeta;
-        cboBanco.Visible = esTarjeta;
-        lblTarjeta.Visible = esTarjeta;
-        cboTarjeta.Visible = esTarjeta;
-        lblCuotas.Visible = esTarjeta;
-        numCuotas.Visible = esTarjeta;
-        RecalcularTotales();
-    }
+		bool esTarjeta = cboMedioPago.SelectedIndex == 1; // "Tarjeta"
+		lblBanco.Visible = esTarjeta;
+		cboBanco.Visible = esTarjeta;
+		lblTarjeta.Visible = esTarjeta;
+		cboTarjeta.Visible = esTarjeta;
+		lblCuotas.Visible = esTarjeta;
+		numCuotas.Visible = esTarjeta;
+		RecalcularTotales();
+	}
 
 	private void cboItem_SelectedIndexChanged(object sender, EventArgs e)
 	{
@@ -227,22 +228,22 @@ public partial class FormNuevaVenta : Form
 
 	private void RecalcularTotales()
 	{
-        decimal subtotal = _carrito.Sum((DetalleVenta d) => d.Subtotal);
-        decimal descuento = numDescuento.Value;
-        if (descuento > subtotal)
-        {
-            _recalculando = true;
-            descuento = subtotal;
-            numDescuento.Value = descuento;
-            _recalculando = false;
-        }
-        decimal total = CalcularTotal();
+		decimal subtotal = _carrito.Sum((DetalleVenta d) => d.Subtotal);
+		decimal descuento = numDescuento.Value;
+		if (descuento > subtotal)
+		{
+			_recalculando = true;
+			descuento = subtotal;
+			numDescuento.Value = descuento;
+			_recalculando = false;
+		}
+		decimal total = CalcularTotal();
 
-        lblSubtotalValor.Text = subtotal.ToString("C2");
-        lblDescuentoValor.Text = descuento.ToString("C2");
-        lblTotalValor.Text = total.ToString("C2");
-        ActualizarInfoTarjeta(CalcularRecargo(subtotal - descuento), total);
-    }
+		lblSubtotalValor.Text = subtotal.ToString("C2");
+		lblDescuentoValor.Text = descuento.ToString("C2");
+		lblTotalValor.Text = total.ToString("C2");
+		ActualizarInfoTarjeta(CalcularRecargo(subtotal - descuento), total);
+	}
 
 	// Total de la venta con el descuento y el recargo de tarjeta ya aplicados.
 	private decimal CalcularTotal()
@@ -270,21 +271,21 @@ public partial class FormNuevaVenta : Form
 		if (cboEmpleado.SelectedItem is Empleado emp && emp.Id > 0)
 			idEmpleado = emp.Id;
 
-        int? idTarjeta = null;
-        int? cuotas = null;
-        if (cboMedioPago.SelectedIndex == 1) // tarjeta
-        {
-            TarjetaCredito? tarjeta = TarjetaElegida;
-            if (tarjeta == null)
-            {
-                MessageBox.Show("Seleccione el banco y el tipo de tarjeta.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                return;
-            }
-            idTarjeta = tarjeta.Id;
-            cuotas = (int)numCuotas.Value;
-        }
+		int? idTarjeta = null;
+		int? cuotas = null;
+		if (cboMedioPago.SelectedIndex == 1) // tarjeta
+		{
+			TarjetaCredito? tarjeta = TarjetaElegida;
+			if (tarjeta == null)
+			{
+				MessageBox.Show("Seleccione el banco y el tipo de tarjeta.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+				return;
+			}
+			idTarjeta = tarjeta.Id;
+			cuotas = (int)numCuotas.Value;
+		}
 
-        try
+		try
 		{
 			// Aviso (no bloqueo) si la venta a cuenta corriente deja al cliente
 			// por encima del límite de deuda.
@@ -323,25 +324,25 @@ public partial class FormNuevaVenta : Form
 			foreach (DetalleVenta detalle in _carrito)
 				venta.Detalles.Add(detalle);
 
-            int id = _ventaNegocio.Registrar(venta);
+			int id = _ventaNegocio.Registrar(venta);
 
-            DialogResult respuestaTicket = MessageBox.Show(
-                $"Venta #{id} registrada.\nTotal: {venta.Total:C2}\n\n¿Desea ver el ticket?",
-                "Venta registrada", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk);
+			DialogResult respuestaTicket = MessageBox.Show(
+				$"Venta #{id} registrada.\nTotal: {venta.Total:C2}\n\n¿Desea ver el ticket?",
+				"Venta registrada", MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk);
 
-            if (respuestaTicket == DialogResult.Yes)
-            {
-                using FormTicket ticket = new FormTicket(id);
-                ticket.ShowDialog(this);
-            }
+			if (respuestaTicket == DialogResult.Yes)
+			{
+				using FormTicket ticket = new FormTicket(id);
+				ticket.ShowDialog(this);
+			}
 
-            _carrito.Clear();
-            _recalculando = true;
-            numDescuento.Value = 0m;
-            _recalculando = false;
-            RefrescarCarrito();
-            if (cboBanco.Items.Count > 0) cboBanco.SelectedIndex = 0;
-        }
+			_carrito.Clear();
+			_recalculando = true;
+			numDescuento.Value = 0m;
+			_recalculando = false;
+			RefrescarCarrito();
+			if (cboBanco.Items.Count > 0) cboBanco.SelectedIndex = 0;
+		}
 		catch (ArgumentException ex)
 		{
 			MessageBox.Show(ex.Message, "Validación", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

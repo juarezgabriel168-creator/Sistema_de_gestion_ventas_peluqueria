@@ -6,12 +6,13 @@ using System.Windows.Forms;
 using TFI_1.Negocio;
 
 namespace TFI_1.Presentacion;
+
 public partial class FormReporteDiario : Form
 {
 	private readonly ReporteNegocio _negocio = new ReporteNegocio();
-    private readonly GastoNegocio _gastos = new GastoNegocio();
+	private readonly GastoNegocio _gastos = new GastoNegocio();
 
-    private PrintDocument printDocument1 = null!;
+	private PrintDocument printDocument1 = null!;
 	private PrintPreviewDialog printPreviewDialog1 = null!;
 
 	public FormReporteDiario()
@@ -61,19 +62,19 @@ public partial class FormReporteDiario : Form
 				gananciaBruta += Convert.ToDecimal(fila["Total"]);
 			lblGananciaBruta.Text = $"Ganancia bruta del día: {gananciaBruta:C2}";
 
-            dgvPorEmpleado.DataSource = _negocio.VentasPorEmpleado(fecha, fecha);
-            if (dgvPorEmpleado.Columns.Contains("Total"))
-                dgvPorEmpleado.Columns["Total"]!.DefaultCellStyle.Format = "C2";
+			dgvPorEmpleado.DataSource = _negocio.VentasPorEmpleado(fecha, fecha);
+			if (dgvPorEmpleado.Columns.Contains("Total"))
+				dgvPorEmpleado.Columns["Total"]!.DefaultCellStyle.Format = "C2";
 
-            decimal gastos = _gastos.TotalGastos(fecha, fecha);
-            lblGastos.Text = $"Gastos del día: {gastos:C2}";
-            lblGananciaNeta.Text = $"Ganancia neta del día: {gananciaBruta - gastos:C2}";
+			decimal gastos = _gastos.TotalGastos(fecha, fecha);
+			lblGastos.Text = $"Gastos del día: {gastos:C2}";
+			lblGananciaNeta.Text = $"Ganancia neta del día: {gananciaBruta - gastos:C2}";
 
-            dgvGastosCategoria.DataSource = _gastos.GastosPorCategoria(fecha, fecha);
-            if (dgvGastosCategoria.Columns.Contains("Total"))
-            dgvGastosCategoria.Columns["Total"]!.DefaultCellStyle.Format = "C2";
+			dgvGastosCategoria.DataSource = _gastos.GastosPorCategoria(fecha, fecha);
+			if (dgvGastosCategoria.Columns.Contains("Total"))
+				dgvGastosCategoria.Columns["Total"]!.DefaultCellStyle.Format = "C2";
 
-            dgvMasVendidos.DataSource = _negocio.ProductosMasVendidos(fecha, fecha);
+			dgvMasVendidos.DataSource = _negocio.ProductosMasVendidos(fecha, fecha);
 		}
 		catch (Exception ex)
 		{
@@ -129,48 +130,48 @@ public partial class FormReporteDiario : Form
 				return;
 			}
 		}
-        g.DrawString($"GANANCIA BRUTA: {gananciaBruta:C2}", fuenteNegrita, Brushes.Black, x, y + 10);
-        y += 50;
+		g.DrawString($"GANANCIA BRUTA: {gananciaBruta:C2}", fuenteNegrita, Brushes.Black, x, y + 10);
+		y += 50;
 
-        g.DrawString("VENTAS POR EMPLEADO", fuenteNegrita, Brushes.Black, x, y);
-        y += 20;
-        g.DrawString("Empleado", fuenteNegrita, Brushes.Black, x, y);
-        g.DrawString("Cantidad", fuenteNegrita, Brushes.Black, x + 250, y);
-        g.DrawString("Total", fuenteNegrita, Brushes.Black, x + 350, y);
-        y += 20;
-        g.DrawLine(Pens.Gray, x, y, x + 500, y);
-        y += 6;
-        foreach (DataRow fila in _negocio.VentasPorEmpleado(fecha, fecha).Rows)
-        {
-            g.DrawString(Convert.ToString(fila["Empleado"]), fuente, Brushes.Black, x, y);
-            g.DrawString(Convert.ToString(fila["Cantidad"]), fuente, Brushes.Black, x + 250, y);
-            g.DrawString(Convert.ToDecimal(fila["Total"]).ToString("C2"), fuente, Brushes.Black, x + 350, y);
-            y += 20;
-        }
+		g.DrawString("VENTAS POR EMPLEADO", fuenteNegrita, Brushes.Black, x, y);
+		y += 20;
+		g.DrawString("Empleado", fuenteNegrita, Brushes.Black, x, y);
+		g.DrawString("Cantidad", fuenteNegrita, Brushes.Black, x + 250, y);
+		g.DrawString("Total", fuenteNegrita, Brushes.Black, x + 350, y);
+		y += 20;
+		g.DrawLine(Pens.Gray, x, y, x + 500, y);
+		y += 6;
+		foreach (DataRow fila in _negocio.VentasPorEmpleado(fecha, fecha).Rows)
+		{
+			g.DrawString(Convert.ToString(fila["Empleado"]), fuente, Brushes.Black, x, y);
+			g.DrawString(Convert.ToString(fila["Cantidad"]), fuente, Brushes.Black, x + 250, y);
+			g.DrawString(Convert.ToDecimal(fila["Total"]).ToString("C2"), fuente, Brushes.Black, x + 350, y);
+			y += 20;
+		}
 
-        y += 20;
-        g.DrawString("GASTOS POR CATEGORÍA", fuenteNegrita, Brushes.Black, x, y);
-        y += 20;
-        g.DrawString("Categoría", fuenteNegrita, Brushes.Black, x, y);
-        g.DrawString("Cantidad", fuenteNegrita, Brushes.Black, x + 250, y);
-        g.DrawString("Total", fuenteNegrita, Brushes.Black, x + 350, y);
-        y += 20;
-        g.DrawLine(Pens.Gray, x, y, x + 500, y);
-        y += 6;
-        foreach (DataRow fila in _gastos.GastosPorCategoria(fecha, fecha).Rows)
-        {
-            g.DrawString(Convert.ToString(fila["Categoria"]), fuente, Brushes.Black, x, y);
-            g.DrawString(Convert.ToString(fila["Cantidad"]), fuente, Brushes.Black, x + 250, y);
-            g.DrawString(Convert.ToDecimal(fila["Total"]).ToString("C2"), fuente, Brushes.Black, x + 350, y);
-            y += 20;
-        }
-        decimal gastosDia = _gastos.TotalGastos(fecha, fecha);
-        y += 10;
-        g.DrawString($"TOTAL GASTOS: {gastosDia:C2}", fuenteNegrita, Brushes.Black, x, y);
-        y += 20;
-        g.DrawString($"GANANCIA NETA: {gananciaBruta - gastosDia:C2}", fuenteNegrita, Brushes.Black, x, y);
+		y += 20;
+		g.DrawString("GASTOS POR CATEGORÍA", fuenteNegrita, Brushes.Black, x, y);
+		y += 20;
+		g.DrawString("Categoría", fuenteNegrita, Brushes.Black, x, y);
+		g.DrawString("Cantidad", fuenteNegrita, Brushes.Black, x + 250, y);
+		g.DrawString("Total", fuenteNegrita, Brushes.Black, x + 350, y);
+		y += 20;
+		g.DrawLine(Pens.Gray, x, y, x + 500, y);
+		y += 6;
+		foreach (DataRow fila in _gastos.GastosPorCategoria(fecha, fecha).Rows)
+		{
+			g.DrawString(Convert.ToString(fila["Categoria"]), fuente, Brushes.Black, x, y);
+			g.DrawString(Convert.ToString(fila["Cantidad"]), fuente, Brushes.Black, x + 250, y);
+			g.DrawString(Convert.ToDecimal(fila["Total"]).ToString("C2"), fuente, Brushes.Black, x + 350, y);
+			y += 20;
+		}
+		decimal gastosDia = _gastos.TotalGastos(fecha, fecha);
+		y += 10;
+		g.DrawString($"TOTAL GASTOS: {gastosDia:C2}", fuenteNegrita, Brushes.Black, x, y);
+		y += 20;
+		g.DrawString($"GANANCIA NETA: {gananciaBruta - gastosDia:C2}", fuenteNegrita, Brushes.Black, x, y);
 
-        fuente.Dispose();
+		fuente.Dispose();
 		fuenteNegrita.Dispose();
 		fuenteTitulo.Dispose();
 	}

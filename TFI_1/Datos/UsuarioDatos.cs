@@ -3,45 +3,44 @@ using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using TFI_1.Models;
 
+namespace TFI_1.Datos;
 
-namespace TFI_1.Datos
+public class UsuarioDatos
 {
-    public class UsuarioDatos
-    {
-        public Usuario? ObtenerPorNombre(string nombreUsuario)
-        {
-            const string sql = @"
+	public Usuario? ObtenerPorNombre(string nombreUsuario)
+	{
+		const string sql = @"
                 SELECT u.id_usuario, u.nombre_usuario, u.contrasena, u.activo,
                        r.id_rol, r.nombre AS rol
                 FROM usuarios AS u
                 INNER JOIN roles AS r ON r.id_rol = u.id_rol
                 WHERE u.nombre_usuario = @usuario;";
 
-            using (var cn = ConexionBD.ObtenerConexion())
-            using (var cmd = new MySqlCommand(sql, cn))
-            {
-                cmd.Parameters.Add(Parametros.Texto("@usuario", nombreUsuario));
-                cn.Open();
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
+		{
+			cmd.Parameters.Add(Parametros.Texto("@usuario", nombreUsuario));
+			conexion.Open();
 
-                using (var rd = cmd.ExecuteReader())
-                {
-                    if (!rd.Read()) return null;
+			using (MySqlDataReader rd = cmd.ExecuteReader())
+			{
+				if (!rd.Read()) return null;
 
-                    return new Usuario
-                    {
-                        Id = rd.GetInt32("id_usuario"),
-                        NombreUsuario = rd.GetString("nombre_usuario"),
-                        Contrasena = rd.GetString("contrasena"),
-                        Activo = rd.GetBoolean("activo"),
-                        Rol = new Rol(rd.GetInt32("id_rol"), rd.GetString("rol"))
-                    };
-                }
-            }
-        }
+				return new Usuario
+				{
+					Id = rd.GetInt32("id_usuario"),
+					NombreUsuario = rd.GetString("nombre_usuario"),
+					Contrasena = rd.GetString("contrasena"),
+					Activo = rd.GetBoolean("activo"),
+					Rol = new Rol(rd.GetInt32("id_rol"), rd.GetString("rol"))
+				};
+			}
+		}
+	}
 
-        public List<Usuario> Listar(string? filtro = null)
-        {
-            const string sql = @"
+	public List<Usuario> Listar(string? filtro = null)
+	{
+		const string sql = @"
                 SELECT u.id_usuario, u.nombre_usuario, u.contrasena, u.activo,
                        r.id_rol, r.nombre AS rol
                 FROM usuarios AS u
@@ -49,94 +48,94 @@ namespace TFI_1.Datos
                 WHERE (@filtro = '' OR u.nombre_usuario LIKE CONCAT('%', @filtro, '%'))
                 ORDER BY u.nombre_usuario;";
 
-            var lista = new List<Usuario>();
+		List<Usuario> lista = new();
 
-            using (var cn = ConexionBD.ObtenerConexion())
-            using (var cmd = new MySqlCommand(sql, cn))
-            {
-                cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
-                cn.Open();
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
+		{
+			cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
+			conexion.Open();
 
-                using (var rd = cmd.ExecuteReader())
-                {
-                    while (rd.Read())
-                    {
-                        lista.Add(new Usuario
-                        {
-                            Id = rd.GetInt32("id_usuario"),
-                            NombreUsuario = rd.GetString("nombre_usuario"),
-                            Contrasena = rd.GetString("contrasena"),
-                            Activo = rd.GetBoolean("activo"),
-                            Rol = new Rol(rd.GetInt32("id_rol"), rd.GetString("rol"))
-                        });
-                    }
-                }
-            }
+			using (MySqlDataReader rd = cmd.ExecuteReader())
+			{
+				while (rd.Read())
+				{
+					lista.Add(new Usuario
+					{
+						Id = rd.GetInt32("id_usuario"),
+						NombreUsuario = rd.GetString("nombre_usuario"),
+						Contrasena = rd.GetString("contrasena"),
+						Activo = rd.GetBoolean("activo"),
+						Rol = new Rol(rd.GetInt32("id_rol"), rd.GetString("rol"))
+					});
+				}
+			}
+		}
 
-            return lista;
-        }
+		return lista;
+	}
 
-        public List<Rol> ObtenerRoles()
-        {
-            const string sql = "SELECT id_rol, nombre FROM roles ORDER BY nombre;";
+	public List<Rol> ObtenerRoles()
+	{
+		const string sql = "SELECT id_rol, nombre FROM roles ORDER BY nombre;";
 
-            var lista = new List<Rol>();
+		List<Rol> lista = new();
 
-            using (var cn = ConexionBD.ObtenerConexion())
-            using (var cmd = new MySqlCommand(sql, cn))
-            {
-                cn.Open();
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
+		{
+			conexion.Open();
 
-                using (var rd = cmd.ExecuteReader())
-                {
-                    while (rd.Read())
-                        lista.Add(new Rol(rd.GetInt32("id_rol"), rd.GetString("nombre")));
-                }
-            }
+			using (MySqlDataReader rd = cmd.ExecuteReader())
+			{
+				while (rd.Read())
+					lista.Add(new Rol(rd.GetInt32("id_rol"), rd.GetString("nombre")));
+			}
+		}
 
-            return lista;
-        }
+		return lista;
+	}
 
-        public bool ExisteNombre(string nombreUsuario, int? exceptoId = null)
-        {
-            const string sql = @"
+	public bool ExisteNombre(string nombreUsuario, int? exceptoId = null)
+	{
+		const string sql = @"
                 SELECT COUNT(*)
                 FROM usuarios
                 WHERE nombre_usuario = @usuario
                   AND (@exceptoId IS NULL OR id_usuario <> @exceptoId);";
 
-            using (var cn = ConexionBD.ObtenerConexion())
-            using (var cmd = new MySqlCommand(sql, cn))
-            {
-                cmd.Parameters.Add(Parametros.Texto("@usuario", nombreUsuario));
-                cmd.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
-                cn.Open();
-                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
-            }
-        }
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
+		{
+			cmd.Parameters.Add(Parametros.Texto("@usuario", nombreUsuario));
+			cmd.Parameters.Add(Parametros.EnteroNulo("@exceptoId", exceptoId));
+			conexion.Open();
+			return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+		}
+	}
 
-        public int Insertar(Usuario usuario)
-        {
-            const string sql = @"
+	public int Insertar(Usuario usuario)
+	{
+		const string sql = @"
                 INSERT INTO usuarios (nombre_usuario, contrasena, id_rol, activo)
                 VALUES (@usuario, @contrasena, @rol, @activo);
                 SELECT LAST_INSERT_ID();";
 
-            using (var cn = ConexionBD.ObtenerConexion())
-            using (var cmd = new MySqlCommand(sql, cn))
-            {
-                cmd.Parameters.Add(Parametros.Texto("@usuario", usuario.NombreUsuario));
-                cmd.Parameters.Add(Parametros.Texto("@contrasena", usuario.Contrasena));
-                cmd.Parameters.Add(Parametros.Entero("@rol", usuario.Rol.Id));
-                cmd.Parameters.Add(Parametros.Booleano("@activo", usuario.Activo));
-                cn.Open();
-                return Convert.ToInt32(cmd.ExecuteScalar());
-            }
-        }
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
+		{
+			cmd.Parameters.Add(Parametros.Texto("@usuario", usuario.NombreUsuario));
+			cmd.Parameters.Add(Parametros.Texto("@contrasena", usuario.Contrasena));
+			cmd.Parameters.Add(Parametros.Entero("@rol", usuario.Rol.Id));
+			cmd.Parameters.Add(Parametros.Booleano("@activo", usuario.Activo));
+			conexion.Open();
+			return Convert.ToInt32(cmd.ExecuteScalar());
+		}
+	}
 
-        public void Actualizar(Usuario usuario)
-        {
-            const string sql = @"
+	public void Actualizar(Usuario usuario)
+	{
+		const string sql = @"
                 UPDATE usuarios
                 SET nombre_usuario = @usuario,
                     contrasena = @contrasena,
@@ -144,43 +143,42 @@ namespace TFI_1.Datos
                     activo = @activo
                 WHERE id_usuario = @id;";
 
-            using (var cn = ConexionBD.ObtenerConexion())
-            using (var cmd = new MySqlCommand(sql, cn))
-            {
-                cmd.Parameters.Add(Parametros.Texto("@usuario", usuario.NombreUsuario));
-                cmd.Parameters.Add(Parametros.Texto("@contrasena", usuario.Contrasena));
-                cmd.Parameters.Add(Parametros.Entero("@rol", usuario.Rol.Id));
-                cmd.Parameters.Add(Parametros.Booleano("@activo", usuario.Activo));
-                cmd.Parameters.Add(Parametros.Entero("@id", usuario.Id));
-                cn.Open();
-                cmd.ExecuteNonQuery();
-            }
-        }
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
+		{
+			cmd.Parameters.Add(Parametros.Texto("@usuario", usuario.NombreUsuario));
+			cmd.Parameters.Add(Parametros.Texto("@contrasena", usuario.Contrasena));
+			cmd.Parameters.Add(Parametros.Entero("@rol", usuario.Rol.Id));
+			cmd.Parameters.Add(Parametros.Booleano("@activo", usuario.Activo));
+			cmd.Parameters.Add(Parametros.Entero("@id", usuario.Id));
+			conexion.Open();
+			cmd.ExecuteNonQuery();
+		}
+	}
 
-        public void Desactivar(int id)
-        {
-            const string sql = "UPDATE usuarios SET activo = 0 WHERE id_usuario = @id;";
+	public void Desactivar(int id)
+	{
+		const string sql = "UPDATE usuarios SET activo = 0 WHERE id_usuario = @id;";
 
-            using (var cn = ConexionBD.ObtenerConexion())
-            using (var cmd = new MySqlCommand(sql, cn))
-            {
-                cmd.Parameters.Add(Parametros.Entero("@id", id));
-                cn.Open();
-                cmd.ExecuteNonQuery();
-            }
-        }
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
+		{
+			cmd.Parameters.Add(Parametros.Entero("@id", id));
+			conexion.Open();
+			cmd.ExecuteNonQuery();
+		}
+	}
 
-        public void Reactivar(int id)
-        {
-            const string sql = "UPDATE usuarios SET activo = 1 WHERE id_usuario = @id;";
+	public void Reactivar(int id)
+	{
+		const string sql = "UPDATE usuarios SET activo = 1 WHERE id_usuario = @id;";
 
-            using (var cn = ConexionBD.ObtenerConexion())
-            using (var cmd = new MySqlCommand(sql, cn))
-            {
-                cmd.Parameters.Add(Parametros.Entero("@id", id));
-                cn.Open();
-                cmd.ExecuteNonQuery();
-            }
-        }
-    }
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
+		{
+			cmd.Parameters.Add(Parametros.Entero("@id", id));
+			conexion.Open();
+			cmd.ExecuteNonQuery();
+		}
+	}
 }

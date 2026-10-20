@@ -6,6 +6,7 @@ using TFI_1.Models;
 using TFI_1.Negocio;
 
 namespace TFI_1.Presentacion;
+
 public partial class FormCategorias : Form
 {
 	private readonly CategoriaNegocio _negocio = new CategoriaNegocio();

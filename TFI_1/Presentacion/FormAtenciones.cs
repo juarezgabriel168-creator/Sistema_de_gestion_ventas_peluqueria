@@ -4,6 +4,7 @@ using TFI_1.Models;
 using TFI_1.Negocio;
 
 namespace TFI_1.Presentacion;
+
 public partial class FormAtenciones : Form
 {
 	private static readonly string?[] EstadosFiltro = { null, "pendiente", "en_atencion", "finalizada", "cancelada" };

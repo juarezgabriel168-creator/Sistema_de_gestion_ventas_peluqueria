@@ -7,8 +7,8 @@ namespace TFI_1.Models;
 public class Venta
 {
 	public int Id { get; set; }
-    public decimal Recargo { get; set; }
-    public Cliente Cliente { get; set; } = null!;
+	public decimal Recargo { get; set; }
+	public Cliente Cliente { get; set; } = null!;
 
 	public Usuario Usuario { get; set; } = null!;
 
