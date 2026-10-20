@@ -32,14 +32,8 @@ public class ProveedorNegocio
 		proveedor.Email = Limpiar(proveedor.Email);
 		proveedor.Direccion = Limpiar(proveedor.Direccion);
 
-		if (string.IsNullOrWhiteSpace(proveedor.Nombre))
-		{
-			throw new ArgumentException("El nombre del proveedor es obligatorio.");
-		}
-		if (proveedor.Email != null && (!proveedor.Email.Contains('@') || !proveedor.Email.Contains('.')))
-		{
-			throw new ArgumentException("El email no parece válido.");
-		}
+		Validaciones.ExigirTexto(proveedor.Nombre, "El nombre del proveedor es obligatorio.");
+		Validaciones.ExigirEmail(proveedor.Email);
 
 		int? exceptoId = (proveedor.Id == 0) ? null : new int?(proveedor.Id);
 		if (_datos.ExisteNombre(proveedor.Nombre, exceptoId))

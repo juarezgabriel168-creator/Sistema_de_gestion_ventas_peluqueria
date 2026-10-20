@@ -97,7 +97,7 @@ public partial class FormUsuarioEditar : Form
 	{
 		errProvider.Clear();
 		bool result = true;
-		if (string.IsNullOrWhiteSpace(txtUsuario.Text))
+		if (Validaciones.TextoVacio(txtUsuario.Text))
 		{
 			errProvider.SetError(txtUsuario, "Ingrese el nombre de usuario.");
 			result = false;
@@ -107,7 +107,7 @@ public partial class FormUsuarioEditar : Form
 			errProvider.SetError(cboRol, "Seleccione un rol.");
 			result = false;
 		}
-		if (_esNuevo && string.IsNullOrWhiteSpace(txtContrasena.Text))
+		if (_esNuevo && Validaciones.TextoVacio(txtContrasena.Text))
 		{
 			errProvider.SetError(txtContrasena, "Ingrese una contraseña.");
 			result = false;

@@ -175,7 +175,7 @@ public partial class FormCuentaCorriente : Form
 		}
 
 		decimal monto = numMonto.Value;
-		if (monto <= 0)
+		if (!Validaciones.EsImportePositivo(monto))
 		{
 			MessageBox.Show("Ingrese el monto del abono.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 			return;

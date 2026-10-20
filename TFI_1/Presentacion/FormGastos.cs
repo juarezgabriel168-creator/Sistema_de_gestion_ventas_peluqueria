@@ -78,17 +78,17 @@ public partial class FormGastos : Form
 
 	private Gasto? LeerFormulario()
 	{
-		if (string.IsNullOrWhiteSpace(txtConcepto.Text))
+		if (Validaciones.TextoVacio(txtConcepto.Text))
 		{
 			MessageBox.Show("Ingrese un concepto.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 			return null;
 		}
-		if (numMonto.Value <= 0)
+		if (!Validaciones.EsImportePositivo(numMonto.Value))
 		{
 			MessageBox.Show("El monto debe ser mayor a cero.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 			return null;
 		}
-		if (dtpFecha.Value.Date > DateTime.Today)
+		if (!Validaciones.FechaNoFutura(dtpFecha.Value))
 		{
 			MessageBox.Show("La fecha no puede ser futura.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 			return null;

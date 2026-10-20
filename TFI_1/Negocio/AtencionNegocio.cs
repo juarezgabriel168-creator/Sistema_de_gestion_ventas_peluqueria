@@ -48,7 +48,7 @@ public class AtencionNegocio
 		// Un turno nuevo no puede quedar agendado en el pasado. Se permite
 		// editar atenciones viejas para cambiarles el estado.
 		if (atencion.Tipo == TipoAtencion.Turno && atencion.Id == 0 &&
-			atencion.FechaHora < DateTime.Now.AddMinutes(-5))
+			!Validaciones.TurnoNoPasado(atencion.FechaHora))
 		{
 			throw new ArgumentException("La fecha y hora del turno no puede ser anterior a la actual.");
 		}

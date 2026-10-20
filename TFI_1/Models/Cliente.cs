@@ -17,8 +17,7 @@ namespace TFI_1.Models
             get => _dni;
             set
             {
-                if (string.IsNullOrWhiteSpace(value) || value.Length != 8 || !value.All(char.IsDigit))
-                    throw new ArgumentException("El DNI debe tener 8 dígitos numéricos.");
+                Validaciones.ExigirDni(value);
                 _dni = value;
             }
         }

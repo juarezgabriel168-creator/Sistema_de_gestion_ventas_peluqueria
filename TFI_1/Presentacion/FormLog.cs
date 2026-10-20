@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using Org.BouncyCastle.Crypto.Generators;
 using TFI_1.Datos;
 using TFI_1.Models;
@@ -23,7 +23,7 @@ namespace TFI_1
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(txtNomUsuario.Text) || string.IsNullOrWhiteSpace(txtConUsuario.Text))
+                if (Validaciones.TextoVacio(txtNomUsuario.Text) || Validaciones.TextoVacio(txtConUsuario.Text))
                 {
                     MessageBox.Show("Ingrese usuario y contraseña.", "Datos incompletos",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);

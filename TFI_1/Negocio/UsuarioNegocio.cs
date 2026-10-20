@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,7 +33,7 @@ namespace TFI_1.Negocio
         {
             List<string> problemas = new List<string>();
 
-            if (string.IsNullOrWhiteSpace(contrasena))
+            if (Validaciones.TextoVacio(contrasena))
             {
                 problemas.Add("La contraseña es obligatoria.");
                 return problemas;
@@ -55,7 +55,7 @@ namespace TFI_1.Negocio
             {
                 problemas.Add("Debe incluir al menos un número.");
             }
-            if (!string.IsNullOrWhiteSpace(nombreUsuario)
+            if (!Validaciones.TextoVacio(nombreUsuario)
                 && nombreUsuario.Trim().Length >= 3
                 && contrasena.Contains(nombreUsuario.Trim(), StringComparison.OrdinalIgnoreCase))
             {
@@ -71,7 +71,7 @@ namespace TFI_1.Negocio
 
         public Usuario Autenticar(string nombreUsuario, string contrasena)
         {
-            if (string.IsNullOrWhiteSpace(nombreUsuario) || string.IsNullOrWhiteSpace(contrasena))
+            if (Validaciones.TextoVacio(nombreUsuario) || Validaciones.TextoVacio(contrasena))
                 throw new ArgumentException("Ingrese usuario y contraseña.");
 
             var usuario = _datos.ObtenerPorNombre(nombreUsuario.Trim());
@@ -79,7 +79,7 @@ namespace TFI_1.Negocio
             if (usuario == null)
                 throw new UnauthorizedAccessException("El usuario no existe.");
 
-            if (string.IsNullOrWhiteSpace(usuario.Contrasena))
+            if (Validaciones.TextoVacio(usuario.Contrasena))
                 throw new UnauthorizedAccessException(
                     "La contraseña almacenada de este usuario no es válida. Contacte al administrador.");
 
@@ -107,7 +107,7 @@ namespace TFI_1.Negocio
             if (usuario == null)
                 throw new ArgumentException("El usuario es obligatorio.");
 
-            if (string.IsNullOrWhiteSpace(usuario.NombreUsuario))
+            if (Validaciones.TextoVacio(usuario.NombreUsuario))
                 throw new ArgumentException("El nombre de usuario es obligatorio.");
 
             if (usuario.Rol == null || usuario.Rol.Id <= 0)
@@ -119,7 +119,7 @@ namespace TFI_1.Negocio
 
             // La política se aplica solo cuando se define o cambia la contraseña:
             // las claves viejas siguen funcionando hasta que se cambien.
-            if (!string.IsNullOrWhiteSpace(contrasenaPlano))
+            if (!Validaciones.TextoVacio(contrasenaPlano))
             {
                 List<string> problemas = ValidarContrasena(usuario.NombreUsuario, contrasenaPlano);
                 if (problemas.Count > 0)
@@ -132,7 +132,7 @@ namespace TFI_1.Negocio
 
             if (esNuevo)
             {
-                if (string.IsNullOrWhiteSpace(contrasenaPlano))
+                if (Validaciones.TextoVacio(contrasenaPlano))
                     throw new ArgumentException("La contraseña es obligatoria para un usuario nuevo.");
 
                 usuario.Contrasena = BCrypt.Net.BCrypt.HashPassword(contrasenaPlano);
@@ -141,7 +141,7 @@ namespace TFI_1.Negocio
             else
             {
                 // Si no se ingresó una contraseña nueva, se conserva el hash actual.
-                if (!string.IsNullOrWhiteSpace(contrasenaPlano))
+                if (!Validaciones.TextoVacio(contrasenaPlano))
                     usuario.Contrasena = BCrypt.Net.BCrypt.HashPassword(contrasenaPlano);
 
                 _datos.Actualizar(usuario);
@@ -179,7 +179,7 @@ namespace TFI_1.Negocio
 
         private static bool VerificarContrasena(string contrasena, string hashAlmacenado)
         {
-            if (string.IsNullOrWhiteSpace(hashAlmacenado))
+            if (Validaciones.TextoVacio(hashAlmacenado))
                 throw new UnauthorizedAccessException(
                     "La contraseña almacenada de este usuario no es válida. Contacte al administrador.");
             try

@@ -144,12 +144,12 @@ public partial class FormItemEditar : Form
 	{
 		errProvider.Clear();
 		bool result = true;
-		if (string.IsNullOrWhiteSpace(txtNombre.Text))
+		if (Validaciones.TextoVacio(txtNombre.Text))
 		{
 			errProvider.SetError(txtNombre, "Ingrese el nombre del ítem.");
 			result = false;
 		}
-		if (!decimal.TryParse(txtPrecio.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var result2) || result2 < 0m)
+		if (!Validaciones.ImporteValido(txtPrecio.Text, out _))
 		{
 			errProvider.SetError(txtPrecio, "Ingrese un precio válido (mayor o igual a 0).");
 			result = false;
@@ -159,15 +159,14 @@ public partial class FormItemEditar : Form
 			errProvider.SetError(cboCategoria, "Seleccione una categoría.");
 			result = false;
 		}
-		int result5;
 		if (cboTipo.SelectedIndex == 1)
 		{
-			if (!int.TryParse(txtStock.Text, out var result3) || result3 < 0)
+			if (!Validaciones.EnteroNoNegativo(txtStock.Text, out _))
 			{
 				errProvider.SetError(txtStock, "Ingrese un stock válido (mayor o igual a 0).");
 				result = false;
 			}
-			if (!int.TryParse(txtStockMinimo.Text, out var result4) || result4 < 0)
+			if (!Validaciones.EnteroNoNegativo(txtStockMinimo.Text, out _))
 			{
 				errProvider.SetError(txtStockMinimo, "Ingrese un stock mínimo válido (mayor o igual a 0).");
 				result = false;
@@ -175,12 +174,12 @@ public partial class FormItemEditar : Form
 		}
 		else
 		{
-			if (string.IsNullOrWhiteSpace(txtDuracion.Text))
+			if (Validaciones.TextoVacio(txtDuracion.Text))
 			{
 				errProvider.SetError(txtDuracion, "Ingrese la duración en minutos (obligatoria para servicios).");
 				result = false;
 			}
-			else if (!int.TryParse(txtDuracion.Text, out result5) || result5 <= 0)
+			else if (!Validaciones.EnteroPositivo(txtDuracion.Text, out _))
 			{
 				errProvider.SetError(txtDuracion, "La duración debe ser mayor a cero.");
 				result = false;

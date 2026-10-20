@@ -228,6 +228,7 @@ TFI_1/
 ├── TFI_1/
 │   ├── App.config            # Cadena de conexión y configuración
 │   ├── Program.cs            # Punto de entrada (abre el login)
+│   ├── Validaciones.cs       # Reglas compartidas (DNI, email, importes, fechas)
 │   ├── Models/               # Clases del dominio (Cliente, Venta, Item, ...)
 │   ├── Datos/                # Acceso a MySQL (consultas SQL)
 │   ├── Negocio/              # Reglas de negocio y validaciones
@@ -240,14 +241,15 @@ TFI_1/
 ## Pruebas automatizadas
 
 El proyecto `TFI_1.Tests` prueba la lógica que **no depende de la base de
-datos**: modelos, stock, ventas, caja y la política de contraseñas. No
-necesita MySQL ni modifica datos.
+datos**: modelos, stock, ventas, caja, la política de contraseñas y las
+validaciones compartidas (DNI, email, importes, fechas y turnos). No necesita
+MySQL ni modifica datos.
 
 ```bash
 dotnet test TFI_1.Tests/TFI_1.Tests.csproj
 ```
 
-Son 55 pruebas de unidad; si alguna falla, el comando termina con error y
+Son 99 pruebas de unidad; si alguna falla, el comando termina con error y
 muestra el detalle.
 
 La solución completa compila **sin advertencias** (`0 advertencias`), lo que

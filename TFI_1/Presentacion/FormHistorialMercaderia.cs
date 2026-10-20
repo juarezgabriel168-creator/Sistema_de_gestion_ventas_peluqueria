@@ -68,7 +68,7 @@ public partial class FormHistorialMercaderia : Form
 	// Trae solo la página actual; el total y la suma se calculan sobre todo el período.
 	private void CargarPagina()
 	{
-		if (dtpDesde.Value.Date > dtpHasta.Value.Date)
+		if (!Validaciones.RangoDeFechasValido(dtpDesde.Value, dtpHasta.Value))
 		{
 			MessageBox.Show("La fecha 'Desde' no puede ser mayor que 'Hasta'.", "Aviso",
 				MessageBoxButtons.OK, MessageBoxIcon.Asterisk);

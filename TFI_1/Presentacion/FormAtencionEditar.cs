@@ -168,7 +168,7 @@ public partial class FormAtencionEditar : Form
 		if (cboEmpleado.SelectedItem is Empleado empleado && empleado.AtiendeConTurno())
 		{
 			bool fechaModificada = !_esNueva && _atencion is not null && dtpFechaHora.Value != _atencion.FechaHora;
-			if ((_esNueva || fechaModificada) && dtpFechaHora.Value < DateTime.Now.AddMinutes(-5))
+			if ((_esNueva || fechaModificada) && !Validaciones.TurnoNoPasado(dtpFechaHora.Value))
 			{
 				errProvider.SetError(dtpFechaHora, "La fecha y hora no puede ser anterior a la actual.");
 				valido = false;

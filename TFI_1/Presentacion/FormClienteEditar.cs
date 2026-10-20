@@ -78,18 +78,18 @@ public partial class FormClienteEditar : Form
 	{
 		errProvider.Clear();
 		bool result = true;
-		if (string.IsNullOrWhiteSpace(txtNombre.Text))
+		if (Validaciones.TextoVacio(txtNombre.Text))
 		{
 			errProvider.SetError(txtNombre, "Ingrese el nombre.");
 			result = false;
 		}
-		if (string.IsNullOrWhiteSpace(txtApellido.Text))
+		if (Validaciones.TextoVacio(txtApellido.Text))
 		{
 			errProvider.SetError(txtApellido, "Ingrese el apellido.");
 			result = false;
 		}
 		string text = txtDni.Text.Trim();
-		if (text.Length != 8 || !text.All(char.IsDigit))
+		if (!Validaciones.DniValido(text))
 		{
 			errProvider.SetError(txtDni, "El DNI debe tener 8 dígitos numéricos.");
 			result = false;

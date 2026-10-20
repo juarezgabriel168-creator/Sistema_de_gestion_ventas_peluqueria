@@ -21,18 +21,9 @@ public class ClienteNegocio
 		{
 			throw new ArgumentException("El cliente es obligatorio.");
 		}
-		if (string.IsNullOrWhiteSpace(cliente.Nombre))
-		{
-			throw new ArgumentException("El nombre es obligatorio.");
-		}
-		if (string.IsNullOrWhiteSpace(cliente.Apellido))
-		{
-			throw new ArgumentException("El apellido es obligatorio.");
-		}
-		if (string.IsNullOrWhiteSpace(cliente.Dni) || cliente.Dni.Length != 8 || !cliente.Dni.All(char.IsDigit))
-		{
-			throw new ArgumentException("El DNI debe tener 8 dígitos numéricos.");
-		}
+		Validaciones.ExigirTexto(cliente.Nombre, "El nombre es obligatorio.");
+		Validaciones.ExigirTexto(cliente.Apellido, "El apellido es obligatorio.");
+		Validaciones.ExigirDni(cliente.Dni);
 		int? exceptoId = ((cliente.Id == 0) ? ((int?)null) : new int?(cliente.Id));
 		if (_datos.ExisteDni(cliente.Dni, exceptoId))
 		{

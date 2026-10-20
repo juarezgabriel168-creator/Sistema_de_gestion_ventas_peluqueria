@@ -23,8 +23,7 @@ namespace TFI_1.Models
             get => _precio;
             set
             {
-                if (value < 0)
-                    throw new ArgumentException("El precio no puede ser negativo.");
+                Validaciones.ExigirImporteNoNegativo(value, "El precio no puede ser negativo.");
                 _precio = value;
             }
         }

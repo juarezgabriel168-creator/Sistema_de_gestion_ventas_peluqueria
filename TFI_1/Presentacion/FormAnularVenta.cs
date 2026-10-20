@@ -24,7 +24,7 @@ public partial class FormAnularVenta : Form
 
 	private void btnAceptar_Click(object sender, EventArgs e)
 	{
-		if (string.IsNullOrWhiteSpace(txtMotivo.Text))
+		if (Validaciones.TextoVacio(txtMotivo.Text))
 		{
 			errProvider.SetError(txtMotivo, "Indique el motivo de la anulación.");
 			txtMotivo.Focus();

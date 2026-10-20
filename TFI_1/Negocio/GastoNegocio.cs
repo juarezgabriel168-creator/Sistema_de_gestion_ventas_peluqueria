@@ -21,12 +21,9 @@ public class GastoNegocio
 	{
 		if (gasto == null)
 			throw new ArgumentException("El gasto es obligatorio.");
-		if (string.IsNullOrWhiteSpace(gasto.Concepto))
-			throw new ArgumentException("Debe ingresar un concepto.");
-		if (gasto.Monto <= 0)
-			throw new ArgumentException("El monto debe ser mayor a cero.");
-		if (gasto.Fecha > DateTime.Today)
-			throw new ArgumentException("La fecha no puede ser futura.");
+		Validaciones.ExigirTexto(gasto.Concepto, "Debe ingresar un concepto.");
+		Validaciones.ExigirImportePositivo(gasto.Monto, "El monto debe ser mayor a cero.");
+		Validaciones.ExigirFechaNoFutura(gasto.Fecha, "La fecha no puede ser futura.");
 
 		int id = _datos.Insertar(gasto);
 		_auditoria.Registrar("gasto_alta", "gastos", id,
@@ -38,10 +35,8 @@ public class GastoNegocio
 	{
 		if (gasto == null || gasto.Id <= 0)
 			throw new ArgumentException("Gasto inválido.");
-		if (string.IsNullOrWhiteSpace(gasto.Concepto))
-			throw new ArgumentException("Debe ingresar un concepto.");
-		if (gasto.Monto <= 0)
-			throw new ArgumentException("El monto debe ser mayor a cero.");
+		Validaciones.ExigirTexto(gasto.Concepto, "Debe ingresar un concepto.");
+		Validaciones.ExigirImportePositivo(gasto.Monto, "El monto debe ser mayor a cero.");
 
 		_datos.Actualizar(gasto);
 		_auditoria.Registrar("gasto_edicion", "gastos", gasto.Id,

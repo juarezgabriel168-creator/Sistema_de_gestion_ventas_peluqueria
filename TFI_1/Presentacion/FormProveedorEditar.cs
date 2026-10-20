@@ -83,7 +83,7 @@ public partial class FormProveedorEditar : Form
 	private bool Validar()
 	{
 		errProvider.Clear();
-		if (string.IsNullOrWhiteSpace(txtNombre.Text))
+		if (Validaciones.TextoVacio(txtNombre.Text))
 		{
 			errProvider.SetError(txtNombre, "Ingrese el nombre del proveedor.");
 			txtNombre.Focus();

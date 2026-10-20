@@ -80,12 +80,12 @@ public partial class FormEmpleadoEditar : Form
 	{
 		errProvider.Clear();
 		bool result = true;
-		if (string.IsNullOrWhiteSpace(txtNombre.Text))
+		if (Validaciones.TextoVacio(txtNombre.Text))
 		{
 			errProvider.SetError(txtNombre, "Ingrese el nombre.");
 			result = false;
 		}
-		if (string.IsNullOrWhiteSpace(txtApellido.Text))
+		if (Validaciones.TextoVacio(txtApellido.Text))
 		{
 			errProvider.SetError(txtApellido, "Ingrese el apellido.");
 			result = false;

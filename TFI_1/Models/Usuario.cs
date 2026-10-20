@@ -13,8 +13,7 @@ namespace TFI_1.Models
             get => _nombreUsuario;
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
-                    throw new ArgumentException("El nombre de usuario es obligatorio.");
+                Validaciones.ExigirTexto(value, "El nombre de usuario es obligatorio.");
                 _nombreUsuario = value.Trim();
             }
         }

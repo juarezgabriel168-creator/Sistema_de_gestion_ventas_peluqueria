@@ -72,7 +72,7 @@ public partial class FormCategoriaEditar : Form
 	private bool Validar()
 	{
 		errProvider.Clear();
-		if (string.IsNullOrWhiteSpace(txtNombre.Text))
+		if (Validaciones.TextoVacio(txtNombre.Text))
 		{
 			errProvider.SetError(txtNombre, "Ingrese el nombre de la categoría.");
 			return false;

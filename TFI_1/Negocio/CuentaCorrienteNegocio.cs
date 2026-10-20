@@ -36,8 +36,7 @@ public class CuentaCorrienteNegocio
 			throw new ArgumentException("El movimiento es obligatorio.");
 		if (movimiento.IdCuenta <= 0)
 			throw new ArgumentException("Cuenta corriente inválida.");
-		if (movimiento.Monto <= 0)
-			throw new ArgumentException("El monto debe ser mayor a cero.");
+		Validaciones.ExigirImportePositivo(movimiento.Monto, "El monto debe ser mayor a cero.");
 		if (movimiento.IdUsuario <= 0)
 			throw new ArgumentException("No hay un usuario en sesión.");
 
@@ -49,8 +48,7 @@ public class CuentaCorrienteNegocio
 	{
 		if (idCliente <= 0)
 			throw new ArgumentException("Seleccione un cliente.");
-		if (monto <= 0)
-			throw new ArgumentException("El monto del abono debe ser mayor a cero.");
+		Validaciones.ExigirImportePositivo(monto, "El monto del abono debe ser mayor a cero.");
 		if (Sesion.UsuarioActual == null)
 			throw new ArgumentException("No hay un usuario en sesión.");
 

@@ -92,7 +92,7 @@ public partial class FormHistorialVentas : Form
         if (txtNumeroVenta == null || cboEmpleado == null || cboUsuario == null || dgvVentas == null)
             return;
 
-        if (dtpDesde.Value.Date > dtpHasta.Value.Date)
+        if (!Validaciones.RangoDeFechasValido(dtpDesde.Value, dtpHasta.Value))
         {
             MessageBox.Show("La fecha 'Desde' no puede ser mayor que 'Hasta'.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             return;
