@@ -35,6 +35,24 @@ partial class FormItems : Form
 
 	private DataGridView dgvItems;
 
+	private DataGridViewTextBoxColumn colNombre;
+
+	private DataGridViewTextBoxColumn colTipo;
+
+	private DataGridViewTextBoxColumn colCategoria;
+
+	private DataGridViewTextBoxColumn colPrecio;
+
+	private DataGridViewTextBoxColumn colCosto;
+
+	private DataGridViewTextBoxColumn colStock;
+
+	private DataGridViewTextBoxColumn colStockMinimo;
+
+	private DataGridViewTextBoxColumn colDuracion;
+
+	private DataGridViewCheckBoxColumn colActivo;
+
 	private CheckBox chkSoloActivos;
 
 	private CheckBox chkStockBajo;
@@ -66,6 +84,15 @@ partial class FormItems : Form
         chkSoloActivos = new CheckBox();
         chkStockBajo = new CheckBox();
         dgvItems = new DataGridView();
+        colNombre = new DataGridViewTextBoxColumn();
+        colTipo = new DataGridViewTextBoxColumn();
+        colCategoria = new DataGridViewTextBoxColumn();
+        colPrecio = new DataGridViewTextBoxColumn();
+        colCosto = new DataGridViewTextBoxColumn();
+        colStock = new DataGridViewTextBoxColumn();
+        colStockMinimo = new DataGridViewTextBoxColumn();
+        colDuracion = new DataGridViewTextBoxColumn();
+        colActivo = new DataGridViewCheckBoxColumn();
         ((ISupportInitialize)dgvItems).BeginInit();
         SuspendLayout();
         // 
@@ -210,6 +237,7 @@ partial class FormItems : Form
         dgvItems.AllowUserToDeleteRows = false;
         dgvItems.AllowUserToResizeRows = false;
         dgvItems.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+        dgvItems.AutoGenerateColumns = false;
         dgvItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvItems.BackgroundColor = SystemColors.ButtonHighlight;
         dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -237,7 +265,91 @@ partial class FormItems : Form
         dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvItems.Size = new Size(836, 368);
         dgvItems.TabIndex = 11;
+        dgvItems.Columns.AddRange(new DataGridViewColumn[] { colNombre, colTipo, colCategoria, colPrecio, colCosto, colStock, colStockMinimo, colDuracion, colActivo });
         dgvItems.SelectionChanged += dgvItems_SelectionChanged;
+        // 
+        // colNombre
+        // 
+        colNombre.DataPropertyName = "Nombre";
+        colNombre.FillWeight = 22F;
+        colNombre.HeaderText = "Nombre";
+        colNombre.Name = "colNombre";
+        colNombre.ReadOnly = true;
+        // 
+        // colTipo
+        // 
+        colTipo.DataPropertyName = "Tipo";
+        colTipo.FillWeight = 9F;
+        colTipo.HeaderText = "Tipo";
+        colTipo.Name = "colTipo";
+        colTipo.ReadOnly = true;
+        // 
+        // colCategoria
+        // 
+        colCategoria.DataPropertyName = "CategoriaNombre";
+        colCategoria.FillWeight = 18F;
+        colCategoria.HeaderText = "Categoría";
+        colCategoria.Name = "colCategoria";
+        colCategoria.ReadOnly = true;
+        // 
+        // colPrecio
+        // 
+        colPrecio.DataPropertyName = "Precio";
+        colPrecio.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+        colPrecio.DefaultCellStyle.Format = "C2";
+        colPrecio.FillWeight = 11F;
+        colPrecio.HeaderText = "Precio";
+        colPrecio.Name = "colPrecio";
+        colPrecio.ReadOnly = true;
+        // 
+        // colCosto
+        // 
+        colCosto.DataPropertyName = "Costo";
+        colCosto.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+        colCosto.DefaultCellStyle.Format = "C2";
+        colCosto.DefaultCellStyle.NullValue = "-";
+        colCosto.FillWeight = 11F;
+        colCosto.HeaderText = "Costo";
+        colCosto.Name = "colCosto";
+        colCosto.ReadOnly = true;
+        // 
+        // colStock
+        // 
+        colStock.DataPropertyName = "Stock";
+        colStock.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+        colStock.DefaultCellStyle.NullValue = "-";
+        colStock.FillWeight = 8F;
+        colStock.HeaderText = "Stock";
+        colStock.Name = "colStock";
+        colStock.ReadOnly = true;
+        // 
+        // colStockMinimo
+        // 
+        colStockMinimo.DataPropertyName = "StockMinimo";
+        colStockMinimo.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+        colStockMinimo.DefaultCellStyle.NullValue = "-";
+        colStockMinimo.FillWeight = 10F;
+        colStockMinimo.HeaderText = "Stock mínimo";
+        colStockMinimo.Name = "colStockMinimo";
+        colStockMinimo.ReadOnly = true;
+        // 
+        // colDuracion
+        // 
+        colDuracion.DataPropertyName = "DuracionMin";
+        colDuracion.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+        colDuracion.DefaultCellStyle.NullValue = "-";
+        colDuracion.FillWeight = 11F;
+        colDuracion.HeaderText = "Duración (min)";
+        colDuracion.Name = "colDuracion";
+        colDuracion.ReadOnly = true;
+        // 
+        // colActivo
+        // 
+        colActivo.DataPropertyName = "Activo";
+        colActivo.FillWeight = 8F;
+        colActivo.HeaderText = "Activo";
+        colActivo.Name = "colActivo";
+        colActivo.ReadOnly = true;
         // 
         // FormItems
         // 

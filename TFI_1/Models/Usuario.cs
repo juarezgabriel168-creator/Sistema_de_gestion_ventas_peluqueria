@@ -20,6 +20,7 @@ public class Usuario
 
 	public string Contrasena { get; set; } = string.Empty;   // guarda el hash, no el texto plano
 	public Rol Rol { get; set; } = null!;
+	public string RolNombre => Rol?.Nombre ?? string.Empty;
 	public bool Activo { get; set; } = true;
 
 	public Usuario() { }

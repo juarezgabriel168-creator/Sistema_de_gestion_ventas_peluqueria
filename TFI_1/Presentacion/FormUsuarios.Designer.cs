@@ -26,6 +26,14 @@ partial class FormUsuarios : Form
 
 	private DataGridView dgvUsuarios;
 
+	private DataGridViewTextBoxColumn colId;
+
+	private DataGridViewTextBoxColumn colNombreUsuario;
+
+	private DataGridViewTextBoxColumn colRol;
+
+	private DataGridViewCheckBoxColumn colActivo;
+
 	private CheckBox chkSoloActivos;
 
 	protected override void Dispose(bool disposing)
@@ -50,6 +58,10 @@ partial class FormUsuarios : Form
         btnRefrescar = new Button();
         chkSoloActivos = new CheckBox();
         dgvUsuarios = new DataGridView();
+        colId = new DataGridViewTextBoxColumn();
+        colNombreUsuario = new DataGridViewTextBoxColumn();
+        colRol = new DataGridViewTextBoxColumn();
+        colActivo = new DataGridViewCheckBoxColumn();
         ((ISupportInitialize)dgvUsuarios).BeginInit();
         SuspendLayout();
         // 
@@ -142,6 +154,7 @@ partial class FormUsuarios : Form
         dgvUsuarios.AllowUserToDeleteRows = false;
         dgvUsuarios.AllowUserToResizeRows = false;
         dgvUsuarios.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+        dgvUsuarios.AutoGenerateColumns = false;
         dgvUsuarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvUsuarios.BackgroundColor = SystemColors.ButtonHighlight;
         dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -169,7 +182,40 @@ partial class FormUsuarios : Form
         dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvUsuarios.Size = new Size(736, 360);
         dgvUsuarios.TabIndex = 7;
+        dgvUsuarios.Columns.AddRange(new DataGridViewColumn[] { colId, colNombreUsuario, colRol, colActivo });
         dgvUsuarios.SelectionChanged += dgvUsuarios_SelectionChanged;
+        // 
+        // colId
+        // 
+        colId.DataPropertyName = "Id";
+        colId.FillWeight = 8F;
+        colId.HeaderText = "ID";
+        colId.Name = "colId";
+        colId.ReadOnly = true;
+        // 
+        // colNombreUsuario
+        // 
+        colNombreUsuario.DataPropertyName = "NombreUsuario";
+        colNombreUsuario.FillWeight = 32F;
+        colNombreUsuario.HeaderText = "Usuario";
+        colNombreUsuario.Name = "colNombreUsuario";
+        colNombreUsuario.ReadOnly = true;
+        // 
+        // colRol
+        // 
+        colRol.DataPropertyName = "RolNombre";
+        colRol.FillWeight = 25F;
+        colRol.HeaderText = "Rol";
+        colRol.Name = "colRol";
+        colRol.ReadOnly = true;
+        // 
+        // colActivo
+        // 
+        colActivo.DataPropertyName = "Activo";
+        colActivo.FillWeight = 10F;
+        colActivo.HeaderText = "Activo";
+        colActivo.Name = "colActivo";
+        colActivo.ReadOnly = true;
         // 
         // FormUsuarios
         // 
