@@ -23,12 +23,39 @@ namespace TFI_1
         {
             try
             {
-                Sesion.UsuarioActual = _negocio.Autenticar(txtNomUsuario.Text, txtConUsuario.Text);
+                if (string.IsNullOrWhiteSpace(txtNomUsuario.Text) || string.IsNullOrWhiteSpace(txtConUsuario.Text))
+                {
+                    MessageBox.Show("Ingrese usuario y contraseña.", "Datos incompletos",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                Sesion.UsuarioActual = _negocio.Autenticar(txtNomUsuario.Text.Trim(), txtConUsuario.Text);
 
                 var principal = new FormPrincipal();
-                principal.FormClosed += (s, args) => Application.Exit();
+                principal.FormClosed += (s, args) =>
+                {
+                    if (principal.CerrarSesionPendiente)
+                    {
+                        // El usuario cerró sesión: se vuelve a esta pantalla de login
+                        // en lugar de cerrar la aplicación.
+                        Sesion.CerrarSesion();
+                        txtNomUsuario.Clear();
+                        txtConUsuario.Clear();
+                        txtNomUsuario.Focus();
+                        Show();
+                    }
+                    else
+                    {
+                        Application.Exit();
+                    }
+                };
                 principal.Show();
                 Hide();
+            }
+            catch (ArgumentNullException ex)
+            {
+                MessageBox.Show($"Valor nulo inesperado: {ex.Message}\nParámetro: {ex.ParamName}\n\n{ex.StackTrace}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (ArgumentException ex)
             {
@@ -44,8 +71,13 @@ namespace TFI_1
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ocurrió un error inesperado: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error inesperado: {ex.GetType().Name}\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void chkMostar_CheckedChanged(object sender, EventArgs e)
+        {
+            txtConUsuario.UseSystemPasswordChar = !chkMostar.Checked;
         }
     }
 }

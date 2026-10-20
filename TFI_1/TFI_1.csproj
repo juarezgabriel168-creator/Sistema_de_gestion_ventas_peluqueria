@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -9,12 +9,269 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
-    <Folder Include="Negocio\" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.2.0" />
+    <PackageReference Include="MySql.Data" Version="26.7.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="26.7.0" />
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Presentacion\FormAtencionEditar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormAtencionEditar.Designer.cs">
+      <DependentUpon>FormAtencionEditar.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormAtencionEditar.resx">
+      <DependentUpon>FormAtencionEditar.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormAtenciones.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormAtenciones.Designer.cs">
+      <DependentUpon>FormAtenciones.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormAtenciones.resx">
+      <DependentUpon>FormAtenciones.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormCategorias.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormCategorias.Designer.cs">
+      <DependentUpon>FormCategorias.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormCategorias.resx">
+      <DependentUpon>FormCategorias.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormCategoriaEditar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormCategoriaEditar.Designer.cs">
+      <DependentUpon>FormCategoriaEditar.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormCategoriaEditar.resx">
+      <DependentUpon>FormCategoriaEditar.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormClienteEditar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormClienteEditar.Designer.cs">
+      <DependentUpon>FormClienteEditar.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormClienteEditar.resx">
+      <DependentUpon>FormClienteEditar.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormClientes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormClientes.Designer.cs">
+      <DependentUpon>FormClientes.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormClientes.resx">
+      <DependentUpon>FormClientes.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormDashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormDashboard.Designer.cs">
+      <DependentUpon>FormDashboard.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormDashboard.resx">
+      <DependentUpon>FormDashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormDetalleVenta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormDetalleVenta.Designer.cs">
+      <DependentUpon>FormDetalleVenta.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormDetalleVenta.resx">
+      <DependentUpon>FormDetalleVenta.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormEmpleadoEditar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormEmpleadoEditar.Designer.cs">
+      <DependentUpon>FormEmpleadoEditar.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormEmpleadoEditar.resx">
+      <DependentUpon>FormEmpleadoEditar.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormEmpleados.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormEmpleados.Designer.cs">
+      <DependentUpon>FormEmpleados.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormEmpleados.resx">
+      <DependentUpon>FormEmpleados.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormHistorialVentas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormHistorialVentas.Designer.cs">
+      <DependentUpon>FormHistorialVentas.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormHistorialVentas.resx">
+      <DependentUpon>FormHistorialVentas.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormItemEditar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormItemEditar.Designer.cs">
+      <DependentUpon>FormItemEditar.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormItemEditar.resx">
+      <DependentUpon>FormItemEditar.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormItems.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormItems.Designer.cs">
+      <DependentUpon>FormItems.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormItems.resx">
+      <DependentUpon>FormItems.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormLog.Designer.cs">
+      <DependentUpon>FormLog.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormLog.resx">
+      <DependentUpon>FormLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormNuevaVenta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormNuevaVenta.Designer.cs">
+      <DependentUpon>FormNuevaVenta.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormNuevaVenta.resx">
+      <DependentUpon>FormNuevaVenta.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormPrincipal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormPrincipal.Designer.cs">
+      <DependentUpon>FormPrincipal.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormPrincipal.resx">
+      <DependentUpon>FormPrincipal.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormReporteDiario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormReporteDiario.Designer.cs">
+      <DependentUpon>FormReporteDiario.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormReporteDiario.resx">
+      <DependentUpon>FormReporteDiario.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormReporteMensual.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormReporteMensual.Designer.cs">
+      <DependentUpon>FormReporteMensual.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormReporteMensual.resx">
+      <DependentUpon>FormReporteMensual.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormUsuarioEditar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormUsuarioEditar.Designer.cs">
+      <DependentUpon>FormUsuarioEditar.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormUsuarioEditar.resx">
+      <DependentUpon>FormUsuarioEditar.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormUsuarios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormUsuarios.Designer.cs">
+      <DependentUpon>FormUsuarios.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormUsuarios.resx">
+      <DependentUpon>FormUsuarios.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormGastos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormGastos.Designer.cs">
+      <DependentUpon>FormGastos.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormGastos.resx">
+      <DependentUpon>FormGastos.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormIngresoMercaderia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormIngresoMercaderia.Designer.cs">
+      <DependentUpon>FormIngresoMercaderia.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormIngresoMercaderia.resx">
+      <DependentUpon>FormIngresoMercaderia.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormHistorialMercaderia.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormHistorialMercaderia.Designer.cs">
+      <DependentUpon>FormHistorialMercaderia.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormHistorialMercaderia.resx">
+      <DependentUpon>FormHistorialMercaderia.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormProveedores.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormProveedores.Designer.cs">
+      <DependentUpon>FormProveedores.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormProveedores.resx">
+      <DependentUpon>FormProveedores.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormProveedorEditar.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormProveedorEditar.Designer.cs">
+      <DependentUpon>FormProveedorEditar.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormProveedorEditar.resx">
+      <DependentUpon>FormProveedorEditar.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormCuentaCorriente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormCuentaCorriente.Designer.cs">
+      <DependentUpon>FormCuentaCorriente.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormCuentaCorriente.resx">
+      <DependentUpon>FormCuentaCorriente.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Presentacion\FormTicket.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormTicket.Designer.cs">
+      <DependentUpon>FormTicket.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormTicket.resx">
+      <DependentUpon>FormTicket.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

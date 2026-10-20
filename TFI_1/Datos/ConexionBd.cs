@@ -1,14 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Configuration;
 using MySql.Data.MySqlClient;
 
 namespace TFI_1.Datos
 {
     public static class ConexionBD
     {
-        private const string Cadena =
-            "Server=localhost;Port=3306;Database=peluqueria;Uid=root;Pwd=Gabriel1234/;CharSet=utf8mb4;";
+        private static readonly string Cadena = ObtenerCadena();
+
+        private static string ObtenerCadena()
+        {
+            ConnectionStringSettings configuracion =
+                ConfigurationManager.ConnectionStrings["Peluqueria"];
+
+            if (configuracion == null || string.IsNullOrWhiteSpace(configuracion.ConnectionString))
+                throw new ConfigurationErrorsException(
+                    "No se encontró la cadena de conexión 'Peluqueria' en App.config.");
+
+            return configuracion.ConnectionString;
+        }
 
         public static MySqlConnection ObtenerConexion()
         {

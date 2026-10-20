@@ -16,7 +16,8 @@ namespace TFI_1.Models
         public int? DuracionMin { get; set; }   // solo servicios
         public int? Stock { get; set; }         // solo productos
         public int? StockMinimo { get; set; }   // solo productos
-        public Categoria Categoria { get; set; }
+        public Categoria Categoria { get; set; } = null!;
+        public string CategoriaNombre => Categoria?.Nombre ?? string.Empty;
         public bool Activo { get; set; } = true;
 
         public decimal Precio
@@ -29,6 +30,8 @@ namespace TFI_1.Models
                 _precio = value;
             }
         }
+
+        public decimal? Costo { get; set; }   // costo de compra (solo productos)
 
         public bool EsProducto => Tipo == TipoItem.Producto;
 

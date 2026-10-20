@@ -27,6 +27,10 @@ namespace TFI_1.Models
 
         public string NombreCompleto => $"{Apellido}, {Nombre}";
 
+        public const string DniConsumidorFinal = "00000000";
+
+        public bool EsConsumidorFinal => _dni == DniConsumidorFinal;
+
         public Cliente() { }
         public Cliente(string nombre, string apellido, string dni, string telefono = null)
         {

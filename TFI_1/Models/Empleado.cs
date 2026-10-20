@@ -16,6 +16,10 @@ namespace TFI_1.Models
 
         public bool AtiendeConTurno() => Modalidad == Modalidad.Turnos;
 
+        public string ModalidadTexto => Modalidad == Modalidad.Turnos ? "Turnos" : "Orden de llegada";
+
+        public string NombreCompleto => $"{Apellido}, {Nombre}";
+
         public Empleado() { }
         public Empleado(string nombre, string apellido, Modalidad modalidad)
         {
