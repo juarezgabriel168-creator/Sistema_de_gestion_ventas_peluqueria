@@ -11,6 +11,7 @@ public partial class FormUsuarioEditar : Form
 	private readonly UsuarioNegocio _negocio = new UsuarioNegocio();
 	private readonly Usuario? _usuario;
 	private readonly bool _esNuevo;
+	private readonly ToolTip _ayuda = new ToolTip();
 
 	public FormUsuarioEditar() : this(null)
 	{
@@ -21,6 +22,10 @@ public partial class FormUsuarioEditar : Form
 		InitializeComponent();
 		_usuario = usuario;
 		_esNuevo = usuario == null;
+		_ayuda.SetToolTip(txtContrasena,
+			"Mínimo 8 caracteres, con al menos una mayúscula, una minúscula y un número. " +
+			"No puede contener el nombre de usuario.");
+		_ayuda.SetToolTip(txtConfirmar, "Repita la misma contraseña.");
 	}
 
 	private void FormUsuarioEditar_Load(object sender, EventArgs e)
@@ -106,6 +111,16 @@ public partial class FormUsuarioEditar : Form
 		{
 			errProvider.SetError(txtContrasena, "Ingrese una contraseña.");
 			result = false;
+		}
+		else if (!string.IsNullOrEmpty(txtContrasena.Text))
+		{
+			List<string> problemas = UsuarioNegocio.ValidarContrasena(txtUsuario.Text.Trim(), txtContrasena.Text);
+			if (problemas.Count > 0)
+			{
+				errProvider.SetError(txtContrasena,
+					"No cumple la política: " + string.Join(" ", problemas));
+				result = false;
+			}
 		}
 		if (!string.IsNullOrEmpty(txtContrasena.Text) && txtContrasena.Text != txtConfirmar.Text)
 		{

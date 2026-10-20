@@ -22,7 +22,7 @@ base de datos **MySQL**.
 | Clientes | Clientes | Alta, edición, activación/desactivación y búsqueda de clientes. |
 | Clientes | Cuenta corriente | Ver el saldo y los movimientos de cada cliente y registrar pagos (abonos). |
 | Turnos | Atenciones | Registrar turnos y órdenes de llegada, y cambiar su estado (pendiente, en atención, finalizada, cancelada). No permite turnos en el pasado ni superpuestos para el mismo peluquero. |
-| Administración | Usuarios | Crear y editar usuarios y asignarles un rol. |
+| Administración | Usuarios | Crear y editar usuarios y asignarles un rol. Las contraseñas nuevas deben tener al menos 8 caracteres, con una mayúscula, una minúscula y un número, y no pueden contener el nombre de usuario. |
 | Administración | Empleados | Alta y edición de empleados (con turnos u orden de llegada). |
 | Administración | Tarjetas de crédito | Administrar bancos y tarjetas, con su porcentaje de recargo y cantidad de cuotas. |
 | Administración | Gastos | Registrar y consultar los gastos del negocio por rango de fechas, con el total del período y el usuario que los cargó. |
@@ -219,7 +219,10 @@ Cada formulario se compone de tres archivos:
   pero esa venta no queda asociada a ningún turno de caja. Conviene abrir la
   caja antes de empezar a vender para poder controlar el efectivo del turno.
 - Cambiar las contraseñas de los usuarios de prueba después de la primera
-  instalación (menú **Administración → Usuarios**).
+  instalación (menú **Administración → Usuarios**). Los usuarios del script
+  (`admin`/`admin123`, `vendedor`/`vendedor123`, `supervisor`/`supervisor123`)
+  no cumplen la política de contraseñas: la política se exige al crear un
+  usuario o al cambiar la contraseña, no al iniciar sesión.
 
 ---
 
