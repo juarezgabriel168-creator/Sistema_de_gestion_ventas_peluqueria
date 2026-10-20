@@ -173,10 +173,18 @@ public partial class FormItemEditar : Form
 				result = false;
 			}
 		}
-		else if (!string.IsNullOrWhiteSpace(txtDuracion.Text) && (!int.TryParse(txtDuracion.Text, out result5) || result5 <= 0))
+		else
 		{
-			errProvider.SetError(txtDuracion, "La duración debe ser mayor a cero.");
-			result = false;
+			if (string.IsNullOrWhiteSpace(txtDuracion.Text))
+			{
+				errProvider.SetError(txtDuracion, "Ingrese la duración en minutos (obligatoria para servicios).");
+				result = false;
+			}
+			else if (!int.TryParse(txtDuracion.Text, out result5) || result5 <= 0)
+			{
+				errProvider.SetError(txtDuracion, "La duración debe ser mayor a cero.");
+				result = false;
+			}
 		}
 		return result;
 	}

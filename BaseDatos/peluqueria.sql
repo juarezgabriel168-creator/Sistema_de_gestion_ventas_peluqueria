@@ -129,7 +129,22 @@ CREATE TABLE items (
     PRIMARY KEY (id_item),
     KEY ix_items_categoria (id_categoria),
     CONSTRAINT fk_items_categoria FOREIGN KEY (id_categoria) REFERENCES categorias (id_categoria)
-        ON UPDATE CASCADE ON DELETE RESTRICT
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    -- Coherencia según el tipo: el servicio tiene duración y no tiene stock;
+    -- el producto tiene stock y stock mínimo, y no tiene duración.
+    CONSTRAINT chk_precio CHECK (precio >= 0),
+    CONSTRAINT chk_stock CHECK (
+        (tipo = 'servicio' AND stock IS NULL AND stock_minimo IS NULL)
+        OR
+        (tipo = 'producto' AND stock IS NOT NULL AND stock >= 0
+            AND stock_minimo IS NOT NULL AND stock_minimo >= 0)
+    ),
+    CONSTRAINT chk_duracion CHECK (
+        (tipo = 'servicio' AND duracion_min IS NOT NULL AND duracion_min > 0)
+        OR
+        (tipo = 'producto' AND duracion_min IS NULL)
+    ),
+    CONSTRAINT chk_costo CHECK (costo IS NULL OR costo >= 0)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
 
 -- =====================================================================

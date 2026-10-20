@@ -12,7 +12,7 @@ public class ItemDatos
 		List<Item> list = new List<Item>();
 		using (MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion())
 		{
-			using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE (@filtro = '' OR i.nombre LIKE CONCAT('%', @filtro, '%'))\n                  AND (@categoriaId IS NULL OR i.id_categoria = @categoriaId)\n                  AND (@tipo IS NULL OR i.tipo = @tipo)\n                ORDER BY i.nombre;", mySqlConnection);
+			using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.costo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE (@filtro = '' OR i.nombre LIKE CONCAT('%', @filtro, '%'))\n                  AND (@categoriaId IS NULL OR i.id_categoria = @categoriaId)\n                  AND (@tipo IS NULL OR i.tipo = @tipo)\n                ORDER BY i.nombre;", mySqlConnection);
 			mySqlCommand.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
 			mySqlCommand.Parameters.AddWithValue("@categoriaId", ((object)categoriaId) ?? DBNull.Value);
 			mySqlCommand.Parameters.AddWithValue("@tipo", (!tipo.HasValue) ? ((IConvertible)DBNull.Value) : ((IConvertible)ATexto(tipo.Value)));
@@ -29,7 +29,7 @@ public class ItemDatos
 	public Item? ObtenerPorId(int id)
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE i.id_item = @id;", mySqlConnection);
+		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.costo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE i.id_item = @id;", mySqlConnection);
 		mySqlCommand.Parameters.AddWithValue("@id", id);
 		mySqlConnection.Open();
 		using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
@@ -53,7 +53,7 @@ public class ItemDatos
 	public int Insertar(Item item)
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                INSERT INTO items (nombre, tipo, precio, duracion_min, stock, stock_minimo, id_categoria, activo)\n                VALUES (@nombre, @tipo, @precio, @duracion, @stock, @stockMinimo, @categoria, @activo);\n                SELECT LAST_INSERT_ID();", mySqlConnection);
+		using MySqlCommand mySqlCommand = new MySqlCommand("\n                INSERT INTO items (nombre, tipo, precio, duracion_min, stock, stock_minimo, costo, id_categoria, activo)\n                VALUES (@nombre, @tipo, @precio, @duracion, @stock, @stockMinimo, @costo, @categoria, @activo);\n                SELECT LAST_INSERT_ID();", mySqlConnection);
 		AgregarParametros(mySqlCommand, item);
 		mySqlConnection.Open();
 		return Convert.ToInt32(mySqlCommand.ExecuteScalar());
@@ -62,7 +62,7 @@ public class ItemDatos
 	public void Actualizar(Item item)
 	{
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
-		using MySqlCommand mySqlCommand = new MySqlCommand("\n                UPDATE items\n                SET nombre = @nombre,\n                    tipo = @tipo,\n                    precio = @precio,\n                    duracion_min = @duracion,\n                    stock = @stock,\n                    stock_minimo = @stockMinimo,\n                    id_categoria = @categoria,\n                    activo = @activo\n                WHERE id_item = @id;", mySqlConnection);
+		using MySqlCommand mySqlCommand = new MySqlCommand("\n                UPDATE items\n                SET nombre = @nombre,\n                    tipo = @tipo,\n                    precio = @precio,\n                    costo = @costo,\n                    duracion_min = @duracion,\n                    stock = @stock,\n                    stock_minimo = @stockMinimo,\n                    id_categoria = @categoria,\n                    activo = @activo\n                WHERE id_item = @id;", mySqlConnection);
 		AgregarParametros(mySqlCommand, item);
 		mySqlCommand.Parameters.AddWithValue("@id", item.Id);
 		mySqlConnection.Open();
@@ -92,6 +92,7 @@ public class ItemDatos
 		cmd.Parameters.AddWithValue("@nombre", item.Nombre);
 		cmd.Parameters.AddWithValue("@tipo", ATexto(item.Tipo));
 		cmd.Parameters.AddWithValue("@precio", item.Precio);
+		cmd.Parameters.AddWithValue("@costo", ((object?)item.Costo) ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@categoria", item.Categoria.Id);
 		cmd.Parameters.AddWithValue("@activo", item.Activo);
 		if (item.Tipo == TipoItem.Producto)
@@ -119,6 +120,7 @@ public class ItemDatos
 			DuracionMin = LeerIntNulo(rd, "duracion_min"),
 			Stock = LeerIntNulo(rd, "stock"),
 			StockMinimo = LeerIntNulo(rd, "stock_minimo"),
+			Costo = LeerDecimalNulo(rd, "costo"),
 			Categoria = new Categoria(rd.GetString("categoria"))
 			{
 				Id = rd.GetInt32("id_categoria")
@@ -131,6 +133,12 @@ public class ItemDatos
 	{
 		int ordinal = rd.GetOrdinal(columna);
 		return rd.IsDBNull(ordinal) ? ((int?)null) : new int?(Convert.ToInt32(rd.GetValue(ordinal)));
+	}
+
+	private static decimal? LeerDecimalNulo(MySqlDataReader rd, string columna)
+	{
+		int ordinal = rd.GetOrdinal(columna);
+		return rd.IsDBNull(ordinal) ? ((decimal?)null) : new decimal?(Convert.ToDecimal(rd.GetValue(ordinal)));
 	}
 
 	private static string ATexto(TipoItem tipo)

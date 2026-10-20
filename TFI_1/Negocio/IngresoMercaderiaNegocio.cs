@@ -32,6 +32,8 @@ public class IngresoMercaderiaNegocio
 		{
 			if (detalle.Item == null || detalle.Item.Id <= 0)
 				throw new ArgumentException("Producto inválido en el detalle.");
+			if (!detalle.Item.EsProducto)
+				throw new ArgumentException($"'{detalle.Item.Nombre}' es un servicio: solo se puede ingresar mercadería de productos.");
 			if (detalle.Cantidad <= 0)
 				throw new ArgumentException($"La cantidad de {detalle.Item.Nombre} debe ser mayor a cero.");
 			if (detalle.CostoUnitario < 0)

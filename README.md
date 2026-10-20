@@ -16,7 +16,7 @@ base de datos **MySQL**.
 | Inicio | Dashboard | Ver totales del día (vendido, ventas, clientes, stock bajo) y un gráfico de los últimos días. |
 | Ventas | Nueva venta | Armar el carrito con productos y servicios, elegir medio de pago (efectivo, tarjeta, transferencia o cuenta corriente) y registrar la venta. Al registrar, ofrece ver el ticket. |
 | Ventas | Historial de ventas | Buscar y ver las ventas realizadas por rango de fechas, empleado o número de venta, ver el detalle de cada una y ver/imprimir el ticket. Permite **anular** una venta indicando el motivo: se devuelve el stock, se revierte el cargo de la cuenta corriente y la venta queda marcada como anulada (no se borra). |
-| Productos | Productos y servicios | Alta, edición, activación/desactivación y filtros de productos y servicios. |
+| Productos | Productos y servicios | Alta, edición, activación/desactivación y filtros de productos y servicios. Los **servicios** exigen una duración y no manejan stock ni costo; los **productos** manejan stock, stock mínimo y costo de compra, y no duración. |
 | Productos | Categorías | Administrar las categorías de productos y servicios. |
 | Clientes | Clientes | Alta, edición, activación/desactivación y búsqueda de clientes. |
 | Clientes | Cuenta corriente | Ver el saldo y los movimientos de cada cliente y registrar pagos (abonos). |
@@ -26,7 +26,7 @@ base de datos **MySQL**.
 | Administración | Tarjetas de crédito | Administrar bancos y tarjetas, con su porcentaje de recargo y cantidad de cuotas. |
 | Administración | Gastos | Registrar y consultar los gastos del negocio por rango de fechas, con el total del período y el usuario que los cargó. |
 | Administración | Proveedores | Alta, edición, activación/desactivación y búsqueda de proveedores (nombre, CUIT, teléfono, email y dirección). |
-| Administración | Ingreso de mercadería | Registrar la compra de productos a un proveedor de la lista, actualizando stock y costo. |
+| Administración | Ingreso de mercadería | Registrar la compra de productos a un proveedor de la lista, actualizando stock y costo. Solo admite productos (no servicios). |
 | Administración | Historial de mercadería | Consultar los ingresos por rango de fechas y proveedor, ver el detalle de cada uno (productos, cantidades y costos) y el total del período. |
 | Reportes | Reporte diario / mensual | Ver ventas, gastos e ingresos por período. |
 

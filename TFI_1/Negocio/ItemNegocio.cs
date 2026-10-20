@@ -35,6 +35,10 @@ public class ItemNegocio
 		{
 			throw new ArgumentException("El precio no puede ser negativo.");
 		}
+		if (item.Costo.HasValue && item.Costo.Value < 0m)
+		{
+			throw new ArgumentException("El costo no puede ser negativo.");
+		}
 		if (item.Categoria == null || item.Categoria.Id <= 0)
 		{
 			throw new ArgumentException("Debe seleccionar una categoría.");
@@ -53,12 +57,14 @@ public class ItemNegocio
 		}
 		else
 		{
-			if (item.DuracionMin.HasValue && item.DuracionMin <= 0)
+			if (!item.DuracionMin.HasValue || item.DuracionMin <= 0)
 			{
-				throw new ArgumentException("La duración debe ser mayor a cero.");
+				throw new ArgumentException("La duración es obligatoria para los servicios y debe ser mayor a cero.");
 			}
 			item.Stock = null;
 			item.StockMinimo = null;
+			// Un servicio no tiene costo de compra: ese dato es de los productos.
+			item.Costo = null;
 		}
 		int? exceptoId = ((item.Id == 0) ? ((int?)null) : new int?(item.Id));
 		if (_datos.ExisteNombre(item.Nombre, exceptoId))
