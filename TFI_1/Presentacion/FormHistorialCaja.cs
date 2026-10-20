@@ -13,6 +13,10 @@ public partial class FormHistorialCaja : Form
 {
 	private readonly CajaNegocio _negocio = new();
 
+	private const int TamanoPagina = 50;
+	private int _pagina;
+	private int _totalRegistros;
+
 	public FormHistorialCaja()
 	{
 		InitializeComponent();
@@ -27,19 +31,62 @@ public partial class FormHistorialCaja : Form
 
 	private void Cargar()
 	{
+		_pagina = 0;
+		CargarPagina();
+	}
+
+	// Trae solo la página actual y cuenta el total del período.
+	private void CargarPagina()
+	{
 		try
 		{
-			DataTable tabla = _negocio.Listar(dtpDesde.Value.Date, dtpHasta.Value.Date);
+			_totalRegistros = _negocio.Contar(dtpDesde.Value.Date, dtpHasta.Value.Date);
+			DataTable tabla = _negocio.Listar(dtpDesde.Value.Date, dtpHasta.Value.Date,
+				TamanoPagina, _pagina * TamanoPagina);
 			dgvCajas.DataSource = tabla;
 			FormatearGrid();
 			ColorearDiferencias();
-			lblTotal.Text = $"{tabla.Rows.Count} turno(s) de caja";
+			lblTotal.Text = $"{_totalRegistros} turno(s) de caja";
+			ActualizarPaginacion();
 		}
 		catch (Exception ex)
 		{
 			MessageBox.Show("No se pudo cargar el historial: " + ex.Message, "Caja",
 				MessageBoxButtons.OK, MessageBoxIcon.Hand);
 		}
+	}
+
+	private void ActualizarPaginacion()
+	{
+		int paginas = Math.Max(1, (int)Math.Ceiling(_totalRegistros / (double)TamanoPagina));
+		if (_pagina >= paginas)
+		{
+			_pagina = paginas - 1;
+		}
+
+		lblPagina.Text = $"Página {_pagina + 1} de {paginas}";
+		btnAnterior.Enabled = _pagina > 0;
+		btnSiguiente.Enabled = _pagina + 1 < paginas;
+	}
+
+	private void btnAnterior_Click(object sender, EventArgs e)
+	{
+		if (_pagina == 0)
+		{
+			return;
+		}
+		_pagina--;
+		CargarPagina();
+	}
+
+	private void btnSiguiente_Click(object sender, EventArgs e)
+	{
+		if (!btnSiguiente.Enabled)
+		{
+			return;
+		}
+		_pagina++;
+		CargarPagina();
 	}
 
 	private void FormatearGrid()

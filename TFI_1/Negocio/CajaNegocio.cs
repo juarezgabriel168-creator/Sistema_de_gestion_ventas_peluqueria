@@ -141,5 +141,8 @@ public class CajaNegocio
 
 	public DataTable ListarMovimientos(int idCaja) => _datos.ListarMovimientos(idCaja);
 
-	public DataTable Listar(DateTime desde, DateTime hasta) => _datos.Listar(desde, hasta);
+	public DataTable Listar(DateTime desde, DateTime hasta, int? limite = null, int? desplazamiento = null) =>
+		_datos.Listar(desde, hasta, limite, desplazamiento);
+
+	public int Contar(DateTime desde, DateTime hasta) => _datos.Contar(desde, hasta);
 }

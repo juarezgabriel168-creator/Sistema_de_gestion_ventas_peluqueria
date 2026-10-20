@@ -279,6 +279,10 @@ Cada formulario se compone de tres archivos:
   procedimientos ni triggers (la base no los usa). Las credenciales se pasan
   en un archivo temporal que se borra al terminar, para no exponerlas en la
   línea de comandos.
+- Los **listados largos** (historial de ventas, auditoría, mercadería y caja)
+  muestran **50 filas por página** con botones **Anterior/Siguiente**. El total
+  y los importes siempre se calculan sobre todos los registros del período,
+  no solo sobre la página visible.
 - Cambiar las contraseñas de los usuarios de prueba después de la primera
   instalación (menú **Administración → Usuarios**). Los usuarios del script
   (`admin`/`admin123`, `vendedor`/`vendedor123`, `supervisor`/`supervisor123`)

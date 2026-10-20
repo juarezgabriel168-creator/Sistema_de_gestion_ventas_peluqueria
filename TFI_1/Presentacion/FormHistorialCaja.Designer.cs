@@ -18,6 +18,9 @@ partial class FormHistorialCaja : Form
 	private Label lblTotal;
 	private DataGridView dgvCajas;
 	private Button btnCerrar;
+	private Button btnAnterior;
+	private Label lblPagina;
+	private Button btnSiguiente;
 
 	protected override void Dispose(bool disposing)
 	{
@@ -39,6 +42,9 @@ partial class FormHistorialCaja : Form
 		lblTotal = new Label();
 		dgvCajas = new DataGridView();
 		btnCerrar = new Button();
+		btnAnterior = new Button();
+		lblPagina = new Label();
+		btnSiguiente = new Button();
 		((ISupportInitialize)dgvCajas).BeginInit();
 		SuspendLayout();
 		//
@@ -133,6 +139,38 @@ partial class FormHistorialCaja : Form
 		btnCerrar.UseVisualStyleBackColor = true;
 		btnCerrar.Click += btnCerrar_Click;
 		//
+		// btnAnterior
+		//
+		btnAnterior.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+		btnAnterior.Location = new Point(12, 518);
+		btnAnterior.Name = "btnAnterior";
+		btnAnterior.Size = new Size(90, 30);
+		btnAnterior.TabIndex = 9;
+		btnAnterior.Text = "◀ Anterior";
+		btnAnterior.UseVisualStyleBackColor = true;
+		btnAnterior.Click += btnAnterior_Click;
+		//
+		// lblPagina
+		//
+		lblPagina.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+		lblPagina.Location = new Point(110, 523);
+		lblPagina.Name = "lblPagina";
+		lblPagina.Size = new Size(200, 20);
+		lblPagina.TabIndex = 10;
+		lblPagina.Text = "Página 1 de 1";
+		lblPagina.TextAlign = ContentAlignment.MiddleCenter;
+		//
+		// btnSiguiente
+		//
+		btnSiguiente.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+		btnSiguiente.Location = new Point(318, 518);
+		btnSiguiente.Name = "btnSiguiente";
+		btnSiguiente.Size = new Size(90, 30);
+		btnSiguiente.TabIndex = 11;
+		btnSiguiente.Text = "Siguiente ▶";
+		btnSiguiente.UseVisualStyleBackColor = true;
+		btnSiguiente.Click += btnSiguiente_Click;
+		//
 		// FormHistorialCaja
 		//
 		AutoScaleDimensions = new SizeF(7F, 15F);
@@ -140,6 +178,9 @@ partial class FormHistorialCaja : Form
 		BackColor = SystemColors.ActiveCaption;
 		ClientSize = new Size(900, 560);
 		Controls.Add(btnCerrar);
+		Controls.Add(btnAnterior);
+		Controls.Add(lblPagina);
+		Controls.Add(btnSiguiente);
 		Controls.Add(dgvCajas);
 		Controls.Add(lblTotal);
 		Controls.Add(btnBuscar);

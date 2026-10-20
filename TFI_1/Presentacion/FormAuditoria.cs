@@ -14,6 +14,10 @@ public partial class FormAuditoria : Form
 	private readonly AuditoriaNegocio _negocio = new();
 	private readonly UsuarioNegocio _usuarioNegocio = new();
 
+	private const int TamanoPagina = 50;
+	private int _pagina;
+	private int _totalRegistros;
+
 	public FormAuditoria()
 	{
 		InitializeComponent();
@@ -68,6 +72,13 @@ public partial class FormAuditoria : Form
 
 	private void Cargar()
 	{
+		_pagina = 0;
+		CargarPagina();
+	}
+
+	// Trae solo la página actual y cuenta el total con los mismos filtros.
+	private void CargarPagina()
+	{
 		try
 		{
 			int usuarioId = cboUsuario.SelectedValue == null ? 0 : Convert.ToInt32(cboUsuario.SelectedValue);
@@ -77,17 +88,33 @@ public partial class FormAuditoria : Form
 				accion = null;
 			}
 
-			DataTable tabla = _negocio.Listar(dtpDesde.Value.Date, dtpHasta.Value.Date,
-				usuarioId > 0 ? usuarioId : ((int?)null), accion);
+			int? idUsuario = usuarioId > 0 ? usuarioId : ((int?)null);
+			_totalRegistros = _negocio.Contar(dtpDesde.Value.Date, dtpHasta.Value.Date, idUsuario, accion);
+			DataTable tabla = _negocio.Listar(dtpDesde.Value.Date, dtpHasta.Value.Date, idUsuario, accion,
+				TamanoPagina, _pagina * TamanoPagina);
 			dgvAuditoria.DataSource = tabla;
 			FormatearGrid();
-			lblTotal.Text = $"{tabla.Rows.Count} registro(s)";
+			lblTotal.Text = $"{_totalRegistros} registro(s)";
+			ActualizarPaginacion();
 		}
 		catch (Exception ex)
 		{
 			MessageBox.Show("No se pudo cargar la auditoría: " + ex.Message, "Error",
 				MessageBoxButtons.OK, MessageBoxIcon.Hand);
 		}
+	}
+
+	private void ActualizarPaginacion()
+	{
+		int paginas = Math.Max(1, (int)Math.Ceiling(_totalRegistros / (double)TamanoPagina));
+		if (_pagina >= paginas)
+		{
+			_pagina = paginas - 1;
+		}
+
+		lblPagina.Text = $"Página {_pagina + 1} de {paginas}";
+		btnAnterior.Enabled = _pagina > 0;
+		btnSiguiente.Enabled = _pagina + 1 < paginas;
 	}
 
 	private void FormatearGrid()
@@ -131,6 +158,26 @@ public partial class FormAuditoria : Form
 		{
 			columna.FillWeight = peso.Value;
 		}
+	}
+
+	private void btnAnterior_Click(object sender, EventArgs e)
+	{
+		if (_pagina == 0)
+		{
+			return;
+		}
+		_pagina--;
+		CargarPagina();
+	}
+
+	private void btnSiguiente_Click(object sender, EventArgs e)
+	{
+		if (!btnSiguiente.Enabled)
+		{
+			return;
+		}
+		_pagina++;
+		CargarPagina();
 	}
 
 	private void btnBuscar_Click(object sender, EventArgs e) => Cargar();

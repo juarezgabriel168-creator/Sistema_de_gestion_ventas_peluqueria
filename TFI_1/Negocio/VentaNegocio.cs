@@ -83,9 +83,15 @@ public class VentaNegocio
         return idVenta;
     }
 
-    public DataTable Listar(DateTime desde, DateTime hasta, int? usuarioId = null, int? empleadoId = null, int? ventaId = null)
+    public DataTable Listar(DateTime desde, DateTime hasta, int? usuarioId = null, int? empleadoId = null, int? ventaId = null,
+		int? limite = null, int? desplazamiento = null)
 	{
-		return _datos.Listar(desde, hasta, usuarioId, empleadoId, ventaId);
+		return _datos.Listar(desde, hasta, usuarioId, empleadoId, ventaId, limite, desplazamiento);
+	}
+
+	public int Contar(DateTime desde, DateTime hasta, int? usuarioId = null, int? empleadoId = null, int? ventaId = null)
+	{
+		return _datos.Contar(desde, hasta, usuarioId, empleadoId, ventaId);
 	}
 
 	public DataTable ObtenerCabecera(int ventaId)

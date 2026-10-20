@@ -38,6 +38,12 @@ partial class FormHistorialVentas : Form
 
 	private TextBox txtNumeroVenta;
 
+	private Label lblPagina;
+
+	private Button btnAnterior;
+
+	private Button btnSiguiente;
+
 	protected override void Dispose(bool disposing)
 	{
 		if (disposing && components != null)
@@ -64,6 +70,9 @@ partial class FormHistorialVentas : Form
         cboEmpleado = new ComboBox();
         lblNumeroVenta = new Label();
         txtNumeroVenta = new TextBox();
+        lblPagina = new Label();
+        btnAnterior = new Button();
+        btnSiguiente = new Button();
         ((ISupportInitialize)dgvVentas).BeginInit();
         SuspendLayout();
         // 
@@ -157,6 +166,7 @@ partial class FormHistorialVentas : Form
         dgvVentas.AllowUserToResizeRows = false;
         dgvVentas.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         dgvVentas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        dgvVentas.BackgroundColor = SystemColors.ButtonHighlight;
         dgvVentas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         dgvVentas.Location = new Point(12, 108);
         dgvVentas.MultiSelect = false;
@@ -183,7 +193,7 @@ partial class FormHistorialVentas : Form
         lblEmpleado.AutoSize = true;
         lblEmpleado.Location = new Point(520, 50);
         lblEmpleado.Name = "lblEmpleado";
-        lblEmpleado.Size = new Size(65, 15);
+        lblEmpleado.Size = new Size(63, 15);
         lblEmpleado.TabIndex = 11;
         lblEmpleado.Text = "Empleado:";
         // 
@@ -201,7 +211,7 @@ partial class FormHistorialVentas : Form
         lblNumeroVenta.AutoSize = true;
         lblNumeroVenta.Location = new Point(680, 50);
         lblNumeroVenta.Name = "lblNumeroVenta";
-        lblNumeroVenta.Size = new Size(62, 15);
+        lblNumeroVenta.Size = new Size(56, 15);
         lblNumeroVenta.TabIndex = 13;
         lblNumeroVenta.Text = "Nº Venta:";
         // 
@@ -213,6 +223,38 @@ partial class FormHistorialVentas : Form
         txtNumeroVenta.Size = new Size(80, 23);
         txtNumeroVenta.TabIndex = 14;
         // 
+        // btnAnterior
+        // 
+        btnAnterior.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        btnAnterior.Location = new Point(180, 529);
+        btnAnterior.Name = "btnAnterior";
+        btnAnterior.Size = new Size(90, 32);
+        btnAnterior.TabIndex = 15;
+        btnAnterior.Text = "◀ Anterior";
+        btnAnterior.UseVisualStyleBackColor = true;
+        btnAnterior.Click += btnAnterior_Click;
+        // 
+        // lblPagina
+        // 
+        lblPagina.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        lblPagina.Location = new Point(278, 536);
+        lblPagina.Name = "lblPagina";
+        lblPagina.Size = new Size(200, 20);
+        lblPagina.TabIndex = 16;
+        lblPagina.Text = "Página 1 de 1";
+        lblPagina.TextAlign = ContentAlignment.MiddleCenter;
+        // 
+        // btnSiguiente
+        // 
+        btnSiguiente.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        btnSiguiente.Location = new Point(486, 529);
+        btnSiguiente.Name = "btnSiguiente";
+        btnSiguiente.Size = new Size(90, 32);
+        btnSiguiente.TabIndex = 17;
+        btnSiguiente.Text = "Siguiente ▶";
+        btnSiguiente.UseVisualStyleBackColor = true;
+        btnSiguiente.Click += btnSiguiente_Click;
+        // 
         // FormHistorialVentas
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -223,6 +265,9 @@ partial class FormHistorialVentas : Form
         Controls.Add(cboEmpleado);
         Controls.Add(lblNumeroVenta);
         Controls.Add(txtNumeroVenta);
+        Controls.Add(btnAnterior);
+        Controls.Add(lblPagina);
+        Controls.Add(btnSiguiente);
         Controls.Add(btnVerDetalle);
         Controls.Add(dgvVentas);
         Controls.Add(btnRefrescar);

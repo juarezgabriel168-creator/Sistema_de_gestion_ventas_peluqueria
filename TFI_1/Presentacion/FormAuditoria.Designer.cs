@@ -22,6 +22,9 @@ partial class FormAuditoria : Form
 	private Label lblTotal;
 	private DataGridView dgvAuditoria;
 	private Button btnCerrar;
+	private Label lblPagina;
+	private Button btnAnterior;
+	private Button btnSiguiente;
 
 	protected override void Dispose(bool disposing)
 	{
@@ -47,6 +50,9 @@ partial class FormAuditoria : Form
 		lblTotal = new Label();
 		dgvAuditoria = new DataGridView();
 		btnCerrar = new Button();
+		lblPagina = new Label();
+		btnAnterior = new Button();
+		btnSiguiente = new Button();
 		((ISupportInitialize)dgvAuditoria).BeginInit();
 		SuspendLayout();
 		//
@@ -177,6 +183,38 @@ partial class FormAuditoria : Form
 		btnCerrar.UseVisualStyleBackColor = true;
 		btnCerrar.Click += btnCerrar_Click;
 		//
+		// btnAnterior
+		//
+		btnAnterior.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+		btnAnterior.Location = new Point(12, 518);
+		btnAnterior.Name = "btnAnterior";
+		btnAnterior.Size = new Size(90, 30);
+		btnAnterior.TabIndex = 13;
+		btnAnterior.Text = "◀ Anterior";
+		btnAnterior.UseVisualStyleBackColor = true;
+		btnAnterior.Click += btnAnterior_Click;
+		//
+		// lblPagina
+		//
+		lblPagina.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+		lblPagina.Location = new Point(110, 523);
+		lblPagina.Name = "lblPagina";
+		lblPagina.Size = new Size(200, 20);
+		lblPagina.TabIndex = 14;
+		lblPagina.Text = "Página 1 de 1";
+		lblPagina.TextAlign = ContentAlignment.MiddleCenter;
+		//
+		// btnSiguiente
+		//
+		btnSiguiente.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+		btnSiguiente.Location = new Point(318, 518);
+		btnSiguiente.Name = "btnSiguiente";
+		btnSiguiente.Size = new Size(90, 30);
+		btnSiguiente.TabIndex = 15;
+		btnSiguiente.Text = "Siguiente ▶";
+		btnSiguiente.UseVisualStyleBackColor = true;
+		btnSiguiente.Click += btnSiguiente_Click;
+		//
 		// FormAuditoria
 		//
 		AutoScaleDimensions = new SizeF(7F, 15F);
@@ -184,6 +222,9 @@ partial class FormAuditoria : Form
 		BackColor = SystemColors.ActiveCaption;
 		ClientSize = new Size(900, 560);
 		Controls.Add(btnCerrar);
+		Controls.Add(btnAnterior);
+		Controls.Add(lblPagina);
+		Controls.Add(btnSiguiente);
 		Controls.Add(dgvAuditoria);
 		Controls.Add(lblTotal);
 		Controls.Add(btnBuscar);

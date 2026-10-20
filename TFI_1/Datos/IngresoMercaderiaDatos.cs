@@ -8,7 +8,8 @@ namespace TFI_1.Datos;
 
 public class IngresoMercaderiaDatos
 {
-	public List<IngresoMercaderia> Listar(DateTime? desde = null, DateTime? hasta = null, string? filtro = null)
+	public List<IngresoMercaderia> Listar(DateTime? desde = null, DateTime? hasta = null, string? filtro = null,
+		int? limite = null, int? desplazamiento = null)
 	{
 		List<IngresoMercaderia> lista = new();
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
@@ -20,15 +21,50 @@ public class IngresoMercaderiaDatos
 			"WHERE (@desde IS NULL OR DATE(i.fecha) >= @desde) " +
 			"  AND (@hasta IS NULL OR DATE(i.fecha) <= @hasta) " +
 			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%')) " +
-			"ORDER BY i.fecha DESC, i.id_ingreso DESC;", conexion);
+			"ORDER BY i.fecha DESC, i.id_ingreso DESC " +
+			"LIMIT @limite OFFSET @desplazamiento;", conexion);
 		cmd.Parameters.AddWithValue("@desde", ((object)desde?.Date) ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@hasta", ((object)hasta?.Date) ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
+		cmd.Parameters.AddWithValue("@limite", limite ?? int.MaxValue);
+		cmd.Parameters.AddWithValue("@desplazamiento", desplazamiento ?? 0);
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		while (rd.Read())
 			lista.Add(LeerCabecera(rd));
 		return lista;
+	}
+
+	/// <summary>Cuenta los ingresos que cumplen los mismos filtros que Listar.</summary>
+	public int Contar(DateTime? desde = null, DateTime? hasta = null, string? filtro = null)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT COUNT(*) FROM ingresos_mercaderia AS i " +
+			"WHERE (@desde IS NULL OR DATE(i.fecha) >= @desde) " +
+			"  AND (@hasta IS NULL OR DATE(i.fecha) <= @hasta) " +
+			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%'));", conexion);
+		cmd.Parameters.AddWithValue("@desde", ((object)desde?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@hasta", ((object)hasta?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar());
+	}
+
+	/// <summary>Suma el total de los ingresos que cumplen los mismos filtros que Listar.</summary>
+	public decimal Sumar(DateTime? desde = null, DateTime? hasta = null, string? filtro = null)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT COALESCE(SUM(i.total), 0) FROM ingresos_mercaderia AS i " +
+			"WHERE (@desde IS NULL OR DATE(i.fecha) >= @desde) " +
+			"  AND (@hasta IS NULL OR DATE(i.fecha) <= @hasta) " +
+			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%'));", conexion);
+		cmd.Parameters.AddWithValue("@desde", ((object)desde?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@hasta", ((object)hasta?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
+		conexion.Open();
+		return Convert.ToDecimal(cmd.ExecuteScalar());
 	}
 
 	public IngresoMercaderia? ObtenerPorId(int id)

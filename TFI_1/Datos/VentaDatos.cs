@@ -120,7 +120,8 @@ public class VentaDatos
 		}
 	}
 
-    public DataTable Listar(DateTime desde, DateTime hasta, int? usuarioId = null, int? empleadoId = null, int? ventaId = null)
+    public DataTable Listar(DateTime desde, DateTime hasta, int? usuarioId = null, int? empleadoId = null, int? ventaId = null,
+        int? limite = null, int? desplazamiento = null)
     {
         using MySqlConnection conexion = ConexionBD.ObtenerConexion();
         using MySqlCommand cmd = new MySqlCommand(
@@ -144,16 +145,38 @@ public class VentaDatos
             "  AND (@usuarioId IS NULL OR v.id_usuario = @usuarioId) " +
             "  AND (@empleadoId IS NULL OR v.id_empleado = @empleadoId) " +
             "  AND (@ventaId IS NULL OR v.id_venta = @ventaId) " +
-            "ORDER BY v.fecha DESC, v.id_venta DESC;", conexion);
+            "ORDER BY v.fecha DESC, v.id_venta DESC " +
+            "LIMIT @limite OFFSET @desplazamiento;", conexion);
         cmd.Parameters.AddWithValue("@desde", desde.Date);
         cmd.Parameters.AddWithValue("@hasta", hasta.Date);
         cmd.Parameters.AddWithValue("@usuarioId", ((object?)usuarioId) ?? DBNull.Value);
         cmd.Parameters.AddWithValue("@empleadoId", ((object?)empleadoId) ?? DBNull.Value);
         cmd.Parameters.AddWithValue("@ventaId", ((object?)ventaId) ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@limite", limite ?? int.MaxValue);
+        cmd.Parameters.AddWithValue("@desplazamiento", desplazamiento ?? 0);
         using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
         DataTable tabla = new DataTable();
         adaptador.Fill(tabla);
         return tabla;
+    }
+
+    /// <summary>Cuenta las ventas que cumplen los mismos filtros que Listar.</summary>
+    public int Contar(DateTime desde, DateTime hasta, int? usuarioId = null, int? empleadoId = null, int? ventaId = null)
+    {
+        using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+        using MySqlCommand cmd = new MySqlCommand(
+            "SELECT COUNT(*) FROM ventas AS v " +
+            "WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
+            "  AND (@usuarioId IS NULL OR v.id_usuario = @usuarioId) " +
+            "  AND (@empleadoId IS NULL OR v.id_empleado = @empleadoId) " +
+            "  AND (@ventaId IS NULL OR v.id_venta = @ventaId);", conexion);
+        cmd.Parameters.AddWithValue("@desde", desde.Date);
+        cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+        cmd.Parameters.AddWithValue("@usuarioId", ((object?)usuarioId) ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@empleadoId", ((object?)empleadoId) ?? DBNull.Value);
+        cmd.Parameters.AddWithValue("@ventaId", ((object?)ventaId) ?? DBNull.Value);
+        conexion.Open();
+        return Convert.ToInt32(cmd.ExecuteScalar());
     }
 
     public DataTable ObtenerCabecera(int ventaId)

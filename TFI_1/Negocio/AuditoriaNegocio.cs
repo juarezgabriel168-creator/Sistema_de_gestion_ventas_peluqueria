@@ -32,8 +32,12 @@ public class AuditoriaNegocio
 		_datos.Registrar(idUsuario, accion.Trim(), entidad, idEntidad, detalle);
 	}
 
-	public DataTable Listar(DateTime desde, DateTime hasta, int? usuarioId = null, string? accion = null) =>
-		_datos.Listar(desde, hasta, usuarioId, accion);
+	public DataTable Listar(DateTime desde, DateTime hasta, int? usuarioId = null, string? accion = null,
+		int? limite = null, int? desplazamiento = null) =>
+		_datos.Listar(desde, hasta, usuarioId, accion, limite, desplazamiento);
+
+	public int Contar(DateTime desde, DateTime hasta, int? usuarioId = null, string? accion = null) =>
+		_datos.Contar(desde, hasta, usuarioId, accion);
 
 	public DataTable Acciones() => _datos.Acciones();
 }

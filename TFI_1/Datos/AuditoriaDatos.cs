@@ -46,7 +46,8 @@ public class AuditoriaDatos
 		cmd.ExecuteNonQuery();
 	}
 
-	public DataTable Listar(DateTime desde, DateTime hasta, int? usuarioId, string? accion)
+	public DataTable Listar(DateTime desde, DateTime hasta, int? usuarioId, string? accion,
+		int? limite = null, int? desplazamiento = null)
 	{
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
@@ -58,16 +59,37 @@ public class AuditoriaDatos
 			"WHERE DATE(a.fecha) BETWEEN @desde AND @hasta " +
 			"  AND (@usuario IS NULL OR a.id_usuario = @usuario) " +
 			"  AND (@accion IS NULL OR a.accion = @accion) " +
-			"ORDER BY a.fecha DESC, a.id_auditoria DESC;", conexion);
+			"ORDER BY a.fecha DESC, a.id_auditoria DESC " +
+			"LIMIT @limite OFFSET @desplazamiento;", conexion);
 		cmd.Parameters.AddWithValue("@desde", desde.Date);
 		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
 		cmd.Parameters.AddWithValue("@usuario", ((object?)usuarioId) ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@accion",
 			string.IsNullOrWhiteSpace(accion) ? DBNull.Value : ((object)accion));
+		cmd.Parameters.AddWithValue("@limite", limite ?? int.MaxValue);
+		cmd.Parameters.AddWithValue("@desplazamiento", desplazamiento ?? 0);
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
 		return tabla;
+	}
+
+	/// <summary>Cuenta los movimientos que cumplen los mismos filtros que Listar.</summary>
+	public int Contar(DateTime desde, DateTime hasta, int? usuarioId, string? accion)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT COUNT(*) FROM auditoria AS a " +
+			"WHERE DATE(a.fecha) BETWEEN @desde AND @hasta " +
+			"  AND (@usuario IS NULL OR a.id_usuario = @usuario) " +
+			"  AND (@accion IS NULL OR a.accion = @accion);", conexion);
+		cmd.Parameters.AddWithValue("@desde", desde.Date);
+		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.AddWithValue("@usuario", ((object?)usuarioId) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@accion",
+			string.IsNullOrWhiteSpace(accion) ? DBNull.Value : ((object)accion));
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
 
 	// Acciones que ya tienen movimientos, para armar el filtro de la pantalla.

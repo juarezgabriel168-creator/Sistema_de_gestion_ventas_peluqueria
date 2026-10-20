@@ -14,6 +14,10 @@ public partial class FormHistorialVentas : Form
     private readonly UsuarioNegocio _usuarioNegocio = new UsuarioNegocio();
     private readonly EmpleadoNegocio _empleadoNegocio = new EmpleadoNegocio();
 
+    private const int TamanoPagina = 50;
+    private int _pagina;
+    private int _totalRegistros;
+
     public FormHistorialVentas()
     {
         InitializeComponent();
@@ -77,6 +81,13 @@ public partial class FormHistorialVentas : Form
 
     private void Buscar()
     {
+        _pagina = 0;
+        CargarPagina();
+    }
+
+    // Trae solo la página actual y cuenta el total con los mismos filtros.
+    private void CargarPagina()
+    {
         // Si los controles dinámicos aún no se inicializaron (formulario no cargado completamente), salir.
         if (txtNumeroVenta == null || cboEmpleado == null || cboUsuario == null || dgvVentas == null)
             return;
@@ -93,13 +104,50 @@ public partial class FormHistorialVentas : Form
             int? ventaId = null;
             if (!string.IsNullOrWhiteSpace(txtNumeroVenta.Text) && int.TryParse(txtNumeroVenta.Text.Trim(), out int nro))
                 ventaId = nro;
-            dgvVentas.DataSource = _ventaNegocio.Listar(dtpDesde.Value, dtpHasta.Value, usuarioId, empleadoId, ventaId);
+
+            _totalRegistros = _ventaNegocio.Contar(dtpDesde.Value, dtpHasta.Value, usuarioId, empleadoId, ventaId);
+            dgvVentas.DataSource = _ventaNegocio.Listar(dtpDesde.Value, dtpHasta.Value, usuarioId, empleadoId, ventaId,
+                TamanoPagina, _pagina * TamanoPagina);
             FormatearGrid();
+            ActualizarPaginacion();
         }
         catch (Exception ex)
         {
             MessageBox.Show(ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
         }
+    }
+
+    private void ActualizarPaginacion()
+    {
+        int paginas = Math.Max(1, (int)Math.Ceiling(_totalRegistros / (double)TamanoPagina));
+        if (_pagina >= paginas)
+        {
+            _pagina = paginas - 1;
+        }
+
+        lblPagina.Text = $"Página {_pagina + 1} de {paginas} — {_totalRegistros} venta(s)";
+        btnAnterior.Enabled = _pagina > 0;
+        btnSiguiente.Enabled = _pagina + 1 < paginas;
+    }
+
+    private void btnAnterior_Click(object sender, EventArgs e)
+    {
+        if (_pagina == 0)
+        {
+            return;
+        }
+        _pagina--;
+        CargarPagina();
+    }
+
+    private void btnSiguiente_Click(object sender, EventArgs e)
+    {
+        if (!btnSiguiente.Enabled)
+        {
+            return;
+        }
+        _pagina++;
+        CargarPagina();
     }
     private void FormatearGrid()
     {

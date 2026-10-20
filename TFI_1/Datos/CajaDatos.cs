@@ -153,7 +153,7 @@ public class CajaDatos
 		return Convert.ToDecimal(cmd.ExecuteScalar());
 	}
 
-	public DataTable Listar(DateTime desde, DateTime hasta)
+	public DataTable Listar(DateTime desde, DateTime hasta, int? limite = null, int? desplazamiento = null)
 	{
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
@@ -166,13 +166,29 @@ public class CajaDatos
 			"INNER JOIN usuarios AS ua ON ua.id_usuario = c.id_usuario_apertura " +
 			"LEFT JOIN usuarios AS uc ON uc.id_usuario = c.id_usuario_cierre " +
 			"WHERE DATE(c.fecha_apertura) BETWEEN @desde AND @hasta " +
-			"ORDER BY c.fecha_apertura DESC, c.id_caja DESC;", conexion);
+			"ORDER BY c.fecha_apertura DESC, c.id_caja DESC " +
+			"LIMIT @limite OFFSET @desplazamiento;", conexion);
 		cmd.Parameters.AddWithValue("@desde", desde.Date);
 		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		cmd.Parameters.AddWithValue("@limite", limite ?? int.MaxValue);
+		cmd.Parameters.AddWithValue("@desplazamiento", desplazamiento ?? 0);
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
 		adaptador.Fill(tabla);
 		return tabla;
+	}
+
+	/// <summary>Cuenta los turnos de caja del período.</summary>
+	public int Contar(DateTime desde, DateTime hasta)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT COUNT(*) FROM cajas AS c " +
+			"WHERE DATE(c.fecha_apertura) BETWEEN @desde AND @hasta;", conexion);
+		cmd.Parameters.AddWithValue("@desde", desde.Date);
+		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar());
 	}
 
 	private static bool EsNulo(MySqlDataReader rd, string columna) =>

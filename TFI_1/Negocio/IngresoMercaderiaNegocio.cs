@@ -12,8 +12,15 @@ public class IngresoMercaderiaNegocio
 
 	private readonly AuditoriaNegocio _auditoria = new();
 
-	public List<IngresoMercaderia> Listar(DateTime? desde = null, DateTime? hasta = null, string? filtro = null) =>
-		_datos.Listar(desde, hasta, filtro);
+	public List<IngresoMercaderia> Listar(DateTime? desde = null, DateTime? hasta = null, string? filtro = null,
+		int? limite = null, int? desplazamiento = null) =>
+		_datos.Listar(desde, hasta, filtro, limite, desplazamiento);
+
+	public int Contar(DateTime? desde = null, DateTime? hasta = null, string? filtro = null) =>
+		_datos.Contar(desde, hasta, filtro);
+
+	public decimal Sumar(DateTime? desde = null, DateTime? hasta = null, string? filtro = null) =>
+		_datos.Sumar(desde, hasta, filtro);
 
 	public IngresoMercaderia? ObtenerPorId(int id) => _datos.ObtenerPorId(id);
 
