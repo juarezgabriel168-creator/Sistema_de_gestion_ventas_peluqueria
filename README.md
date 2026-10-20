@@ -212,7 +212,7 @@ rol del usuario:
 | Productos y servicios | ✔ | ✔ | ✔ |
 | Clientes (incluye Cuenta corriente) | ✔ | ✔ | ✔ |
 | Turnos | ✔ | ✔ | ✔ |
-| Administración (usuarios, empleados, tarjetas, gastos, proveedores, mercadería) | ✔ | | |
+| Administración (usuarios, empleados, tarjetas, gastos, proveedores, mercadería, auditoría, copia de seguridad) | ✔ | | |
 | Reportes | ✔ | ✔ | |
 | Categorías (dentro de Productos) | ✔ | | |
 
@@ -226,15 +226,29 @@ TFI_1/
 │   ├── peluqueria.sql        # Script de creación de la base de datos
 │   └── crear_usuario_app.sql # Usuario de MySQL con permisos acotados
 ├── TFI_1/
-│   ├── App.config            # Cadena de conexión a MySQL
+│   ├── App.config            # Cadena de conexión y configuración
 │   ├── Program.cs            # Punto de entrada (abre el login)
 │   ├── Models/               # Clases del dominio (Cliente, Venta, Item, ...)
 │   ├── Datos/                # Acceso a MySQL (consultas SQL)
 │   ├── Negocio/              # Reglas de negocio y validaciones
 │   └── Presentacion/         # Formularios (pantallas de la aplicación)
+├── TFI_1.Tests/              # Pruebas automatizadas de la lógica
 ├── TFI_1.slnx                # Solución de Visual Studio
 └── README.md
 ```
+
+## Pruebas automatizadas
+
+El proyecto `TFI_1.Tests` prueba la lógica que **no depende de la base de
+datos**: modelos, stock, ventas, caja y la política de contraseñas. No
+necesita MySQL ni modifica datos.
+
+```bash
+dotnet test TFI_1.Tests/TFI_1.Tests.csproj
+```
+
+Son 52 pruebas de unidad; si alguna falla, el comando termina con error y
+muestra el detalle.
 
 Cada formulario se compone de tres archivos:
 
