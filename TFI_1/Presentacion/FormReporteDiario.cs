@@ -21,6 +21,40 @@ public partial class FormReporteDiario : Form
 		printDocument1 = new PrintDocument { DocumentName = "Reporte diario" };
 		printDocument1.PrintPage += printDocument1_PrintPage;
 		printPreviewDialog1 = new PrintPreviewDialog { Document = printDocument1, Size = new Size(900, 700) };
+		dgvMasVendidos.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+		dgvGastosCategoria.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+		dgvPorEmpleado.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+		Resize += (_, _) => AjustarLayout();
+		AjustarLayout();
+	}
+
+	private void AjustarLayout()
+	{
+		if (IsDisposed)
+		{
+			return;
+		}
+
+		const int margen = 12;
+		const int separacion = 12;
+		int anchoDisponible = ClientSize.Width - (margen * 2);
+		int anchoColumna = Math.Max(240, (anchoDisponible - separacion) / 2);
+		int xIzquierda = margen;
+		int xDerecha = margen + anchoColumna + separacion;
+
+		lblPorPago.Left = xIzquierda;
+		dgvPorPago.SetBounds(xIzquierda, 200, anchoColumna, 120);
+
+		lblPorEmpleado.Left = xDerecha;
+		dgvPorEmpleado.SetBounds(xDerecha, 200, anchoColumna, 120);
+
+		lblMasVendidos.Left = xIzquierda;
+		lblGastosCategoria.Left = xDerecha;
+
+		const int yInferior = 341;
+		int altoInferior = Math.Max(100, ClientSize.Height - yInferior - margen);
+		dgvMasVendidos.SetBounds(xIzquierda, yInferior, anchoColumna, altoInferior);
+		dgvGastosCategoria.SetBounds(xDerecha, yInferior, anchoColumna, altoInferior);
 	}
 
 	private void FormReporteDiario_Load(object sender, EventArgs e)

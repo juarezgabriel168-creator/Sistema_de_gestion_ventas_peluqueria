@@ -20,6 +20,28 @@ public partial class FormBackup : Form
 	public FormBackup()
 	{
 		InitializeComponent();
+		Resize += (_, _) => AjustarLayout();
+		AjustarLayout();
+	}
+
+	private void AjustarLayout()
+	{
+		if (IsDisposed)
+		{
+			return;
+		}
+
+		const int margen = 12;
+		btnElegir.Left = ClientSize.Width - margen - btnElegir.Width;
+		txtCarpeta.Width = Math.Max(100, btnElegir.Left - txtCarpeta.Left - 10);
+
+		int ancho = Math.Max(200, ClientSize.Width - (margen * 2));
+		lblExplicacion.Width = ancho;
+		lblResultado.Width = ancho;
+		lblAyuda.Width = ancho;
+
+		btnCerrar.Left = ClientSize.Width - margen - btnCerrar.Width;
+		btnCerrar.Top = ClientSize.Height - margen - btnCerrar.Height;
 	}
 
 	private void FormBackup_Load(object sender, EventArgs e)

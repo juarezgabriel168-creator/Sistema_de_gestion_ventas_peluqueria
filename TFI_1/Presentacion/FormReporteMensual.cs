@@ -21,6 +21,37 @@ public partial class FormReporteMensual : Form
 		printDocument1 = new PrintDocument { DocumentName = "Reporte mensual" };
 		printDocument1.PrintPage += printDocument1_PrintPage;
 		printPreviewDialog1 = new PrintPreviewDialog { Document = printDocument1, Size = new Size(900, 700) };
+		dgvPorDia.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+		dgvPorEmpleado.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+		dgvGastosCategoria.Anchor = AnchorStyles.Top | AnchorStyles.Left;
+		Resize += (_, _) => AjustarLayout();
+		AjustarLayout();
+	}
+
+	private void AjustarLayout()
+	{
+		if (IsDisposed)
+		{
+			return;
+		}
+
+		const int margen = 12;
+		const int separacion = 12;
+		int anchoDisponible = ClientSize.Width - (margen * 2);
+		int anchoColumna = Math.Max(220, (anchoDisponible - separacion) / 2);
+		int xDerecha = margen + anchoColumna + separacion;
+
+		dgvPorDia.SetBounds(margen, 168, anchoDisponible, 150);
+
+		lblMasVendidos.Left = margen;
+		lblGastosCategoria.Left = xDerecha;
+		dgvMasVendidos.SetBounds(margen, 352, anchoColumna, 150);
+		dgvGastosCategoria.SetBounds(xDerecha, 352, anchoColumna, 150);
+
+		const int yEmpleado = 536;
+		int altoEmpleado = Math.Max(100, ClientSize.Height - yEmpleado - margen);
+		lblProEmpleado.Left = margen;
+		dgvPorEmpleado.SetBounds(margen, yEmpleado, anchoDisponible, altoEmpleado);
 	}
 
 	private void FormReporteMensual_Load(object sender, EventArgs e)

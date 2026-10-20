@@ -18,6 +18,7 @@ public partial class FormDetalleVenta : Form
 	public FormDetalleVenta()
 	{
 		InitializeComponent();
+		dgvDetalle.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 	}
 
 	public FormDetalleVenta(int ventaId) : this()

@@ -17,6 +17,7 @@ public partial class FormIngresoMercaderia : Form
 	{
 		InitializeComponent();
 		txtObservacion.MaxLength = 255;
+		dgvDetalle.Dock = DockStyle.Fill;
 	}
 
 	private void FormIngresoMercaderia_Load(object sender, EventArgs e)

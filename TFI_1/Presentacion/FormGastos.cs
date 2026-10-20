@@ -18,6 +18,11 @@ public partial class FormGastos : Form
 		txtConcepto.MaxLength = 150;
 		txtCategoria.MaxLength = 100;
 		txtObservacion.MaxLength = 255;
+		btnRefrescar.Width = 100;
+		if (tlpFiltros.ColumnStyles.Count > 7)
+		{
+			tlpFiltros.ColumnStyles[7] = new ColumnStyle(SizeType.Absolute, 100F);
+		}
 	}
 
 	private void FormGastos_Load(object sender, EventArgs e)

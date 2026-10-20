@@ -22,6 +22,20 @@ partial class FormAtenciones : Form
 
 	private DataGridView dgvAtenciones;
 
+	private DataGridViewTextBoxColumn colFecha;
+
+	private DataGridViewTextBoxColumn colHora;
+
+	private DataGridViewTextBoxColumn colCliente;
+
+	private DataGridViewTextBoxColumn colEmpleado;
+
+	private DataGridViewTextBoxColumn colServicio;
+
+	private DataGridViewTextBoxColumn colTipo;
+
+	private DataGridViewTextBoxColumn colEstado;
+
 	private Button btnNuevo;
 
 	private Button btnEditar;
@@ -48,6 +62,13 @@ partial class FormAtenciones : Form
         btnBuscar = new Button();
         btnRefrescar = new Button();
         dgvAtenciones = new DataGridView();
+        colFecha = new DataGridViewTextBoxColumn();
+        colHora = new DataGridViewTextBoxColumn();
+        colCliente = new DataGridViewTextBoxColumn();
+        colEmpleado = new DataGridViewTextBoxColumn();
+        colServicio = new DataGridViewTextBoxColumn();
+        colTipo = new DataGridViewTextBoxColumn();
+        colEstado = new DataGridViewTextBoxColumn();
         btnNuevo = new Button();
         btnEditar = new Button();
         btnCancelarAtencion = new Button();
@@ -118,6 +139,7 @@ partial class FormAtenciones : Form
         dgvAtenciones.AllowUserToDeleteRows = false;
         dgvAtenciones.AllowUserToResizeRows = false;
         dgvAtenciones.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+        dgvAtenciones.AutoGenerateColumns = false;
         dgvAtenciones.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvAtenciones.BackgroundColor = SystemColors.ButtonHighlight;
         dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -145,6 +167,65 @@ partial class FormAtenciones : Form
         dgvAtenciones.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvAtenciones.Size = new Size(876, 392);
         dgvAtenciones.TabIndex = 6;
+        dgvAtenciones.Columns.AddRange(new DataGridViewColumn[] { colFecha, colHora, colCliente, colEmpleado, colServicio, colTipo, colEstado });
+        // 
+        // colFecha
+        // 
+        colFecha.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+        colFecha.DataPropertyName = "Fecha";
+        colFecha.HeaderText = "Fecha";
+        colFecha.Name = "colFecha";
+        colFecha.ReadOnly = true;
+        colFecha.Width = 90;
+        // 
+        // colHora
+        // 
+        colHora.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+        colHora.DataPropertyName = "Hora";
+        colHora.HeaderText = "Hora";
+        colHora.Name = "colHora";
+        colHora.ReadOnly = true;
+        colHora.Width = 65;
+        // 
+        // colCliente
+        // 
+        colCliente.DataPropertyName = "ClienteNombre";
+        colCliente.FillWeight = 26F;
+        colCliente.HeaderText = "Cliente";
+        colCliente.Name = "colCliente";
+        colCliente.ReadOnly = true;
+        // 
+        // colEmpleado
+        // 
+        colEmpleado.DataPropertyName = "EmpleadoNombre";
+        colEmpleado.FillWeight = 24F;
+        colEmpleado.HeaderText = "Peluquero";
+        colEmpleado.Name = "colEmpleado";
+        colEmpleado.ReadOnly = true;
+        // 
+        // colServicio
+        // 
+        colServicio.DataPropertyName = "ServicioNombre";
+        colServicio.FillWeight = 24F;
+        colServicio.HeaderText = "Servicio";
+        colServicio.Name = "colServicio";
+        colServicio.ReadOnly = true;
+        // 
+        // colTipo
+        // 
+        colTipo.DataPropertyName = "TipoNombre";
+        colTipo.FillWeight = 14F;
+        colTipo.HeaderText = "Tipo";
+        colTipo.Name = "colTipo";
+        colTipo.ReadOnly = true;
+        // 
+        // colEstado
+        // 
+        colEstado.DataPropertyName = "EstadoNombre";
+        colEstado.FillWeight = 12F;
+        colEstado.HeaderText = "Estado";
+        colEstado.Name = "colEstado";
+        colEstado.ReadOnly = true;
         // 
         // btnNuevo
         // 

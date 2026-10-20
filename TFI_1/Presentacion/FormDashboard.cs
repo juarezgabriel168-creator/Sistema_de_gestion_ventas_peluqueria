@@ -23,6 +23,27 @@ public partial class FormDashboard : Form
 	{
 		InitializeComponent();
 		FormClosed += (s, e) => _tooltipGrafico.Dispose();
+		Resize += (_, _) => AjustarLayout();
+		AjustarLayout();
+	}
+
+	private void AjustarLayout()
+	{
+		if (IsDisposed)
+		{
+			return;
+		}
+
+		const int margen = 12;
+		const int separacion = 12;
+		int ancho = Math.Max(120, (ClientSize.Width - margen - (separacion * 5)) / 6);
+		Panel[] tarjetas = { panelCard1, panelCard2, panelCard3, panelCard4, panelCard5, panelCard6 };
+
+		for (int i = 0; i < tarjetas.Length; i++)
+		{
+			tarjetas[i].Left = margen + (i * (ancho + separacion));
+			tarjetas[i].Width = ancho;
+		}
 	}
 
 	private void FormDashboard_Load(object sender, EventArgs e)

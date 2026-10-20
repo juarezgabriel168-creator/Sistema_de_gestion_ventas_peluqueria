@@ -230,7 +230,7 @@ partial class FormNuevaVenta : Form
         dgvCarrito.AllowUserToAddRows = false;
         dgvCarrito.AllowUserToDeleteRows = false;
         dgvCarrito.AllowUserToResizeRows = false;
-        dgvCarrito.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+        dgvCarrito.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
         dgvCarrito.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvCarrito.BackgroundColor = SystemColors.ButtonHighlight;
         dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;

@@ -28,6 +28,29 @@ public partial class FormNuevaVenta : Form
 	public FormNuevaVenta()
 	{
 		InitializeComponent();
+		Resize += (_, _) => AjustarLayout();
+		AjustarLayout();
+	}
+
+	private void AjustarLayout()
+	{
+		if (IsDisposed)
+		{
+			return;
+		}
+
+		const int margenDerecho = 12;
+
+		lblSubtotalValor.Left = ClientSize.Width - lblSubtotalValor.Width - margenDerecho;
+		lblDescuentoValor.Left = ClientSize.Width - lblDescuentoValor.Width - margenDerecho;
+		lblTotalValor.Left = ClientSize.Width - lblTotalValor.Width - margenDerecho;
+
+		lblSubtotalTitulo.Left = lblSubtotalValor.Left - lblSubtotalTitulo.Width - 14;
+		lblDescuentoTitulo.Left = lblDescuentoValor.Left - lblDescuentoTitulo.Width - 14;
+		lblTotalTitulo.Left = lblTotalValor.Left - lblTotalTitulo.Width - 14;
+
+		int limiteResumen = Math.Min(lblSubtotalTitulo.Left, Math.Min(lblDescuentoTitulo.Left, lblTotalTitulo.Left));
+		dgvCarrito.Width = Math.Max(320, limiteResumen - dgvCarrito.Left - 12);
 	}
 
 	private void FormNuevaVenta_Load(object sender, EventArgs e)

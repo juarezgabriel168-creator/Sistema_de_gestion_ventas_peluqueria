@@ -360,7 +360,7 @@ partial class FormDashboard : Form
         // 
         dgvUltimasVentas.AllowUserToAddRows = false;
         dgvUltimasVentas.AllowUserToDeleteRows = false;
-        dgvUltimasVentas.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+        dgvUltimasVentas.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         dgvUltimasVentas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvUltimasVentas.BackgroundColor = SystemColors.ButtonHighlight;
         dgvUltimasVentas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
