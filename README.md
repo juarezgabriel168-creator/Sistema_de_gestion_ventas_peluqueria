@@ -20,7 +20,7 @@ base de datos **MySQL**.
 | Productos | Productos y servicios | Alta, edición, activación/desactivación y filtros de productos y servicios. Los **servicios** exigen una duración y no manejan stock ni costo; los **productos** manejan stock, stock mínimo y costo de compra, y no duración. |
 | Productos | Categorías | Administrar las categorías de productos y servicios. |
 | Clientes | Clientes | Alta, edición, activación/desactivación y búsqueda de clientes. |
-| Clientes | Cuenta corriente | Ver el saldo y los movimientos de cada cliente y registrar pagos (abonos). |
+| Clientes | Cuenta corriente | Ver el saldo y los movimientos de cada cliente y registrar pagos (abonos). Avisa cuando la deuda supera los **$50.000** (al vender a cuenta corriente y al consultar la cuenta). El aviso no bloquea la venta. |
 | Turnos | Atenciones | Registrar turnos y órdenes de llegada, y cambiar su estado (pendiente, en atención, finalizada, cancelada). No permite turnos en el pasado ni superpuestos para el mismo peluquero. |
 | Administración | Usuarios | Crear y editar usuarios y asignarles un rol. Las contraseñas nuevas deben tener al menos 8 caracteres, con una mayúscula, una minúscula y un número, y no pueden contener el nombre de usuario. |
 | Administración | Empleados | Alta y edición de empleados (con turnos u orden de llegada). |
@@ -218,6 +218,9 @@ Cada formulario se compone de tres archivos:
 - La **caja** no bloquea la venta cuando está cerrada: se puede vender igual,
   pero esa venta no queda asociada a ningún turno de caja. Conviene abrir la
   caja antes de empezar a vender para poder controlar el efectivo del turno.
+- El **límite de aviso de deuda** en cuenta corriente es de **$50.000** y se
+  cambia en `CuentaCorrienteNegocio.LimiteDeudaAviso`. Es solo un aviso: si el
+  cliente supera el límite, la venta se puede confirmar igual.
 - Cambiar las contraseñas de los usuarios de prueba después de la primera
   instalación (menú **Administración → Usuarios**). Los usuarios del script
   (`admin`/`admin123`, `vendedor`/`vendedor123`, `supervisor`/`supervisor123`)

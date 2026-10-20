@@ -8,6 +8,12 @@ namespace TFI_1.Negocio;
 
 public class CuentaCorrienteNegocio
 {
+	/// <summary>
+	/// Saldo a partir del cual se avisa (no se bloquea) antes de seguir
+	/// cargando deuda en la cuenta corriente de un cliente.
+	/// </summary>
+	public const decimal LimiteDeudaAviso = 50000m;
+
 	private readonly CuentaCorrienteDatos _datos = new();
 
 	private readonly AuditoriaNegocio _auditoria = new();

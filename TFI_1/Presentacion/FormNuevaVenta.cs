@@ -236,14 +236,22 @@ public partial class FormNuevaVenta : Form
             numDescuento.Value = descuento;
             _recalculando = false;
         }
-        decimal recargo = CalcularRecargo(subtotal - descuento);
-        decimal total = subtotal - descuento + recargo;
+        decimal total = CalcularTotal();
 
         lblSubtotalValor.Text = subtotal.ToString("C2");
         lblDescuentoValor.Text = descuento.ToString("C2");
         lblTotalValor.Text = total.ToString("C2");
-        ActualizarInfoTarjeta(recargo, total);
+        ActualizarInfoTarjeta(CalcularRecargo(subtotal - descuento), total);
     }
+
+	// Total de la venta con el descuento y el recargo de tarjeta ya aplicados.
+	private decimal CalcularTotal()
+	{
+		decimal subtotal = _carrito.Sum((DetalleVenta d) => d.Subtotal);
+		decimal descuento = Math.Min(numDescuento.Value, subtotal);
+		decimal recargo = CalcularRecargo(subtotal - descuento);
+		return subtotal - descuento + recargo;
+	}
 
 	private void btnRegistrar_Click(object sender, EventArgs e)
 	{
@@ -278,6 +286,30 @@ public partial class FormNuevaVenta : Form
 
         try
 		{
+			// Aviso (no bloqueo) si la venta a cuenta corriente deja al cliente
+			// por encima del límite de deuda.
+			if (MediosPago[cboMedioPago.SelectedIndex] == "cuenta_corriente")
+			{
+				decimal saldoActual = _ccNegocio.ObtenerSaldo(cliente.Id);
+				decimal totalVenta = CalcularTotal();
+				decimal saldoNuevo = saldoActual + totalVenta;
+				if (saldoNuevo > CuentaCorrienteNegocio.LimiteDeudaAviso)
+				{
+					DialogResult continuar = MessageBox.Show(
+						$"Atención: {cliente.NombreCompleto} quedaría con una deuda de {saldoNuevo:C2}.\n" +
+						$"Saldo actual: {saldoActual:C2} · Esta venta: {totalVenta:C2}\n" +
+						$"El límite de aviso es {CuentaCorrienteNegocio.LimiteDeudaAviso:C2}.\n\n" +
+						"¿Desea registrar la venta igual?",
+						"Deuda alta en cuenta corriente",
+						MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+						MessageBoxDefaultButton.Button2);
+					if (continuar != DialogResult.Yes)
+					{
+						return;
+					}
+				}
+			}
+
 			Venta venta = new Venta
 			{
 				Cliente = cliente,

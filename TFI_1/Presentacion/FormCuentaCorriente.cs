@@ -103,13 +103,24 @@ public partial class FormCuentaCorriente : Form
 
 			if (saldo > 0)
 			{
-				lblSaldoSinDeuda.Text = string.Empty;
+				if (saldo > CuentaCorrienteNegocio.LimiteDeudaAviso)
+				{
+					lblSaldoSinDeuda.Text =
+						$"Deuda alta: supera el límite de aviso de {CuentaCorrienteNegocio.LimiteDeudaAviso:C2}.";
+					lblSaldoSinDeuda.ForeColor = Color.Firebrick;
+				}
+				else
+				{
+					lblSaldoSinDeuda.Text = string.Empty;
+					lblSaldoSinDeuda.ForeColor = Color.DimGray;
+				}
 				numMonto.Maximum = saldo;
 				btnRegistrarAbono.Enabled = true;
 			}
 			else
 			{
 				lblSaldoSinDeuda.Text = "El cliente no tiene saldo adeudado.";
+				lblSaldoSinDeuda.ForeColor = Color.DimGray;
 				numMonto.Maximum = 0m;
 				numMonto.Value = 0m;
 				btnRegistrarAbono.Enabled = false;
