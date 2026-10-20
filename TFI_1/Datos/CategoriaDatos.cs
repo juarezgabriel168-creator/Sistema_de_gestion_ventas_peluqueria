@@ -34,7 +34,7 @@ public class CategoriaDatos
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM categorias\n                WHERE nombre = @nombre\n                  AND (@exceptoId IS NULL OR id_categoria <> @exceptoId);", mySqlConnection);
 		mySqlCommand.Parameters.AddWithValue("@nombre", nombre);
-		mySqlCommand.Parameters.AddWithValue("@exceptoId", ((object)exceptoId) ?? DBNull.Value);
+		mySqlCommand.Parameters.AddWithValue("@exceptoId", ((object?)exceptoId) ?? DBNull.Value);
 		mySqlConnection.Open();
 		return Convert.ToInt32(mySqlCommand.ExecuteScalar()) > 0;
 	}

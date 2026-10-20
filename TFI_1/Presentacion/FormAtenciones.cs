@@ -78,7 +78,7 @@ public partial class FormAtenciones : Form
 
 	private void btnEditar_Click(object sender, EventArgs e)
 	{
-		Atencion atencion = Seleccionada();
+		Atencion? atencion = Seleccionada();
 		if (atencion == null)
 		{
 			MessageBox.Show("Seleccione una atención de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -93,7 +93,7 @@ public partial class FormAtenciones : Form
 
 	private void btnCancelarAtencion_Click(object sender, EventArgs e)
 	{
-		Atencion atencion = Seleccionada();
+		Atencion? atencion = Seleccionada();
 		if (atencion == null)
 		{
 			MessageBox.Show("Seleccione una atención de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);

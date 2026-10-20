@@ -164,7 +164,7 @@ public partial class FormDetalleVenta : Form
 	{
 		if (_cabecera == null || _detalle == null)
 			return;
-		var g = e.Graphics;
+		var g = e.Graphics!;
 		var fuenteTitulo = new Font("Segoe UI", 14, FontStyle.Bold);
 		var fuente = new Font("Segoe UI", 10);
 		var fuenteNegrita = new Font("Segoe UI", 10, FontStyle.Bold);

@@ -28,12 +28,6 @@ partial class FormUsuarios : Form
 
 	private CheckBox chkSoloActivos;
 
-	private DataGridViewTextBoxColumn colUsuario;
-
-	private DataGridViewTextBoxColumn colRol;
-
-	private DataGridViewCheckBoxColumn colActivo;
-
 	protected override void Dispose(bool disposing)
 	{
 		if (disposing && components != null)
@@ -128,6 +122,20 @@ partial class FormUsuarios : Form
         btnRefrescar.UseVisualStyleBackColor = true;
         btnRefrescar.Click += btnRefrescar_Click;
         // 
+        // chkSoloActivos
+        // 
+        chkSoloActivos.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        chkSoloActivos.AutoSize = true;
+        chkSoloActivos.Checked = true;
+        chkSoloActivos.CheckState = CheckState.Checked;
+        chkSoloActivos.Location = new Point(657, 16);
+        chkSoloActivos.Name = "chkSoloActivos";
+        chkSoloActivos.Size = new Size(91, 19);
+        chkSoloActivos.TabIndex = 8;
+        chkSoloActivos.Text = "Solo Activos";
+        chkSoloActivos.UseVisualStyleBackColor = true;
+        chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
+        // 
         // dgvUsuarios
         // 
         dgvUsuarios.AllowUserToAddRows = false;
@@ -135,6 +143,7 @@ partial class FormUsuarios : Form
         dgvUsuarios.AllowUserToResizeRows = false;
         dgvUsuarios.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         dgvUsuarios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        dgvUsuarios.BackgroundColor = SystemColors.ButtonHighlight;
         dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
         dataGridViewCellStyle1.BackColor = SystemColors.Control;
         dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
@@ -155,26 +164,12 @@ partial class FormUsuarios : Form
         dgvUsuarios.Location = new Point(12, 90);
         dgvUsuarios.MultiSelect = false;
         dgvUsuarios.Name = "dgvUsuarios";
-        dgvUsuarios.SelectionChanged += dgvUsuarios_SelectionChanged;
         dgvUsuarios.ReadOnly = true;
         dgvUsuarios.RowHeadersVisible = false;
         dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvUsuarios.Size = new Size(736, 360);
         dgvUsuarios.TabIndex = 7;
-        // 
-        // chkSoloActivos
-        // 
-        chkSoloActivos.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        chkSoloActivos.AutoSize = true;
-        chkSoloActivos.Checked = true;
-        chkSoloActivos.CheckState = CheckState.Checked;
-        chkSoloActivos.Location = new Point(648, 16);
-        chkSoloActivos.Name = "chkSoloActivos";
-        chkSoloActivos.Size = new Size(100, 19);
-        chkSoloActivos.TabIndex = 8;
-        chkSoloActivos.Text = "Solo Activos";
-        chkSoloActivos.UseVisualStyleBackColor = true;
-        chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
+        dgvUsuarios.SelectionChanged += dgvUsuarios_SelectionChanged;
         // 
         // FormUsuarios
         // 

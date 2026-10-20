@@ -23,8 +23,8 @@ public class IngresoMercaderiaDatos
 			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%')) " +
 			"ORDER BY i.fecha DESC, i.id_ingreso DESC " +
 			"LIMIT @limite OFFSET @desplazamiento;", conexion);
-		cmd.Parameters.AddWithValue("@desde", ((object)desde?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@hasta", ((object)hasta?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@desde", ((object?)desde?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta?.Date) ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
 		cmd.Parameters.AddWithValue("@limite", limite ?? int.MaxValue);
 		cmd.Parameters.AddWithValue("@desplazamiento", desplazamiento ?? 0);
@@ -44,8 +44,8 @@ public class IngresoMercaderiaDatos
 			"WHERE (@desde IS NULL OR DATE(i.fecha) >= @desde) " +
 			"  AND (@hasta IS NULL OR DATE(i.fecha) <= @hasta) " +
 			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%'));", conexion);
-		cmd.Parameters.AddWithValue("@desde", ((object)desde?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@hasta", ((object)hasta?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@desde", ((object?)desde?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta?.Date) ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());
@@ -60,8 +60,8 @@ public class IngresoMercaderiaDatos
 			"WHERE (@desde IS NULL OR DATE(i.fecha) >= @desde) " +
 			"  AND (@hasta IS NULL OR DATE(i.fecha) <= @hasta) " +
 			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%'));", conexion);
-		cmd.Parameters.AddWithValue("@desde", ((object)desde?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@hasta", ((object)hasta?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@desde", ((object?)desde?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta?.Date) ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
 		conexion.Open();
 		return Convert.ToDecimal(cmd.ExecuteScalar());
@@ -110,7 +110,7 @@ public class IngresoMercaderiaDatos
 				cmd.Parameters.AddWithValue("@proveedor", (object?)ingreso.Proveedor ?? DBNull.Value);
 				cmd.Parameters.AddWithValue("@total", ingreso.Total);
 				cmd.Parameters.AddWithValue("@idUsuario", ingreso.IdUsuario);
-				cmd.Parameters.AddWithValue("@observacion", (object)ingreso.Observacion ?? DBNull.Value);
+				cmd.Parameters.AddWithValue("@observacion", (object?)ingreso.Observacion ?? DBNull.Value);
 				ingreso.Id = Convert.ToInt32(cmd.ExecuteScalar());
 			}
 

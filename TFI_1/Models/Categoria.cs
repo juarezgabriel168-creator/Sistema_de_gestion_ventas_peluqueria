@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 
 namespace TFI_1.Models
 {
     public class Categoria
     {
-        private string _nombre;
+        private string _nombre = string.Empty;
 
         public int Id { get; set; }
         public bool Activo { get; set; } = true;

@@ -28,7 +28,7 @@ public class AtencionDatos
 				"  AND (@estado IS NULL OR a.estado = @estado) " +
 				"ORDER BY a.fecha_hora DESC;", conexion);
 			cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
-			cmd.Parameters.AddWithValue("@estado", ((object)estado) ?? DBNull.Value);
+			cmd.Parameters.AddWithValue("@estado", ((object?)estado) ?? DBNull.Value);
 			conexion.Open();
 			using MySqlDataReader rd = cmd.ExecuteReader();
 			while (rd.Read())

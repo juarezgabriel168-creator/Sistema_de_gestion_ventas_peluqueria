@@ -313,7 +313,7 @@ public partial class FormNuevaVenta : Form
 			Venta venta = new Venta
 			{
 				Cliente = cliente,
-				Usuario = Sesion.UsuarioActual,
+				Usuario = Sesion.UsuarioActual!,
 				IdEmpleado = idEmpleado,
 				MedioPago = MediosPago[cboMedioPago.SelectedIndex],
 				IdTarjetaCredito = idTarjeta,

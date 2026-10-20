@@ -28,14 +28,6 @@ partial class FormEmpleados : Form
 
 	private CheckBox chkSoloActivos;
 
-	private DataGridViewTextBoxColumn colApellido;
-
-	private DataGridViewTextBoxColumn colNombre;
-
-	private DataGridViewTextBoxColumn colModalidad;
-
-	private DataGridViewCheckBoxColumn colActivo;
-
 	protected override void Dispose(bool disposing)
 	{
 		if (disposing && components != null)
@@ -130,37 +122,19 @@ partial class FormEmpleados : Form
         btnRefrescar.UseVisualStyleBackColor = true;
         btnRefrescar.Click += btnRefrescar_Click;
         // 
-        // colApellido
+        // chkSoloActivos
         // 
-        colApellido = new DataGridViewTextBoxColumn();
-        colApellido.DataPropertyName = "Apellido";
-        colApellido.HeaderText = "Apellido";
-        colApellido.Name = "colApellido";
-        colApellido.ReadOnly = true;
-        // 
-        // colNombre
-        // 
-        colNombre = new DataGridViewTextBoxColumn();
-        colNombre.DataPropertyName = "Nombre";
-        colNombre.HeaderText = "Nombre";
-        colNombre.Name = "colNombre";
-        colNombre.ReadOnly = true;
-        // 
-        // colModalidad
-        // 
-        colModalidad = new DataGridViewTextBoxColumn();
-        colModalidad.DataPropertyName = "ModalidadTexto";
-        colModalidad.HeaderText = "Modalidad";
-        colModalidad.Name = "colModalidad";
-        colModalidad.ReadOnly = true;
-        // 
-        // colActivo
-        // 
-        colActivo = new DataGridViewCheckBoxColumn();
-        colActivo.DataPropertyName = "Activo";
-        colActivo.HeaderText = "Activo";
-        colActivo.Name = "colActivo";
-        colActivo.ReadOnly = true;
+        chkSoloActivos.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        chkSoloActivos.AutoSize = true;
+        chkSoloActivos.Checked = true;
+        chkSoloActivos.CheckState = CheckState.Checked;
+        chkSoloActivos.Location = new Point(699, 16);
+        chkSoloActivos.Name = "chkSoloActivos";
+        chkSoloActivos.Size = new Size(91, 19);
+        chkSoloActivos.TabIndex = 8;
+        chkSoloActivos.Text = "Solo Activos";
+        chkSoloActivos.UseVisualStyleBackColor = true;
+        chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
         // 
         // dgvEmpleados
         // 
@@ -168,8 +142,8 @@ partial class FormEmpleados : Form
         dgvEmpleados.AllowUserToDeleteRows = false;
         dgvEmpleados.AllowUserToResizeRows = false;
         dgvEmpleados.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        dgvEmpleados.AutoGenerateColumns = false;
         dgvEmpleados.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        dgvEmpleados.BackgroundColor = SystemColors.ButtonHighlight;
         dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
         dataGridViewCellStyle1.BackColor = SystemColors.Control;
         dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
@@ -190,31 +164,12 @@ partial class FormEmpleados : Form
         dgvEmpleados.Location = new Point(12, 90);
         dgvEmpleados.MultiSelect = false;
         dgvEmpleados.Name = "dgvEmpleados";
-        dgvEmpleados.SelectionChanged += dgvEmpleados_SelectionChanged;
         dgvEmpleados.ReadOnly = true;
         dgvEmpleados.RowHeadersVisible = false;
         dgvEmpleados.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvEmpleados.Size = new Size(778, 361);
         dgvEmpleados.TabIndex = 7;
-        dgvEmpleados.Columns.AddRange(new DataGridViewColumn[] {
-        colApellido,
-        colNombre,
-        colModalidad,
-        colActivo});
-        // 
-        // chkSoloActivos
-        // 
-        chkSoloActivos.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        chkSoloActivos.AutoSize = true;
-        chkSoloActivos.Checked = true;
-        chkSoloActivos.CheckState = CheckState.Checked;
-        chkSoloActivos.Location = new Point(690, 16);
-        chkSoloActivos.Name = "chkSoloActivos";
-        chkSoloActivos.Size = new Size(100, 19);
-        chkSoloActivos.TabIndex = 8;
-        chkSoloActivos.Text = "Solo Activos";
-        chkSoloActivos.UseVisualStyleBackColor = true;
-        chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
+        dgvEmpleados.SelectionChanged += dgvEmpleados_SelectionChanged;
         // 
         // FormEmpleados
         // 

@@ -36,10 +36,10 @@ public partial class FormEmpleadoEditar : Form
 		else
 		{
 			Text = "Editar empleado";
-			txtNombre.Text = _empleado.Nombre;
-			txtApellido.Text = _empleado.Apellido;
-			cboModalidad.SelectedIndex = ((_empleado.Modalidad == Modalidad.OrdenLlegada) ? 1 : 0);
-			chkActivo.Checked = _empleado.Activo;
+			txtNombre.Text = _empleado!.Nombre;
+			txtApellido.Text = _empleado!.Apellido;
+			cboModalidad.SelectedIndex = ((_empleado!.Modalidad == Modalidad.OrdenLlegada) ? 1 : 0);
+			chkActivo.Checked = _empleado!.Activo;
 		}
 	}
 
@@ -51,7 +51,7 @@ public partial class FormEmpleadoEditar : Form
 		}
 		try
 		{
-			Empleado empleado = (_esNuevo ? new Empleado() : _empleado);
+			Empleado empleado = (_esNuevo ? new Empleado() : _empleado!);
 			empleado.Nombre = txtNombre.Text.Trim();
 			empleado.Apellido = txtApellido.Text.Trim();
 			empleado.Modalidad = ((cboModalidad.SelectedIndex == 1) ? Modalidad.OrdenLlegada : Modalidad.Turnos);

@@ -37,22 +37,6 @@ partial class FormItems : Form
 
 	private CheckBox chkSoloActivos;
 
-	private DataGridViewTextBoxColumn colNombre;
-
-	private DataGridViewTextBoxColumn colTipo;
-
-	private DataGridViewTextBoxColumn colCategoria;
-
-	private DataGridViewTextBoxColumn colCategoriaNombre;
-
-	private DataGridViewTextBoxColumn colPrecio;
-
-	private DataGridViewTextBoxColumn colStock;
-
-	private DataGridViewCheckBoxColumn colStockBajo;
-
-	private DataGridViewCheckBoxColumn colActivo;
-
 	protected override void Dispose(bool disposing)
 	{
 		if (disposing && components != null)
@@ -191,62 +175,19 @@ partial class FormItems : Form
         btnRefrescar.UseVisualStyleBackColor = true;
         btnRefrescar.Click += btnRefrescar_Click;
         // 
-        // colNombre
+        // chkSoloActivos
         // 
-        colNombre = new DataGridViewTextBoxColumn();
-        colNombre.DataPropertyName = "Nombre";
-        colNombre.HeaderText = "Nombre";
-        colNombre.Name = "colNombre";
-        colNombre.ReadOnly = true;
-        // 
-        // colTipo
-        // 
-        colTipo = new DataGridViewTextBoxColumn();
-        colTipo.DataPropertyName = "Tipo";
-        colTipo.HeaderText = "Tipo";
-        colTipo.Name = "colTipo";
-        colTipo.ReadOnly = true;
-        // 
-        // colCategoria
-        // 
-        colCategoria = new DataGridViewTextBoxColumn();
-        colCategoria.DataPropertyName = "CategoriaNombre";
-        colCategoria.HeaderText = "Categoría";
-        colCategoria.Name = "colCategoria";
-        colCategoria.ReadOnly = true;
-        // 
-        // colPrecio
-        // 
-        colPrecio = new DataGridViewTextBoxColumn();
-        colPrecio.DataPropertyName = "Precio";
-        colPrecio.HeaderText = "Precio";
-        colPrecio.Name = "colPrecio";
-        colPrecio.ReadOnly = true;
-        colPrecio.DefaultCellStyle.Format = "C2";
-        // 
-        // colStock
-        // 
-        colStock = new DataGridViewTextBoxColumn();
-        colStock.DataPropertyName = "Stock";
-        colStock.HeaderText = "Stock";
-        colStock.Name = "colStock";
-        colStock.ReadOnly = true;
-        // 
-        // colStockBajo
-        // 
-        colStockBajo = new DataGridViewCheckBoxColumn();
-        colStockBajo.DataPropertyName = "StockBajo";
-        colStockBajo.HeaderText = "Stock bajo";
-        colStockBajo.Name = "colStockBajo";
-        colStockBajo.ReadOnly = true;
-        // 
-        // colActivo
-        // 
-        colActivo = new DataGridViewCheckBoxColumn();
-        colActivo.DataPropertyName = "Activo";
-        colActivo.HeaderText = "Activo";
-        colActivo.Name = "colActivo";
-        colActivo.ReadOnly = true;
+        chkSoloActivos.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        chkSoloActivos.AutoSize = true;
+        chkSoloActivos.Checked = true;
+        chkSoloActivos.CheckState = CheckState.Checked;
+        chkSoloActivos.Location = new Point(757, 16);
+        chkSoloActivos.Name = "chkSoloActivos";
+        chkSoloActivos.Size = new Size(91, 19);
+        chkSoloActivos.TabIndex = 8;
+        chkSoloActivos.Text = "Solo Activos";
+        chkSoloActivos.UseVisualStyleBackColor = true;
+        chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
         // 
         // dgvItems
         // 
@@ -254,40 +195,34 @@ partial class FormItems : Form
         dgvItems.AllowUserToDeleteRows = false;
         dgvItems.AllowUserToResizeRows = false;
         dgvItems.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        dgvItems.AutoGenerateColumns = false;
         dgvItems.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        dgvItems.BackgroundColor = SystemColors.ButtonHighlight;
+        dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        dataGridViewCellStyle1.BackColor = SystemColors.Control;
+        dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+        dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+        dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+        dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+        dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+        dgvItems.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
         dgvItems.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        dataGridViewCellStyle2.BackColor = SystemColors.Window;
+        dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+        dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+        dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+        dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+        dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+        dgvItems.DefaultCellStyle = dataGridViewCellStyle2;
         dgvItems.Location = new Point(12, 120);
         dgvItems.MultiSelect = false;
         dgvItems.Name = "dgvItems";
-        dgvItems.SelectionChanged += dgvItems_SelectionChanged;
         dgvItems.ReadOnly = true;
         dgvItems.RowHeadersVisible = false;
         dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvItems.Size = new Size(836, 368);
         dgvItems.TabIndex = 11;
-        dgvItems.Columns.AddRange(new DataGridViewColumn[] {
-        colNombre,
-        colTipo,
-        colCategoria,
-        colPrecio,
-        colStock,
-        colStockBajo,
-        colActivo});
-        // 
-        // chkSoloActivos
-        // 
-        chkSoloActivos.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        chkSoloActivos.AutoSize = true;
-        chkSoloActivos.Checked = true;
-        chkSoloActivos.CheckState = CheckState.Checked;
-        chkSoloActivos.Location = new Point(748, 16);
-        chkSoloActivos.Name = "chkSoloActivos";
-        chkSoloActivos.Size = new Size(100, 19);
-        chkSoloActivos.TabIndex = 8;
-        chkSoloActivos.Text = "Solo Activos";
-        chkSoloActivos.UseVisualStyleBackColor = true;
-        chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
+        dgvItems.SelectionChanged += dgvItems_SelectionChanged;
         // 
         // FormItems
         // 

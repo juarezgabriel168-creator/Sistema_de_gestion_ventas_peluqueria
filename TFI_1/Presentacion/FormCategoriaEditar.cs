@@ -33,8 +33,8 @@ public partial class FormCategoriaEditar : Form
 		else
 		{
 			Text = "Editar categoría";
-			txtNombre.Text = _categoria.Nombre;
-			chkActivo.Checked = _categoria.Activo;
+			txtNombre.Text = _categoria!.Nombre;
+			chkActivo.Checked = _categoria!.Activo;
 		}
 	}
 
@@ -46,7 +46,7 @@ public partial class FormCategoriaEditar : Form
 		}
 		try
 		{
-			Categoria categoria = (_esNueva ? new Categoria() : _categoria);
+			Categoria categoria = (_esNueva ? new Categoria() : _categoria!);
 			categoria.Nombre = txtNombre.Text.Trim();
 			categoria.Activo = chkActivo.Checked;
 			_negocio.Guardar(categoria);

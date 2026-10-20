@@ -46,10 +46,10 @@ public partial class FormItemEditar : Form
 			else
 			{
 				Text = "Editar ítem";
-				txtNombre.Text = _item.Nombre;
-				txtPrecio.Text = _item.Precio.ToString(CultureInfo.CurrentCulture);
-				chkActivo.Checked = _item.Activo;
-				cboTipo.SelectedIndex = ((_item.Tipo == TipoItem.Producto) ? 1 : 0);
+				txtNombre.Text = _item!.Nombre;
+				txtPrecio.Text = _item!.Precio.ToString(CultureInfo.CurrentCulture);
+				chkActivo.Checked = _item!.Activo;
+				cboTipo.SelectedIndex = ((_item!.Tipo == TipoItem.Producto) ? 1 : 0);
 				if (_item.Categoria != null)
 				{
 					cboCategoria.SelectedValue = _item.Categoria.Id;
@@ -98,11 +98,11 @@ public partial class FormItemEditar : Form
 		}
 		try
 		{
-			Item item = (_esNuevo ? new Item() : _item);
+			Item item = (_esNuevo ? new Item() : _item!);
 			item.Nombre = txtNombre.Text.Trim();
 			item.Tipo = ((cboTipo.SelectedIndex == 1) ? TipoItem.Producto : TipoItem.Servicio);
 			item.Precio = decimal.Parse(txtPrecio.Text, CultureInfo.CurrentCulture);
-			item.Categoria = (Categoria)cboCategoria.SelectedItem;
+			item.Categoria = (Categoria)cboCategoria.SelectedItem!;
 			item.Activo = chkActivo.Checked;
 			if (item.Tipo == TipoItem.Producto)
 			{

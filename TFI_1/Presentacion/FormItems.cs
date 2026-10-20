@@ -110,7 +110,7 @@ public partial class FormItems : Form
 
 	private void btnEditar_Click(object sender, EventArgs e)
 	{
-		Item item = Seleccionado();
+		Item? item = Seleccionado();
 		if (item == null)
 		{
 			MessageBox.Show("Seleccione un ítem de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -143,7 +143,7 @@ public partial class FormItems : Form
 
 	private void btnDesactivar_Click(object sender, EventArgs e)
 	{
-		Item item = Seleccionado();
+		Item? item = Seleccionado();
 		if (item == null)
 		{
 			MessageBox.Show("Seleccione un ítem de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);

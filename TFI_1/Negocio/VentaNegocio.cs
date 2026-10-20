@@ -47,7 +47,7 @@ public class VentaNegocio
         List<DetalleVenta> recalculado = new List<DetalleVenta>();
         foreach (DetalleVenta detalle in venta.Detalles)
         {
-            Item actual = _itemDatos.ObtenerPorId(detalle.Item.Id);
+            Item? actual = _itemDatos.ObtenerPorId(detalle.Item.Id);
             if (actual == null || !actual.Activo)
                 throw new ArgumentException($"El ítem '{detalle.Item.Nombre}' ya no está disponible.");
             recalculado.Add(new DetalleVenta(actual, detalle.Cantidad));

@@ -29,7 +29,7 @@ public class ClienteDatos
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM clientes\n                WHERE dni = @dni\n                  AND (@exceptoId IS NULL OR id_cliente <> @exceptoId);", mySqlConnection);
 		mySqlCommand.Parameters.AddWithValue("@dni", dni);
-		mySqlCommand.Parameters.AddWithValue("@exceptoId", ((object)exceptoId) ?? DBNull.Value);
+		mySqlCommand.Parameters.AddWithValue("@exceptoId", ((object?)exceptoId) ?? DBNull.Value);
 		mySqlConnection.Open();
 		return Convert.ToInt32(mySqlCommand.ExecuteScalar()) > 0;
 	}
@@ -103,7 +103,7 @@ public class ClienteDatos
 			Nombre = rd.GetString("nombre"),
 			Apellido = rd.GetString("apellido"),
 			Dni = rd.GetString("dni"),
-			Telefono = (rd.IsDBNull(ordinal) ? null : rd.GetString(ordinal)),
+			Telefono = (rd.IsDBNull(ordinal) ? string.Empty : rd.GetString(ordinal)),
 			Activo = rd.GetBoolean("activo")
 		};
 	}

@@ -22,8 +22,8 @@ public class GastoDatos
 			"  AND (@filtro = '' OR g.concepto LIKE CONCAT('%', @filtro, '%') " +
 			"               OR g.categoria LIKE CONCAT('%', @filtro, '%')) " +
 			"ORDER BY g.fecha DESC, g.id_gasto DESC;", conexion);
-		cmd.Parameters.AddWithValue("@desde", ((object)desde?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@hasta", ((object)hasta?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@desde", ((object?)desde?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta?.Date) ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
@@ -57,8 +57,8 @@ public class GastoDatos
 		cmd.Parameters.AddWithValue("@fecha", gasto.Fecha);
 		cmd.Parameters.AddWithValue("@concepto", gasto.Concepto);
 		cmd.Parameters.AddWithValue("@monto", gasto.Monto);
-		cmd.Parameters.AddWithValue("@categoria", (object)gasto.Categoria ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@observacion", (object)gasto.Observacion ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@categoria", (object?)gasto.Categoria ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@observacion", (object?)gasto.Observacion ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@idUsuario", gasto.IdUsuario);
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());
@@ -75,8 +75,8 @@ public class GastoDatos
 		cmd.Parameters.AddWithValue("@fecha", gasto.Fecha);
 		cmd.Parameters.AddWithValue("@concepto", gasto.Concepto);
 		cmd.Parameters.AddWithValue("@monto", gasto.Monto);
-		cmd.Parameters.AddWithValue("@categoria", (object)gasto.Categoria ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@observacion", (object)gasto.Observacion ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@categoria", (object?)gasto.Categoria ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@observacion", (object?)gasto.Observacion ?? DBNull.Value);
 		conexion.Open();
 		cmd.ExecuteNonQuery();
 	}

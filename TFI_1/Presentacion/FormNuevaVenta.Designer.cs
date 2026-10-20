@@ -32,14 +32,6 @@ partial class FormNuevaVenta : Form
 
 	private DataGridView dgvCarrito;
 
-	private DataGridViewTextBoxColumn colItemNombre;
-
-	private DataGridViewTextBoxColumn colCantidad;
-
-	private DataGridViewTextBoxColumn colPrecio;
-
-	private DataGridViewTextBoxColumn colSubtotal;
-
 	private Button btnQuitar;
 
 	private Label lblSubtotalTitulo;
@@ -122,6 +114,7 @@ partial class FormNuevaVenta : Form
         lblCuotas = new Label();
         numCuotas = new NumericUpDown();
         lblTarjetaInfo = new Label();
+        lblDescuento2 = new Label();
         ((ISupportInitialize)numCantidad).BeginInit();
         ((ISupportInitialize)dgvCarrito).BeginInit();
         ((ISupportInitialize)numDescuento).BeginInit();
@@ -215,7 +208,7 @@ partial class FormNuevaVenta : Form
         // 
         // btnAgregar
         // 
-        btnAgregar.Location = new Point(414, 120);
+        btnAgregar.Location = new Point(547, 120);
         btnAgregar.Name = "btnAgregar";
         btnAgregar.Size = new Size(100, 26);
         btnAgregar.TabIndex = 9;
@@ -239,6 +232,7 @@ partial class FormNuevaVenta : Form
         dgvCarrito.AllowUserToResizeRows = false;
         dgvCarrito.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         dgvCarrito.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        dgvCarrito.BackgroundColor = SystemColors.ButtonHighlight;
         dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
         dataGridViewCellStyle1.BackColor = SystemColors.Control;
         dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
@@ -270,7 +264,7 @@ partial class FormNuevaVenta : Form
         btnQuitar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         btnQuitar.Location = new Point(12, 502);
         btnQuitar.Name = "btnQuitar";
-        btnQuitar.Size = new Size(130, 30);
+        btnQuitar.Size = new Size(139, 40);
         btnQuitar.TabIndex = 12;
         btnQuitar.Text = "Quitar ítem";
         btnQuitar.UseVisualStyleBackColor = true;
@@ -280,7 +274,7 @@ partial class FormNuevaVenta : Form
         // 
         lblSubtotalTitulo.AutoSize = true;
         lblSubtotalTitulo.Font = new Font("Segoe UI", 10F);
-        lblSubtotalTitulo.Location = new Point(588, 170);
+        lblSubtotalTitulo.Location = new Point(704, 176);
         lblSubtotalTitulo.Name = "lblSubtotalTitulo";
         lblSubtotalTitulo.Size = new Size(63, 19);
         lblSubtotalTitulo.TabIndex = 13;
@@ -290,7 +284,7 @@ partial class FormNuevaVenta : Form
         // 
         lblSubtotalValor.AutoSize = true;
         lblSubtotalValor.Font = new Font("Segoe UI", 10F);
-        lblSubtotalValor.Location = new Point(720, 170);
+        lblSubtotalValor.Location = new Point(844, 179);
         lblSubtotalValor.Name = "lblSubtotalValor";
         lblSubtotalValor.Size = new Size(44, 19);
         lblSubtotalValor.TabIndex = 14;
@@ -300,7 +294,7 @@ partial class FormNuevaVenta : Form
         // 
         lblDescuentoTitulo.AutoSize = true;
         lblDescuentoTitulo.Font = new Font("Segoe UI", 10F);
-        lblDescuentoTitulo.Location = new Point(588, 208);
+        lblDescuentoTitulo.Location = new Point(690, 208);
         lblDescuentoTitulo.Name = "lblDescuentoTitulo";
         lblDescuentoTitulo.Size = new Size(77, 19);
         lblDescuentoTitulo.TabIndex = 15;
@@ -310,7 +304,7 @@ partial class FormNuevaVenta : Form
         // 
         lblDescuentoValor.AutoSize = true;
         lblDescuentoValor.Font = new Font("Segoe UI", 10F);
-        lblDescuentoValor.Location = new Point(671, 206);
+        lblDescuentoValor.Location = new Point(844, 208);
         lblDescuentoValor.Name = "lblDescuentoValor";
         lblDescuentoValor.Size = new Size(44, 19);
         lblDescuentoValor.TabIndex = 16;
@@ -319,10 +313,10 @@ partial class FormNuevaVenta : Form
         // numDescuento
         // 
         numDescuento.DecimalPlaces = 2;
-        numDescuento.Location = new Point(720, 206);
+        numDescuento.Location = new Point(420, 122);
         numDescuento.Maximum = new decimal(new int[] { 9999999, 0, 0, 0 });
         numDescuento.Name = "numDescuento";
-        numDescuento.Size = new Size(120, 23);
+        numDescuento.Size = new Size(102, 23);
         numDescuento.TabIndex = 16;
         numDescuento.ValueChanged += numDescuento_ValueChanged;
         // 
@@ -330,7 +324,7 @@ partial class FormNuevaVenta : Form
         // 
         lblTotalTitulo.AutoSize = true;
         lblTotalTitulo.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-        lblTotalTitulo.Location = new Point(588, 258);
+        lblTotalTitulo.Location = new Point(694, 253);
         lblTotalTitulo.Name = "lblTotalTitulo";
         lblTotalTitulo.Size = new Size(73, 25);
         lblTotalTitulo.TabIndex = 17;
@@ -341,7 +335,7 @@ partial class FormNuevaVenta : Form
         lblTotalValor.AutoSize = true;
         lblTotalValor.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblTotalValor.ForeColor = Color.FromArgb(0, 102, 51);
-        lblTotalValor.Location = new Point(657, 254);
+        lblTotalValor.Location = new Point(817, 253);
         lblTotalValor.Name = "lblTotalValor";
         lblTotalValor.Size = new Size(71, 30);
         lblTotalValor.TabIndex = 18;
@@ -373,9 +367,9 @@ partial class FormNuevaVenta : Form
         // lblEmpleado
         // 
         lblEmpleado.AutoSize = true;
-        lblEmpleado.Location = new Point(12, 130);
+        lblEmpleado.Location = new Point(12, 148);
         lblEmpleado.Name = "lblEmpleado";
-        lblEmpleado.Size = new Size(65, 15);
+        lblEmpleado.Size = new Size(63, 15);
         lblEmpleado.TabIndex = 21;
         lblEmpleado.Text = "Empleado:";
         // 
@@ -383,7 +377,7 @@ partial class FormNuevaVenta : Form
         // 
         cboEmpleado.DropDownStyle = ComboBoxStyle.DropDownList;
         cboEmpleado.FormattingEnabled = true;
-        cboEmpleado.Location = new Point(12, 148);
+        cboEmpleado.Location = new Point(12, 166);
         cboEmpleado.Name = "cboEmpleado";
         cboEmpleado.Size = new Size(200, 23);
         cboEmpleado.TabIndex = 22;
@@ -391,9 +385,9 @@ partial class FormNuevaVenta : Form
         // lblBanco
         // 
         lblBanco.AutoSize = true;
-        lblBanco.Location = new Point(224, 130);
+        lblBanco.Location = new Point(224, 148);
         lblBanco.Name = "lblBanco";
-        lblBanco.Size = new Size(44, 15);
+        lblBanco.Size = new Size(43, 15);
         lblBanco.TabIndex = 23;
         lblBanco.Text = "Banco:";
         // 
@@ -401,7 +395,7 @@ partial class FormNuevaVenta : Form
         // 
         cboBanco.DropDownStyle = ComboBoxStyle.DropDownList;
         cboBanco.FormattingEnabled = true;
-        cboBanco.Location = new Point(224, 148);
+        cboBanco.Location = new Point(224, 166);
         cboBanco.Name = "cboBanco";
         cboBanco.Size = new Size(170, 23);
         cboBanco.TabIndex = 24;
@@ -409,9 +403,9 @@ partial class FormNuevaVenta : Form
         // lblTarjeta
         // 
         lblTarjeta.AutoSize = true;
-        lblTarjeta.Location = new Point(406, 130);
+        lblTarjeta.Location = new Point(406, 148);
         lblTarjeta.Name = "lblTarjeta";
-        lblTarjeta.Size = new Size(85, 15);
+        lblTarjeta.Size = new Size(86, 15);
         lblTarjeta.TabIndex = 25;
         lblTarjeta.Text = "Tipo de tarjeta:";
         // 
@@ -419,7 +413,7 @@ partial class FormNuevaVenta : Form
         // 
         cboTarjeta.DropDownStyle = ComboBoxStyle.DropDownList;
         cboTarjeta.FormattingEnabled = true;
-        cboTarjeta.Location = new Point(406, 148);
+        cboTarjeta.Location = new Point(406, 166);
         cboTarjeta.Name = "cboTarjeta";
         cboTarjeta.Size = new Size(150, 23);
         cboTarjeta.TabIndex = 26;
@@ -427,15 +421,15 @@ partial class FormNuevaVenta : Form
         // lblCuotas
         // 
         lblCuotas.AutoSize = true;
-        lblCuotas.Location = new Point(568, 130);
+        lblCuotas.Location = new Point(587, 148);
         lblCuotas.Name = "lblCuotas";
-        lblCuotas.Size = new Size(48, 15);
+        lblCuotas.Size = new Size(47, 15);
         lblCuotas.TabIndex = 27;
         lblCuotas.Text = "Cuotas:";
         // 
         // numCuotas
         // 
-        numCuotas.Location = new Point(568, 148);
+        numCuotas.Location = new Point(587, 166);
         numCuotas.Maximum = new decimal(new int[] { 36, 0, 0, 0 });
         numCuotas.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
         numCuotas.Name = "numCuotas";
@@ -452,12 +446,22 @@ partial class FormNuevaVenta : Form
         lblTarjetaInfo.Size = new Size(0, 15);
         lblTarjetaInfo.TabIndex = 29;
         // 
+        // lblDescuento2
+        // 
+        lblDescuento2.AutoSize = true;
+        lblDescuento2.Location = new Point(420, 104);
+        lblDescuento2.Name = "lblDescuento2";
+        lblDescuento2.Size = new Size(66, 15);
+        lblDescuento2.TabIndex = 30;
+        lblDescuento2.Text = "Descuento:";
+        // 
         // FormNuevaVenta
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         BackColor = SystemColors.ActiveCaption;
         ClientSize = new Size(900, 560);
+        Controls.Add(lblDescuento2);
         Controls.Add(lblEmpleado);
         Controls.Add(cboEmpleado);
         Controls.Add(lblBanco);
@@ -501,4 +505,6 @@ partial class FormNuevaVenta : Form
         ResumeLayout(false);
         PerformLayout();
     }
+
+    private Label lblDescuento2;
 }

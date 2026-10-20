@@ -61,7 +61,7 @@ public partial class FormEmpleados : Form
 
 	private void btnEditar_Click(object sender, EventArgs e)
 	{
-		Empleado empleado = Seleccionado();
+		Empleado? empleado = Seleccionado();
 		if (empleado == null)
 		{
 			MessageBox.Show("Seleccione un empleado de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -94,7 +94,7 @@ public partial class FormEmpleados : Form
 
 	private void btnDesactivar_Click(object sender, EventArgs e)
 	{
-		Empleado empleado = Seleccionado();
+		Empleado? empleado = Seleccionado();
 		if (empleado == null)
 		{
 			MessageBox.Show("Seleccione un empleado de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);

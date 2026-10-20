@@ -84,7 +84,7 @@ public class ClienteNegocio
 			Nombre = "Consumidor",
 			Apellido = "Final",
 			Dni = dniCf,
-			Telefono = null,
+			Telefono = string.Empty,
 			Activo = true
 		};
 		return Guardar(cf);

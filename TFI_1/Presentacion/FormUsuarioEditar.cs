@@ -46,8 +46,8 @@ public partial class FormUsuarioEditar : Form
 				return;
 			}
 			Text = "Editar usuario";
-			txtUsuario.Text = _usuario.NombreUsuario;
-			chkActivo.Checked = _usuario.Activo;
+			txtUsuario.Text = _usuario!.NombreUsuario;
+			chkActivo.Checked = _usuario!.Activo;
 			if (_usuario.Rol != null)
 			{
 				cboRol.SelectedValue = _usuario.Rol.Id;
@@ -69,9 +69,9 @@ public partial class FormUsuarioEditar : Form
 		}
 		try
 		{
-			Usuario usuario = (_esNuevo ? new Usuario() : _usuario);
+			Usuario usuario = (_esNuevo ? new Usuario() : _usuario!);
 			usuario.NombreUsuario = txtUsuario.Text.Trim();
-			usuario.Rol = (Rol)cboRol.SelectedItem;
+			usuario.Rol = (Rol)cboRol.SelectedItem!;
 			usuario.Activo = chkActivo.Checked;
 			_negocio.Guardar(usuario, txtContrasena.Text, _esNuevo);
 			DialogResult = DialogResult.OK;

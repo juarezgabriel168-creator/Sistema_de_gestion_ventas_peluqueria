@@ -61,7 +61,7 @@ public partial class FormCategorias : Form
 
 	private void btnEditar_Click(object sender, EventArgs e)
 	{
-		Categoria categoria = Seleccionada();
+		Categoria? categoria = Seleccionada();
 		if (categoria == null)
 		{
 			MessageBox.Show("Seleccione una categoría de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -94,7 +94,7 @@ public partial class FormCategorias : Form
 
 	private void btnDesactivar_Click(object sender, EventArgs e)
 	{
-		Categoria categoria = Seleccionada();
+		Categoria? categoria = Seleccionada();
 		if (categoria == null)
 		{
 			MessageBox.Show("Seleccione una categoría de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);

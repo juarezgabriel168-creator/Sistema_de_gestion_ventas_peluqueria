@@ -63,7 +63,7 @@ public partial class FormReporteMensual : Form
             dgvPorEmpleado.DataSource = _negocio.VentasPorEmpleado(primeroDelMes, ultimoDelMes);
 
             if (dgvPorEmpleado.Columns.Contains("Total"))
-                dgvPorEmpleado.Columns["Total"].DefaultCellStyle.Format = "C2";
+                dgvPorEmpleado.Columns["Total"]!.DefaultCellStyle.Format = "C2";
 
             decimal vendido = resumen.Rows.Count > 0 ? Convert.ToDecimal(resumen.Rows[0]["Total"]) : 0m;
             decimal gastos = _gastos.TotalGastos(primeroDelMes, ultimoDelMes);
@@ -72,7 +72,7 @@ public partial class FormReporteMensual : Form
 
             dgvGastosCategoria.DataSource = _gastos.GastosPorCategoria(primeroDelMes, ultimoDelMes);
             if (dgvGastosCategoria.Columns.Contains("Total"))
-                dgvGastosCategoria.Columns["Total"].DefaultCellStyle.Format = "C2";
+                dgvGastosCategoria.Columns["Total"]!.DefaultCellStyle.Format = "C2";
         }
 		catch (Exception ex)
 		{
@@ -84,7 +84,7 @@ public partial class FormReporteMensual : Form
 	{
 		DateTime primeroDelMes = new DateTime(dtpMes.Value.Year, dtpMes.Value.Month, 1);
 		DateTime ultimoDelMes = primeroDelMes.AddMonths(1).AddDays(-1);
-		var g = e.Graphics;
+		var g = e.Graphics!;
 		var fuenteTitulo = new Font("Segoe UI", 14, FontStyle.Bold);
 		var fuente = new Font("Segoe UI", 10);
 		var fuenteNegrita = new Font("Segoe UI", 10, FontStyle.Bold);

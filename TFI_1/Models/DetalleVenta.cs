@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 
 namespace TFI_1.Models
 {
     public class DetalleVenta
     {
         public int Id { get; set; }
-        public Item Item { get; private set; }
+        public Item Item { get; private set; } = null!;
         public int Cantidad { get; private set; }
         public decimal Precio { get; private set; }      // precio al momento de la venta
 

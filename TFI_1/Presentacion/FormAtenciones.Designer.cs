@@ -22,22 +22,6 @@ partial class FormAtenciones : Form
 
 	private DataGridView dgvAtenciones;
 
-	private DataGridViewTextBoxColumn colId;
-
-	private DataGridViewTextBoxColumn colCliente;
-
-	private DataGridViewTextBoxColumn colEmpleado;
-
-	private DataGridViewTextBoxColumn colServicio;
-
-	private DataGridViewTextBoxColumn colTipo;
-
-	private DataGridViewTextBoxColumn colFecha;
-
-	private DataGridViewTextBoxColumn colHora;
-
-	private DataGridViewTextBoxColumn colEstado;
-
 	private Button btnNuevo;
 
 	private Button btnEditar;
@@ -128,80 +112,31 @@ partial class FormAtenciones : Form
         btnRefrescar.UseVisualStyleBackColor = true;
         btnRefrescar.Click += btnRefrescar_Click;
         // 
-        // colId
-        // 
-        colId = new DataGridViewTextBoxColumn();
-        colId.DataPropertyName = "Id";
-        colId.HeaderText = "Id";
-        colId.Name = "colId";
-        colId.ReadOnly = true;
-        colId.Visible = false;
-        // 
-        // colCliente
-        // 
-        colCliente = new DataGridViewTextBoxColumn();
-        colCliente.DataPropertyName = "ClienteNombre";
-        colCliente.HeaderText = "Cliente";
-        colCliente.Name = "colCliente";
-        colCliente.ReadOnly = true;
-        // 
-        // colEmpleado
-        // 
-        colEmpleado = new DataGridViewTextBoxColumn();
-        colEmpleado.DataPropertyName = "EmpleadoNombre";
-        colEmpleado.HeaderText = "Empleado";
-        colEmpleado.Name = "colEmpleado";
-        colEmpleado.ReadOnly = true;
-        // 
-        // colServicio
-        // 
-        colServicio = new DataGridViewTextBoxColumn();
-        colServicio.DataPropertyName = "ServicioNombre";
-        colServicio.HeaderText = "Servicio";
-        colServicio.Name = "colServicio";
-        colServicio.ReadOnly = true;
-        // 
-        // colTipo
-        // 
-        colTipo = new DataGridViewTextBoxColumn();
-        colTipo.DataPropertyName = "TipoNombre";
-        colTipo.HeaderText = "Tipo";
-        colTipo.Name = "colTipo";
-        colTipo.ReadOnly = true;
-        // 
-        // colFecha
-        // 
-        colFecha = new DataGridViewTextBoxColumn();
-        colFecha.DataPropertyName = "Fecha";
-        colFecha.HeaderText = "Fecha";
-        colFecha.Name = "colFecha";
-        colFecha.ReadOnly = true;
-        // 
-        // colHora
-        // 
-        colHora = new DataGridViewTextBoxColumn();
-        colHora.DataPropertyName = "Hora";
-        colHora.HeaderText = "Hora";
-        colHora.Name = "colHora";
-        colHora.ReadOnly = true;
-        // 
-        // colEstado
-        // 
-        colEstado = new DataGridViewTextBoxColumn();
-        colEstado.DataPropertyName = "EstadoNombre";
-        colEstado.HeaderText = "Estado";
-        colEstado.Name = "colEstado";
-        colEstado.ReadOnly = true;
-        // 
         // dgvAtenciones
         // 
         dgvAtenciones.AllowUserToAddRows = false;
         dgvAtenciones.AllowUserToDeleteRows = false;
         dgvAtenciones.AllowUserToResizeRows = false;
         dgvAtenciones.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-        dgvAtenciones.AutoGenerateColumns = false;
         dgvAtenciones.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        dgvAtenciones.BackgroundColor = SystemColors.ButtonHighlight;
+        dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        dataGridViewCellStyle1.BackColor = SystemColors.Control;
+        dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+        dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+        dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+        dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+        dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+        dgvAtenciones.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
         dgvAtenciones.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        dataGridViewCellStyle2.BackColor = SystemColors.Window;
+        dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+        dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+        dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+        dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+        dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+        dgvAtenciones.DefaultCellStyle = dataGridViewCellStyle2;
         dgvAtenciones.Location = new Point(12, 108);
         dgvAtenciones.MultiSelect = false;
         dgvAtenciones.Name = "dgvAtenciones";
@@ -210,15 +145,6 @@ partial class FormAtenciones : Form
         dgvAtenciones.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvAtenciones.Size = new Size(876, 392);
         dgvAtenciones.TabIndex = 6;
-        dgvAtenciones.Columns.AddRange(new DataGridViewColumn[] {
-        colId,
-        colCliente,
-        colEmpleado,
-        colServicio,
-        colTipo,
-        colFecha,
-        colHora,
-        colEstado});
         // 
         // btnNuevo
         // 

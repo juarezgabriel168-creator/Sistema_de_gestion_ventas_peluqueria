@@ -41,7 +41,7 @@ public class AuditoriaDatos
 		cmd.Parameters.AddWithValue("@entidad", entidad);
 		cmd.Parameters.AddWithValue("@id", ((object?)idEntidad) ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@detalle",
-			string.IsNullOrWhiteSpace(detalle) ? DBNull.Value : ((object)detalle));
+			string.IsNullOrWhiteSpace(detalle) ? DBNull.Value : ((object?)detalle));
 		conexion.Open();
 		cmd.ExecuteNonQuery();
 	}
@@ -65,7 +65,7 @@ public class AuditoriaDatos
 		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
 		cmd.Parameters.AddWithValue("@usuario", ((object?)usuarioId) ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@accion",
-			string.IsNullOrWhiteSpace(accion) ? DBNull.Value : ((object)accion));
+			string.IsNullOrWhiteSpace(accion) ? DBNull.Value : ((object?)accion));
 		cmd.Parameters.AddWithValue("@limite", limite ?? int.MaxValue);
 		cmd.Parameters.AddWithValue("@desplazamiento", desplazamiento ?? 0);
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
@@ -87,7 +87,7 @@ public class AuditoriaDatos
 		cmd.Parameters.AddWithValue("@hasta", hasta.Date);
 		cmd.Parameters.AddWithValue("@usuario", ((object?)usuarioId) ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@accion",
-			string.IsNullOrWhiteSpace(accion) ? DBNull.Value : ((object)accion));
+			string.IsNullOrWhiteSpace(accion) ? DBNull.Value : ((object?)accion));
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());
 	}

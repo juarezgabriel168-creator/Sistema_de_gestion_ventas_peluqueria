@@ -46,15 +46,15 @@ public partial class FormGastos : Form
 	private void FormatearGrid()
 	{
 		if (dgvGastos.Columns.Contains("Id"))
-			dgvGastos.Columns["Id"].Visible = false;
+			dgvGastos.Columns["Id"]!.Visible = false;
 		if (dgvGastos.Columns.Contains("IdUsuario"))
-			dgvGastos.Columns["IdUsuario"].Visible = false;
+			dgvGastos.Columns["IdUsuario"]!.Visible = false;
 		if (dgvGastos.Columns.Contains("FechaAlta"))
-			dgvGastos.Columns["FechaAlta"].Visible = false;
+			dgvGastos.Columns["FechaAlta"]!.Visible = false;
 		if (dgvGastos.Columns.Contains("Fecha"))
-			dgvGastos.Columns["Fecha"].DefaultCellStyle.Format = "dd/MM/yyyy";
+			dgvGastos.Columns["Fecha"]!.DefaultCellStyle.Format = "dd/MM/yyyy";
 		if (dgvGastos.Columns.Contains("Monto"))
-			dgvGastos.Columns["Monto"].DefaultCellStyle.Format = "C2";
+			dgvGastos.Columns["Monto"]!.DefaultCellStyle.Format = "C2";
 
 		DataGridViewColumn? columnaUsuario = dgvGastos.Columns.Contains("NombreUsuario")
 			? dgvGastos.Columns["NombreUsuario"]

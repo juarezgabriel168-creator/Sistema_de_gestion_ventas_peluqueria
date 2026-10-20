@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 
 namespace TFI_1.Models
 {
@@ -10,9 +8,9 @@ namespace TFI_1.Models
     public class Atencion
     {
         public int Id { get; set; }
-        public Cliente Cliente { get; set; }
-        public Empleado Empleado { get; set; }
-        public Item Servicio { get; set; }
+        public Cliente Cliente { get; set; } = null!;
+        public Empleado Empleado { get; set; } = null!;
+        public Item Servicio { get; set; } = null!;
         public TipoAtencion Tipo { get; set; }
         public DateTime FechaHora { get; set; }
         public string Fecha => FechaHora.ToString("dd/MM/yyyy");

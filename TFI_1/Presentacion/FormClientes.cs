@@ -61,7 +61,7 @@ public partial class FormClientes : Form
 
 	private void btnEditar_Click(object sender, EventArgs e)
 	{
-		Cliente cliente = Seleccionado();
+		Cliente? cliente = Seleccionado();
 		if (cliente == null)
 		{
 			MessageBox.Show("Seleccione un cliente de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -94,7 +94,7 @@ public partial class FormClientes : Form
 
 	private void btnDesactivar_Click(object sender, EventArgs e)
 	{
-		Cliente cliente = Seleccionado();
+		Cliente? cliente = Seleccionado();
 		if (cliente == null)
 		{
 			MessageBox.Show("Seleccione un cliente de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);

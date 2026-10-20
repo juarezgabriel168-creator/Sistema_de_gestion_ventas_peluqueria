@@ -250,6 +250,9 @@ dotnet test TFI_1.Tests/TFI_1.Tests.csproj
 Son 55 pruebas de unidad; si alguna falla, el comando termina con error y
 muestra el detalle.
 
+La solución completa compila **sin advertencias** (`0 advertencias`), lo que
+ayuda a detectar temprano campos sin usar o posibles valores nulos.
+
 Cada formulario se compone de tres archivos:
 
 - `FormX.cs` → la lógica.

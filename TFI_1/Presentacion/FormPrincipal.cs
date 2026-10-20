@@ -74,7 +74,7 @@ public partial class FormPrincipal : Form
 
 	private void AbrirFormulario(Form formulario)
 	{
-		Form form = MdiChildren.FirstOrDefault((Form f) => f.GetType() == formulario.GetType());
+		Form? form = MdiChildren.FirstOrDefault((Form f) => f.GetType() == formulario.GetType());
 		if (form != null)
 		{
 			if (form.WindowState == FormWindowState.Minimized)

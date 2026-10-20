@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 
 namespace TFI_1.Models
 {
@@ -9,8 +7,8 @@ namespace TFI_1.Models
     public class Empleado
     {
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+        public string Apellido { get; set; } = string.Empty;
         public Modalidad Modalidad { get; set; }
         public bool Activo { get; set; } = true;
 

@@ -56,7 +56,7 @@ public partial class FormAtencionEditar : Form
 			else
 			{
 				Text = "Editar atención";
-				if (_atencion.Cliente != null)
+				if (_atencion!.Cliente != null)
 				{
 					cboCliente.SelectedValue = _atencion.Cliente.Id;
 				}
@@ -119,10 +119,10 @@ public partial class FormAtencionEditar : Form
 		}
 		try
 		{
-			Atencion atencion = _esNueva ? new Atencion() : _atencion;
-			atencion.Cliente = (Cliente)cboCliente.SelectedItem;
-			atencion.Empleado = (Empleado)cboEmpleado.SelectedItem;
-			atencion.Servicio = (Item)cboServicio.SelectedItem;
+			Atencion atencion = _esNueva ? new Atencion() : _atencion!;
+			atencion.Cliente = (Cliente)cboCliente.SelectedItem!;
+			atencion.Empleado = (Empleado)cboEmpleado.SelectedItem!;
+			atencion.Servicio = (Item)cboServicio.SelectedItem!;
 			atencion.FechaHora = dtpFechaHora.Value;
 			atencion.Estado = Estados[cboEstado.SelectedIndex];
 

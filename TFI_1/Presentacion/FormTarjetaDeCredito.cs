@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using TFI_1.Models;
 using TFI_1.Negocio;
@@ -30,7 +30,7 @@ public partial class FormTarjetaDeCredito : Form
         try
         {
             dgvBancos.DataSource = _bancos.Listar(chkSoloActivos.Checked);
-            if (dgvBancos.Columns.Contains("Id")) dgvBancos.Columns["Id"].Visible = false;
+            if (dgvBancos.Columns.Contains("Id")) dgvBancos.Columns["Id"]!.Visible = false;
 
             if (seleccionarId.HasValue)
                 foreach (DataGridViewRow fila in dgvBancos.Rows)
@@ -121,14 +121,14 @@ public partial class FormTarjetaDeCredito : Form
                 : _tarjetas.ListarPorBanco(_banco.Id, chkSoloActivos.Checked);
 
             foreach (var col in new[] { "Id", "IdBanco", "NombreBanco", "DescripcionCorta", "FechaAlta" })
-                if (dgvTarjetas.Columns.Contains(col)) dgvTarjetas.Columns[col].Visible = false;
-            if (dgvTarjetas.Columns.Contains("TipoTarjeta")) dgvTarjetas.Columns["TipoTarjeta"].HeaderText = "Tipo";
+                if (dgvTarjetas.Columns.Contains(col)) dgvTarjetas.Columns[col]!.Visible = false;
+            if (dgvTarjetas.Columns.Contains("TipoTarjeta")) dgvTarjetas.Columns["TipoTarjeta"]!.HeaderText = "Tipo";
             if (dgvTarjetas.Columns.Contains("PorcentajeRecargo"))
             {
-                dgvTarjetas.Columns["PorcentajeRecargo"].HeaderText = "% Interés";
-                dgvTarjetas.Columns["PorcentajeRecargo"].DefaultCellStyle.Format = "N2";
+                dgvTarjetas.Columns["PorcentajeRecargo"]!.HeaderText = "% Interés";
+                dgvTarjetas.Columns["PorcentajeRecargo"]!.DefaultCellStyle.Format = "N2";
             }
-            if (dgvTarjetas.Columns.Contains("CuotasMax")) dgvTarjetas.Columns["CuotasMax"].HeaderText = "Cuotas máx.";
+            if (dgvTarjetas.Columns.Contains("CuotasMax")) dgvTarjetas.Columns["CuotasMax"]!.HeaderText = "Cuotas máx.";
         }
         catch (Exception ex) { Error("No se pudieron cargar las tarjetas: ", ex); }
         finally { _cargando = false; }

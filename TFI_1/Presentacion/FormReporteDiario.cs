@@ -63,7 +63,7 @@ public partial class FormReporteDiario : Form
 
             dgvPorEmpleado.DataSource = _negocio.VentasPorEmpleado(fecha, fecha);
             if (dgvPorEmpleado.Columns.Contains("Total"))
-                dgvPorEmpleado.Columns["Total"].DefaultCellStyle.Format = "C2";
+                dgvPorEmpleado.Columns["Total"]!.DefaultCellStyle.Format = "C2";
 
             decimal gastos = _gastos.TotalGastos(fecha, fecha);
             lblGastos.Text = $"Gastos del día: {gastos:C2}";
@@ -71,7 +71,7 @@ public partial class FormReporteDiario : Form
 
             dgvGastosCategoria.DataSource = _gastos.GastosPorCategoria(fecha, fecha);
             if (dgvGastosCategoria.Columns.Contains("Total"))
-            dgvGastosCategoria.Columns["Total"].DefaultCellStyle.Format = "C2";
+            dgvGastosCategoria.Columns["Total"]!.DefaultCellStyle.Format = "C2";
 
             dgvMasVendidos.DataSource = _negocio.ProductosMasVendidos(fecha, fecha);
 		}
@@ -84,7 +84,7 @@ public partial class FormReporteDiario : Form
 	private void printDocument1_PrintPage(object? sender, PrintPageEventArgs e)
 	{
 		DateTime fecha = dtpFecha.Value.Date;
-		var g = e.Graphics;
+		var g = e.Graphics!;
 		var fuenteTitulo = new Font("Segoe UI", 14, FontStyle.Bold);
 		var fuente = new Font("Segoe UI", 10);
 		var fuenteNegrita = new Font("Segoe UI", 10, FontStyle.Bold);

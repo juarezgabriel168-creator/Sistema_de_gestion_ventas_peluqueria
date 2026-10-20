@@ -14,7 +14,7 @@ public class ItemDatos
 		{
 			using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT i.id_item, i.nombre, i.tipo, i.precio, i.duracion_min,\n                       i.stock, i.stock_minimo, i.costo, i.activo,\n                       c.id_categoria, c.nombre AS categoria\n                FROM items AS i\n                INNER JOIN categorias AS c ON c.id_categoria = i.id_categoria\n                WHERE (@filtro = '' OR i.nombre LIKE CONCAT('%', @filtro, '%'))\n                  AND (@categoriaId IS NULL OR i.id_categoria = @categoriaId)\n                  AND (@tipo IS NULL OR i.tipo = @tipo)\n                ORDER BY i.nombre;", mySqlConnection);
 			mySqlCommand.Parameters.AddWithValue("@filtro", filtro ?? string.Empty);
-			mySqlCommand.Parameters.AddWithValue("@categoriaId", ((object)categoriaId) ?? DBNull.Value);
+			mySqlCommand.Parameters.AddWithValue("@categoriaId", ((object?)categoriaId) ?? DBNull.Value);
 			mySqlCommand.Parameters.AddWithValue("@tipo", (!tipo.HasValue) ? ((IConvertible)DBNull.Value) : ((IConvertible)ATexto(tipo.Value)));
 			mySqlConnection.Open();
 			using MySqlDataReader mySqlDataReader = mySqlCommand.ExecuteReader();
@@ -45,7 +45,7 @@ public class ItemDatos
 		using MySqlConnection mySqlConnection = ConexionBD.ObtenerConexion();
 		using MySqlCommand mySqlCommand = new MySqlCommand("\n                SELECT COUNT(*)\n                FROM items\n                WHERE nombre = @nombre\n                  AND (@exceptoId IS NULL OR id_item <> @exceptoId);", mySqlConnection);
 		mySqlCommand.Parameters.AddWithValue("@nombre", nombre);
-		mySqlCommand.Parameters.AddWithValue("@exceptoId", ((object)exceptoId) ?? DBNull.Value);
+		mySqlCommand.Parameters.AddWithValue("@exceptoId", ((object?)exceptoId) ?? DBNull.Value);
 		mySqlConnection.Open();
 		return Convert.ToInt32(mySqlCommand.ExecuteScalar()) > 0;
 	}
@@ -98,12 +98,12 @@ public class ItemDatos
 		if (item.Tipo == TipoItem.Producto)
 		{
 			cmd.Parameters.AddWithValue("@duracion", DBNull.Value);
-			cmd.Parameters.AddWithValue("@stock", ((object)item.Stock) ?? DBNull.Value);
-			cmd.Parameters.AddWithValue("@stockMinimo", ((object)item.StockMinimo) ?? DBNull.Value);
+			cmd.Parameters.AddWithValue("@stock", ((object?)item.Stock) ?? DBNull.Value);
+			cmd.Parameters.AddWithValue("@stockMinimo", ((object?)item.StockMinimo) ?? DBNull.Value);
 		}
 		else
 		{
-			cmd.Parameters.AddWithValue("@duracion", ((object)item.DuracionMin) ?? DBNull.Value);
+			cmd.Parameters.AddWithValue("@duracion", ((object?)item.DuracionMin) ?? DBNull.Value);
 			cmd.Parameters.AddWithValue("@stock", DBNull.Value);
 			cmd.Parameters.AddWithValue("@stockMinimo", DBNull.Value);
 		}

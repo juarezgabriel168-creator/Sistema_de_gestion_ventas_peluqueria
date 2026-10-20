@@ -12,8 +12,6 @@ public partial class FormIngresoMercaderia : Form
 	private readonly ItemNegocio _itemNegocio = new();
 	private readonly ProveedorNegocio _proveedorNegocio = new();
 	private readonly List<IngresoMercaderiaDetalle> _detalles = new();
-	private bool _cargando;
-
 	public FormIngresoMercaderia()
 	{
 		InitializeComponent();
@@ -136,11 +134,11 @@ public partial class FormIngresoMercaderia : Form
 	private void FormatearDetalle()
 	{
 		if (dgvDetalle.Columns.Contains("Id"))
-			dgvDetalle.Columns["Id"].Visible = false;
+			dgvDetalle.Columns["Id"]!.Visible = false;
 		if (dgvDetalle.Columns.Contains("Subtotal"))
-			dgvDetalle.Columns["Subtotal"].DefaultCellStyle.Format = "C2";
+			dgvDetalle.Columns["Subtotal"]!.DefaultCellStyle.Format = "C2";
 		if (dgvDetalle.Columns.Contains("CostoUnitario"))
-			dgvDetalle.Columns["CostoUnitario"].DefaultCellStyle.Format = "C2";
+			dgvDetalle.Columns["CostoUnitario"]!.DefaultCellStyle.Format = "C2";
 	}
 
 	private void ActualizarTotal()

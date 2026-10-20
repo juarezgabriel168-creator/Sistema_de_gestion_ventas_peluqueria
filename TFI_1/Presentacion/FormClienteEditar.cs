@@ -33,11 +33,11 @@ public partial class FormClienteEditar : Form
 			return;
 		}
 		Text = "Editar cliente";
-		txtNombre.Text = _cliente.Nombre;
-		txtApellido.Text = _cliente.Apellido;
-		txtDni.Text = _cliente.Dni;
-		txtTelefono.Text = _cliente.Telefono ?? string.Empty;
-		chkActivo.Checked = _cliente.Activo;
+		txtNombre.Text = _cliente!.Nombre;
+		txtApellido.Text = _cliente!.Apellido;
+		txtDni.Text = _cliente!.Dni;
+		txtTelefono.Text = _cliente!.Telefono;
+		chkActivo.Checked = _cliente!.Activo;
 	}
 
 	private void btnGuardar_Click(object sender, EventArgs e)
@@ -48,7 +48,7 @@ public partial class FormClienteEditar : Form
 		}
 		try
 		{
-			Cliente cliente = (_esNuevo ? new Cliente() : _cliente);
+			Cliente cliente = (_esNuevo ? new Cliente() : _cliente!);
 			cliente.Nombre = txtNombre.Text.Trim();
 			cliente.Apellido = txtApellido.Text.Trim();
 			cliente.Dni = txtDni.Text.Trim();

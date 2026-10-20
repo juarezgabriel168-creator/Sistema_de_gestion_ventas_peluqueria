@@ -61,7 +61,7 @@ public partial class FormUsuarios : Form
 
 	private void btnEditar_Click(object sender, EventArgs e)
 	{
-		Usuario usuario = Seleccionado();
+		Usuario? usuario = Seleccionado();
 		if (usuario == null)
 		{
 			MessageBox.Show("Seleccione un usuario de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
@@ -94,7 +94,7 @@ public partial class FormUsuarios : Form
 
 	private void btnDesactivar_Click(object sender, EventArgs e)
 	{
-		Usuario usuario = Seleccionado();
+		Usuario? usuario = Seleccionado();
 		if (usuario == null)
 		{
 			MessageBox.Show("Seleccione un usuario de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);

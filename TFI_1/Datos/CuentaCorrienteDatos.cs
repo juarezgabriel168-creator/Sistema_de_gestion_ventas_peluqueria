@@ -73,8 +73,8 @@ public class CuentaCorrienteDatos
 			"  AND (@hasta IS NULL OR DATE(m.fecha) <= @hasta) " +
 			"ORDER BY m.fecha DESC, m.id_movimiento DESC;", conexion);
 		cmd.Parameters.AddWithValue("@cuenta", idCuenta);
-		cmd.Parameters.AddWithValue("@desde", ((object)desde?.Date) ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@hasta", ((object)hasta?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@desde", ((object?)desde?.Date) ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@hasta", ((object?)hasta?.Date) ?? DBNull.Value);
 		conexion.Open();
 		using MySqlDataReader rd = cmd.ExecuteReader();
 		while (rd.Read())
@@ -93,8 +93,8 @@ public class CuentaCorrienteDatos
 		cmd.Parameters.AddWithValue("@fecha", movimiento.Fecha);
 		cmd.Parameters.AddWithValue("@tipo", movimiento.Tipo == TipoMovimientoCC.Cargo ? "cargo" : "abono");
 		cmd.Parameters.AddWithValue("@monto", movimiento.Monto);
-		cmd.Parameters.AddWithValue("@concepto", (object)movimiento.Concepto ?? DBNull.Value);
-		cmd.Parameters.AddWithValue("@idVenta", (object)movimiento.IdVenta ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@concepto", (object?)movimiento.Concepto ?? DBNull.Value);
+		cmd.Parameters.AddWithValue("@idVenta", (object?)movimiento.IdVenta ?? DBNull.Value);
 		cmd.Parameters.AddWithValue("@idUsuario", movimiento.IdUsuario);
 		conexion.Open();
 		return Convert.ToInt32(cmd.ExecuteScalar());

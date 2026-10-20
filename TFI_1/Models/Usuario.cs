@@ -1,11 +1,10 @@
-﻿using System;
-using TFI_1.Models;
+using System;
 
 namespace TFI_1.Models
 {
     public class Usuario
     {
-        private string _nombreUsuario;
+        private string _nombreUsuario = string.Empty;
 
         public int Id { get; set; }
 
@@ -20,8 +19,8 @@ namespace TFI_1.Models
             }
         }
 
-        public string Contrasena { get; set; }   // guarda el hash, no el texto plano
-        public Rol Rol { get; set; }
+        public string Contrasena { get; set; } = string.Empty;   // guarda el hash, no el texto plano
+        public Rol Rol { get; set; } = null!;
         public bool Activo { get; set; } = true;
 
         public Usuario() { }

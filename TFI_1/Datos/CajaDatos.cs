@@ -67,7 +67,7 @@ public class CajaDatos
 		cmd.Parameters.AddWithValue("@esperado", montoEsperado);
 		cmd.Parameters.AddWithValue("@contado", montoContado);
 		cmd.Parameters.AddWithValue("@observacion",
-			string.IsNullOrWhiteSpace(observacion) ? DBNull.Value : ((object)observacion));
+			string.IsNullOrWhiteSpace(observacion) ? DBNull.Value : ((object?)observacion));
 		cmd.Parameters.AddWithValue("@id", idCaja);
 		conexion.Open();
 		return cmd.ExecuteNonQuery() == 1;

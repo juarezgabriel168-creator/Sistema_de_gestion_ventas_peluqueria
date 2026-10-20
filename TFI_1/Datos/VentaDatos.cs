@@ -24,11 +24,11 @@ public class VentaDatos
 			{
 				cmd.Parameters.AddWithValue("@cliente", venta.Cliente.Id);
 				cmd.Parameters.AddWithValue("@usuario", venta.Usuario.Id);
-				cmd.Parameters.AddWithValue("@empleado", (object)venta.IdEmpleado ?? DBNull.Value);
+				cmd.Parameters.AddWithValue("@empleado", (object?)venta.IdEmpleado ?? DBNull.Value);
 				cmd.Parameters.AddWithValue("@fecha", venta.Fecha);
 				cmd.Parameters.AddWithValue("@medioPago", venta.MedioPago);
-				cmd.Parameters.AddWithValue("@idTarjeta", (object)venta.IdTarjetaCredito ?? DBNull.Value);
-				cmd.Parameters.AddWithValue("@cantidadCuotas", (object)venta.CantidadCuotas ?? DBNull.Value);
+				cmd.Parameters.AddWithValue("@idTarjeta", (object?)venta.IdTarjetaCredito ?? DBNull.Value);
+				cmd.Parameters.AddWithValue("@cantidadCuotas", (object?)venta.CantidadCuotas ?? DBNull.Value);
 				cmd.Parameters.AddWithValue("@descuento", venta.Descuento);
 				cmd.Parameters.AddWithValue("@recargo", venta.Recargo);
 				cmd.Parameters.AddWithValue("@total", venta.Total);

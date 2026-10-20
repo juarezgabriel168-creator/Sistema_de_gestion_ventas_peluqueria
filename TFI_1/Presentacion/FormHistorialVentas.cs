@@ -153,18 +153,18 @@ public partial class FormHistorialVentas : Form
     {
         // Por si la grilla todavía recibe esa columna desde otra consulta.
         if (dgvVentas.Columns.Contains("IdTarjeta"))
-            dgvVentas.Columns["IdTarjeta"].Visible = false;
+            dgvVentas.Columns["IdTarjeta"]!.Visible = false;
 
         if (dgvVentas.Columns.Contains("Venta"))
-            dgvVentas.Columns["Venta"].HeaderText = "Nº venta";
+            dgvVentas.Columns["Venta"]!.HeaderText = "Nº venta";
         if (dgvVentas.Columns.Contains("Fecha"))
-            dgvVentas.Columns["Fecha"].DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
+            dgvVentas.Columns["Fecha"]!.DefaultCellStyle.Format = "dd/MM/yyyy HH:mm";
         if (dgvVentas.Columns.Contains("Pago"))
-            dgvVentas.Columns["Pago"].HeaderText = "Medio de pago";
+            dgvVentas.Columns["Pago"]!.HeaderText = "Medio de pago";
 
         foreach (string columna in new[] { "Subtotal", "Descuento", "Recargo", "Total" })
             if (dgvVentas.Columns.Contains(columna))
-                dgvVentas.Columns[columna].DefaultCellStyle.Format = "C2";
+                dgvVentas.Columns[columna]!.DefaultCellStyle.Format = "C2";
 
         DataGridViewColumn? columnaAnulada = dgvVentas.Columns["Anulada"];
         if (columnaAnulada != null)

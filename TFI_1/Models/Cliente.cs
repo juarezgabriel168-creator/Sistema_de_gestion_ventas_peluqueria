@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 
 namespace TFI_1.Models
 {
     public class Cliente
     {
-        private string _dni;
+        private string _dni = string.Empty;
 
         public int Id { get; set; }
-        public string Nombre { get; set; }
-        public string Apellido { get; set; }
-        public string Telefono { get; set; }
+        public string Nombre { get; set; } = string.Empty;
+        public string Apellido { get; set; } = string.Empty;
+        public string Telefono { get; set; } = string.Empty;
         public bool Activo { get; set; } = true;
 
         public string Dni
@@ -32,12 +30,12 @@ namespace TFI_1.Models
         public bool EsConsumidorFinal => _dni == DniConsumidorFinal;
 
         public Cliente() { }
-        public Cliente(string nombre, string apellido, string dni, string telefono = null)
+        public Cliente(string nombre, string apellido, string dni, string? telefono = null)
         {
             Nombre = nombre;
             Apellido = apellido;
             Dni = dni;
-            Telefono = telefono;
+            Telefono = telefono ?? string.Empty;
         }
     }
 }

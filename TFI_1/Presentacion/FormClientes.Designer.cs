@@ -28,16 +28,6 @@ partial class FormClientes : Form
 
 	private CheckBox chkSoloActivos;
 
-	private DataGridViewTextBoxColumn colDni;
-
-	private DataGridViewTextBoxColumn colApellido;
-
-	private DataGridViewTextBoxColumn colNombre;
-
-	private DataGridViewTextBoxColumn colTelefono;
-
-	private DataGridViewCheckBoxColumn colActivo;
-
 	protected override void Dispose(bool disposing)
 	{
 		if (disposing && components != null)
@@ -132,6 +122,20 @@ partial class FormClientes : Form
         btnRefrescar.UseVisualStyleBackColor = true;
         btnRefrescar.Click += btnRefrescar_Click;
         // 
+        // chkSoloActivos
+        // 
+        chkSoloActivos.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        chkSoloActivos.AutoSize = true;
+        chkSoloActivos.Checked = true;
+        chkSoloActivos.CheckState = CheckState.Checked;
+        chkSoloActivos.Location = new Point(687, 16);
+        chkSoloActivos.Name = "chkSoloActivos";
+        chkSoloActivos.Size = new Size(91, 19);
+        chkSoloActivos.TabIndex = 8;
+        chkSoloActivos.Text = "Solo Activos";
+        chkSoloActivos.UseVisualStyleBackColor = true;
+        chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
+        // 
         // dgvClientes
         // 
         dgvClientes.AllowUserToAddRows = false;
@@ -139,6 +143,7 @@ partial class FormClientes : Form
         dgvClientes.AllowUserToResizeRows = false;
         dgvClientes.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         dgvClientes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        dgvClientes.BackgroundColor = SystemColors.ButtonHighlight;
         dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
         dataGridViewCellStyle1.BackColor = SystemColors.Control;
         dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
@@ -159,26 +164,12 @@ partial class FormClientes : Form
         dgvClientes.Location = new Point(12, 90);
         dgvClientes.MultiSelect = false;
         dgvClientes.Name = "dgvClientes";
-        dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
         dgvClientes.ReadOnly = true;
         dgvClientes.RowHeadersVisible = false;
         dgvClientes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvClientes.Size = new Size(766, 360);
         dgvClientes.TabIndex = 7;
-        // 
-        // chkSoloActivos
-        // 
-        chkSoloActivos.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        chkSoloActivos.AutoSize = true;
-        chkSoloActivos.Checked = true;
-        chkSoloActivos.CheckState = CheckState.Checked;
-        chkSoloActivos.Location = new Point(678, 16);
-        chkSoloActivos.Name = "chkSoloActivos";
-        chkSoloActivos.Size = new Size(100, 19);
-        chkSoloActivos.TabIndex = 8;
-        chkSoloActivos.Text = "Solo Activos";
-        chkSoloActivos.UseVisualStyleBackColor = true;
-        chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
+        dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
         // 
         // FormClientes
         // 

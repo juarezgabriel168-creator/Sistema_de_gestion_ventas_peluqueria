@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 using TFI_1.Models;
@@ -8,7 +8,7 @@ namespace TFI_1.Datos
 {
     public class UsuarioDatos
     {
-        public Usuario ObtenerPorNombre(string nombreUsuario)
+        public Usuario? ObtenerPorNombre(string nombreUsuario)
         {
             const string sql = @"
                 SELECT u.id_usuario, u.nombre_usuario, u.contrasena, u.activo,

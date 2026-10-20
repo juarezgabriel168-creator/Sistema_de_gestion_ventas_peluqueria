@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 
 namespace TFI_1.Models
 {
@@ -11,7 +9,7 @@ namespace TFI_1.Models
         private decimal _precio;
 
         public int Id { get; set; }
-        public string Nombre { get; set; }
+        public string Nombre { get; set; } = string.Empty;
         public TipoItem Tipo { get; set; }
         public int? DuracionMin { get; set; }   // solo servicios
         public int? Stock { get; set; }         // solo productos
