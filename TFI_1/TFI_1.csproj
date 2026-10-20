@@ -272,6 +272,15 @@
     <EmbeddedResource Update="Presentacion\FormAuditoria.resx">
       <DependentUpon>FormAuditoria.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Update="Presentacion\FormBackup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="Presentacion\FormBackup.Designer.cs">
+      <DependentUpon>FormBackup.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="Presentacion\FormBackup.resx">
+      <DependentUpon>FormBackup.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Update="Presentacion\FormCaja.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -27,6 +27,7 @@ public class AuditoriaDatos
 		"  WHEN 'caja_cierre' THEN 'Cierre de caja' " +
 		"  WHEN 'caja_ingreso' THEN 'Ingreso de caja' " +
 		"  WHEN 'caja_egreso' THEN 'Egreso de caja' " +
+		"  WHEN 'backup_generado' THEN 'Copia de seguridad generada' " +
 		"  ELSE {0} END";
 
 	public void Registrar(int usuarioId, string accion, string entidad, int? idEntidad, string? detalle)

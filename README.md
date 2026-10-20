@@ -30,6 +30,7 @@ base de datos **MySQL**.
 | Administración | Ingreso de mercadería | Registrar la compra de productos a un proveedor de la lista, actualizando stock y costo. Solo admite productos (no servicios). |
 | Administración | Historial de mercadería | Consultar los ingresos por rango de fechas y proveedor, ver el detalle de cada uno (productos, cantidades y costos) y el total del período. |
 | Administración | Auditoría | Consultar quién hizo cada operación sensible (ventas, anulaciones, pagos de cuenta corriente, gastos, mercadería y usuarios), filtrando por rango de fechas, usuario y tipo de acción. |
+| Administración | Copia de seguridad | Generar un archivo `.sql` con toda la base (tablas y datos) en la carpeta elegida, con fecha y hora en el nombre. Solo para administradores; incluye cómo restaurarla. |
 | Reportes | Reporte diario / mensual | Ver ventas, gastos e ingresos por período. |
 
 En la barra de menú también están **Cerrar sesión** (vuelve a la pantalla de
@@ -138,18 +139,20 @@ Luego editar `TFI_1/App.config`:
 
 ### 3.1. Configuración opcional (`appSettings`)
 
-El mismo `App.config` permite ajustar dos valores sin recompilar. Si se omiten,
+El mismo `App.config` permite ajustar tres valores sin recompilar. Si se omiten,
 la aplicación usa los valores por defecto:
 
 | Clave | Por defecto | Para qué sirve |
 | --- | --- | --- |
 | `NombreNegocio` | `Peluquería` | Título de la ventana principal y encabezado del ticket. |
 | `LimiteDeudaCuentaCorriente` | `50000` | Deuda a partir de la cual se avisa al vender a cuenta corriente (solo avisa, no bloquea). |
+| `RutaMysqldump` | `mysqldump` | Programa que genera la copia de seguridad. Si no está en el PATH, poner la ruta completa. |
 
 ```xml
 <appSettings>
   <add key="NombreNegocio" value="Peluquería" />
   <add key="LimiteDeudaCuentaCorriente" value="50000" />
+  <add key="RutaMysqldump" value="mysqldump" />
 </appSettings>
 ```
 
@@ -175,6 +178,25 @@ Al arrancar aparece la pantalla de login. Usuarios de prueba:
 | `admin` | `admin123` | Administrador |
 | `vendedor` | `vendedor123` | Vendedor |
 | `supervisor` | `supervisor123` | Supervisor |
+
+### 6. Copias de seguridad
+
+En **Administración → Copia de seguridad** se elige la carpeta y se genera un
+archivo `backup_peluqueria_AAAAMMDD_HHMMSS.sql` con toda la base (tablas y
+datos). Conviene hacer una copia antes de actualizar el sistema o de hacer
+cambios grandes.
+
+Para **restaurar** una copia (con la aplicación cerrada), desde el símbolo del
+sistema (cmd):
+
+```bat
+mysql --user=root --password peluqueria < "C:\ruta\backup_peluqueria_20260101_120000.sql"
+```
+
+En PowerShell, anteponer `cmd /c` al comando. El archivo incluye
+`CREATE DATABASE` y `USE peluqueria`, así que la restauración reemplaza las
+tablas de esa base. Hay que restaurar con un usuario que pueda crear y borrar
+tablas (por ejemplo `root`), no con `peluqueria_app`.
 
 ---
 
@@ -239,6 +261,10 @@ Cada formulario se compone de tres archivos:
   defecto y se cambia con la clave `LimiteDeudaCuentaCorriente` de
   `App.config` (ver la sección de configuración). Es solo un aviso: si el
   cliente supera el límite, la venta se puede confirmar igual.
+- Las **copias de seguridad** se generan con `mysqldump` y no incluyen
+  procedimientos ni triggers (la base no los usa). Las credenciales se pasan
+  en un archivo temporal que se borra al terminar, para no exponerlas en la
+  línea de comandos.
 - Cambiar las contraseñas de los usuarios de prueba después de la primera
   instalación (menú **Administración → Usuarios**). Los usuarios del script
   (`admin`/`admin123`, `vendedor`/`vendedor123`, `supervisor`/`supervisor123`)

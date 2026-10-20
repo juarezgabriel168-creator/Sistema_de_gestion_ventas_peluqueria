@@ -16,5 +16,10 @@
     <!-- Deuda a partir de la cual se avisa (no se bloquea) en cuenta corriente.
          Si se omite, se usa 50000. -->
     <add key="LimiteDeudaCuentaCorriente" value="50000" />
+
+    <!-- Programa que genera la copia de seguridad. Si mysqldump está en el PATH
+         alcanza con "mysqldump"; si no, poner la ruta completa, por ejemplo
+         C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe -->
+    <add key="RutaMysqldump" value="mysqldump" />
   </appSettings>
 </configuration>

@@ -23,5 +23,8 @@ namespace TFI_1.Datos
         {
             return new MySqlConnection(Cadena);
         }
+
+        /// <summary>Cadena de conexión configurada (la usa, por ejemplo, el backup).</summary>
+        public static string CadenaConexion => Cadena;
     }
 }

@@ -203,6 +203,14 @@ public partial class FormPrincipal : Form
 		}
 	}
 
+	private void mnuAdminBackup_Click(object sender, EventArgs e)
+	{
+		if (ExigirAdministrador())
+		{
+			AbrirFormulario(new FormBackup());
+		}
+	}
+
 	private void mnuReportesDiario_Click(object sender, EventArgs e)
 	{
 		AbrirFormulario(new FormReporteDiario());

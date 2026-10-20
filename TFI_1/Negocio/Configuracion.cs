@@ -26,6 +26,13 @@ public static class Configuracion
 	public static decimal LimiteDeudaCuentaCorriente =>
 		LeerDecimal("LimiteDeudaCuentaCorriente", LimiteDeudaPorDefecto);
 
+	/// <summary>
+	/// Programa que genera la copia de seguridad. Puede ser "mysqldump" (si está
+	/// en el PATH) o la ruta completa al ejecutable.
+	/// </summary>
+	public static string RutaMysqldump =>
+		LeerTexto("RutaMysqldump", "mysqldump");
+
 	private static string LeerTexto(string clave, string porDefecto)
 	{
 		string? valor = ConfigurationManager.AppSettings[clave];

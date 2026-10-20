@@ -59,6 +59,8 @@ partial class FormPrincipal : Form
 
 	private ToolStripMenuItem mnuAdminAuditoria;
 
+	private ToolStripMenuItem mnuAdminBackup;
+
 	private ToolStripMenuItem menuReportes;
 
 	private ToolStripMenuItem mnuReportesDiario;
@@ -110,6 +112,7 @@ partial class FormPrincipal : Form
 		this.mnuAdminIngresoMercaderia = new System.Windows.Forms.ToolStripMenuItem();
 		this.mnuAdminHistorialMercaderia = new System.Windows.Forms.ToolStripMenuItem();
 		this.mnuAdminAuditoria = new System.Windows.Forms.ToolStripMenuItem();
+		this.mnuAdminBackup = new System.Windows.Forms.ToolStripMenuItem();
 		this.menuReportes = new System.Windows.Forms.ToolStripMenuItem();
 
 
@@ -663,7 +666,7 @@ partial class FormPrincipal : Form
 		this.mnuTurnosAtenciones.Size = new System.Drawing.Size(133, 22);
 		this.mnuTurnosAtenciones.Text = "Atenciones";
 		this.mnuTurnosAtenciones.Click += new System.EventHandler(this.mnuTurnosAtenciones_Click);
-		this.menuAdministracion.DropDownItems.AddRangeSafe(this.mnuAdminUsuarios, this.mnuAdminEmpleados, this.mnuAdminTarjetas, this.mnuAdminGastos, this.mnuAdminProveedores, this.mnuAdminIngresoMercaderia, this.mnuAdminHistorialMercaderia, this.mnuAdminAuditoria);
+		this.menuAdministracion.DropDownItems.AddRangeSafe(this.mnuAdminUsuarios, this.mnuAdminEmpleados, this.mnuAdminTarjetas, this.mnuAdminGastos, this.mnuAdminProveedores, this.mnuAdminIngresoMercaderia, this.mnuAdminHistorialMercaderia, this.mnuAdminAuditoria, this.mnuAdminBackup);
 		this.menuAdministracion.Name = "menuAdministracion";
 		this.menuAdministracion.Size = new System.Drawing.Size(100, 20);
 		this.menuAdministracion.Text = "Administración";
@@ -717,6 +720,13 @@ partial class FormPrincipal : Form
 		this.mnuAdminAuditoria.Size = new System.Drawing.Size(132, 22);
 		this.mnuAdminAuditoria.Text = "Auditoría";
 		this.mnuAdminAuditoria.Click += new System.EventHandler(this.mnuAdminAuditoria_Click);
+		//
+		// mnuAdminBackup
+		//
+		this.mnuAdminBackup.Name = "mnuAdminBackup";
+		this.mnuAdminBackup.Size = new System.Drawing.Size(132, 22);
+		this.mnuAdminBackup.Text = "Copia de seguridad";
+		this.mnuAdminBackup.Click += new System.EventHandler(this.mnuAdminBackup_Click);
 		this.menuReportes.DropDownItems.AddRangeSafe(this.mnuReportesDiario, this.mnuReportesMensual);
 		this.menuReportes.Name = "menuReportes";
 		this.menuReportes.Size = new System.Drawing.Size(65, 20);
