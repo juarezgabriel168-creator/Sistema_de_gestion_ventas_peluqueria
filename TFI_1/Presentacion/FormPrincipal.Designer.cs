@@ -605,7 +605,7 @@ partial class FormPrincipal : Form
 		this.statusPrincipal.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)this.pibMenu).BeginInit();
 		this.SuspendLayout();
-		this.menuPrincipal.Items.AddRange(this.menuInicio, this.menuVentas, this.menuClientes, this.menuTurnos, this.menuProductos, this.menuReportes, this.menuAdministracion, this.mnuCerrarSesion, this.mnuSalir);
+		this.menuPrincipal.Items.AddRange(this.menuInicio, this.menuVentas, this.menuClientes, this.menuTurnos, this.mnuAdminGastos, this.menuProductos, this.menuReportes, this.menuAdministracion, this.mnuCerrarSesion, this.mnuSalir);
 		this.menuPrincipal.Location = new System.Drawing.Point(0, 0);
 		this.menuPrincipal.Name = "menuPrincipal";
 		this.menuPrincipal.Size = new System.Drawing.Size(1000, 24);
@@ -637,7 +637,7 @@ partial class FormPrincipal : Form
 		this.mnuVentasCaja.Size = new System.Drawing.Size(171, 22);
 		this.mnuVentasCaja.Text = "Caja";
 		this.mnuVentasCaja.Click += new System.EventHandler(this.mnuVentasCaja_Click);
-		this.menuProductos.DropDownItems.AddRange(this.mnuProductosItems, this.mnuProductosCategorias);
+		this.menuProductos.DropDownItems.AddRange(this.mnuProductosItems, this.mnuProductosCategorias, this.mnuAdminProveedores, this.mnuAdminIngresoMercaderia, this.mnuAdminHistorialMercaderia);
 		this.menuProductos.Name = "menuProductos";
 		this.menuProductos.Size = new System.Drawing.Size(73, 20);
 		this.menuProductos.Text = "Productos";
@@ -669,7 +669,7 @@ partial class FormPrincipal : Form
 		this.mnuTurnosAtenciones.Size = new System.Drawing.Size(133, 22);
 		this.mnuTurnosAtenciones.Text = "Atenciones";
 		this.mnuTurnosAtenciones.Click += new System.EventHandler(this.mnuTurnosAtenciones_Click);
-		this.menuAdministracion.DropDownItems.AddRange(this.mnuAdminEmpleados, this.mnuAdminProveedores, this.mnuAdminIngresoMercaderia, this.mnuAdminHistorialMercaderia, this.mnuAdminGastos, this.mnuAdminTarjetas, this.mnuAdminUsuarios, this.mnuAdminAuditoria, this.mnuAdminBackup);
+		this.menuAdministracion.DropDownItems.AddRange(this.mnuAdminEmpleados, this.mnuAdminTarjetas, this.mnuAdminUsuarios, this.mnuAdminAuditoria, this.mnuAdminBackup);
 		this.menuAdministracion.Name = "menuAdministracion";
 		this.menuAdministracion.Size = new System.Drawing.Size(100, 20);
 		this.menuAdministracion.Text = "Administración";

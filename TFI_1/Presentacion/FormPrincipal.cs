@@ -47,6 +47,22 @@ public partial class FormPrincipal : Form
 		{
 			mnuProductosCategorias.Visible = Sesion.EsAdministrador;
 		}
+		if (mnuAdminGastos != null)
+		{
+			mnuAdminGastos.Visible = Sesion.EsAdministrador;
+		}
+		if (mnuAdminProveedores != null)
+		{
+			mnuAdminProveedores.Visible = Sesion.EsAdministrador;
+		}
+		if (mnuAdminIngresoMercaderia != null)
+		{
+			mnuAdminIngresoMercaderia.Visible = Sesion.EsAdministrador;
+		}
+		if (mnuAdminHistorialMercaderia != null)
+		{
+			mnuAdminHistorialMercaderia.Visible = Sesion.EsAdministrador;
+		}
 	}
 
 	private void AplicarImagenDeFondo()
