@@ -605,7 +605,7 @@ partial class FormPrincipal : Form
 		this.statusPrincipal.SuspendLayout();
 		((System.ComponentModel.ISupportInitialize)this.pibMenu).BeginInit();
 		this.SuspendLayout();
-		this.menuPrincipal.Items.AddRange(this.menuInicio, this.menuVentas, this.menuProductos, this.menuClientes, this.menuTurnos, this.menuAdministracion, this.menuReportes, this.mnuCerrarSesion, this.mnuSalir);
+		this.menuPrincipal.Items.AddRange(this.menuInicio, this.menuVentas, this.menuClientes, this.menuTurnos, this.menuProductos, this.menuReportes, this.menuAdministracion, this.mnuCerrarSesion, this.mnuSalir);
 		this.menuPrincipal.Location = new System.Drawing.Point(0, 0);
 		this.menuPrincipal.Name = "menuPrincipal";
 		this.menuPrincipal.Size = new System.Drawing.Size(1000, 24);
@@ -618,7 +618,7 @@ partial class FormPrincipal : Form
 		this.mnuInicioDashboard.Size = new System.Drawing.Size(131, 22);
 		this.mnuInicioDashboard.Text = "Dashboard";
 		this.mnuInicioDashboard.Click += new System.EventHandler(this.mnuInicioDashboard_Click);
-		this.menuVentas.DropDownItems.AddRange(this.mnuVentasNueva, this.mnuVentasHistorial, this.mnuVentasCaja);
+		this.menuVentas.DropDownItems.AddRange(this.mnuVentasNueva, this.mnuVentasCaja, this.mnuVentasHistorial);
 		this.menuVentas.Name = "menuVentas";
 		this.menuVentas.Size = new System.Drawing.Size(53, 20);
 		this.menuVentas.Text = "Ventas";
@@ -669,7 +669,7 @@ partial class FormPrincipal : Form
 		this.mnuTurnosAtenciones.Size = new System.Drawing.Size(133, 22);
 		this.mnuTurnosAtenciones.Text = "Atenciones";
 		this.mnuTurnosAtenciones.Click += new System.EventHandler(this.mnuTurnosAtenciones_Click);
-		this.menuAdministracion.DropDownItems.AddRange(this.mnuAdminUsuarios, this.mnuAdminEmpleados, this.mnuAdminTarjetas, this.mnuAdminGastos, this.mnuAdminProveedores, this.mnuAdminIngresoMercaderia, this.mnuAdminHistorialMercaderia, this.mnuAdminAuditoria, this.mnuAdminBackup);
+		this.menuAdministracion.DropDownItems.AddRange(this.mnuAdminEmpleados, this.mnuAdminProveedores, this.mnuAdminIngresoMercaderia, this.mnuAdminHistorialMercaderia, this.mnuAdminGastos, this.mnuAdminTarjetas, this.mnuAdminUsuarios, this.mnuAdminAuditoria, this.mnuAdminBackup);
 		this.menuAdministracion.Name = "menuAdministracion";
 		this.menuAdministracion.Size = new System.Drawing.Size(100, 20);
 		this.menuAdministracion.Text = "Administración";
