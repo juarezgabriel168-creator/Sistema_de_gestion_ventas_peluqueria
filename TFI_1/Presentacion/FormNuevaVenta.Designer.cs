@@ -32,6 +32,14 @@ partial class FormNuevaVenta : Form
 
 	private DataGridView dgvCarrito;
 
+	private DataGridViewTextBoxColumn colItem;
+
+	private DataGridViewTextBoxColumn colCantidad;
+
+	private DataGridViewTextBoxColumn colPrecio;
+
+	private DataGridViewTextBoxColumn colSubtotal;
+
 	private Button btnQuitar;
 
 	private Label lblSubtotalTitulo;
@@ -95,6 +103,10 @@ partial class FormNuevaVenta : Form
         btnAgregar = new Button();
         lblInfo = new Label();
         dgvCarrito = new DataGridView();
+        colItem = new DataGridViewTextBoxColumn();
+        colCantidad = new DataGridViewTextBoxColumn();
+        colPrecio = new DataGridViewTextBoxColumn();
+        colSubtotal = new DataGridViewTextBoxColumn();
         btnQuitar = new Button();
         lblSubtotalTitulo = new Label();
         lblSubtotalValor = new Label();
@@ -231,6 +243,7 @@ partial class FormNuevaVenta : Form
         dgvCarrito.AllowUserToDeleteRows = false;
         dgvCarrito.AllowUserToResizeRows = false;
         dgvCarrito.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+        dgvCarrito.AutoGenerateColumns = false;
         dgvCarrito.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         dgvCarrito.BackgroundColor = SystemColors.ButtonHighlight;
         dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
@@ -258,6 +271,47 @@ partial class FormNuevaVenta : Form
         dgvCarrito.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvCarrito.Size = new Size(560, 296);
         dgvCarrito.TabIndex = 11;
+        dgvCarrito.Columns.AddRange(new DataGridViewColumn[] { colItem, colCantidad, colPrecio, colSubtotal });
+        //
+        // colItem
+        //
+        colItem.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+        colItem.DataPropertyName = "ItemNombre";
+        colItem.HeaderText = "Producto / Servicio";
+        colItem.MinimumWidth = 180;
+        colItem.Name = "colItem";
+        colItem.ReadOnly = true;
+        //
+        // colCantidad
+        //
+        colCantidad.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+        colCantidad.DataPropertyName = "Cantidad";
+        colCantidad.HeaderText = "Cantidad";
+        colCantidad.Name = "colCantidad";
+        colCantidad.ReadOnly = true;
+        colCantidad.Width = 75;
+        //
+        // colPrecio
+        //
+        colPrecio.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+        colPrecio.DataPropertyName = "Precio";
+        colPrecio.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+        colPrecio.DefaultCellStyle.Format = "C2";
+        colPrecio.HeaderText = "Precio";
+        colPrecio.Name = "colPrecio";
+        colPrecio.ReadOnly = true;
+        colPrecio.Width = 95;
+        //
+        // colSubtotal
+        //
+        colSubtotal.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+        colSubtotal.DataPropertyName = "Subtotal";
+        colSubtotal.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+        colSubtotal.DefaultCellStyle.Format = "C2";
+        colSubtotal.HeaderText = "Subtotal";
+        colSubtotal.Name = "colSubtotal";
+        colSubtotal.ReadOnly = true;
+        colSubtotal.Width = 105;
         // 
         // btnQuitar
         // 

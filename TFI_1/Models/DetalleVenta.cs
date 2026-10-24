@@ -11,6 +11,8 @@ public class DetalleVenta
 
 	public decimal Subtotal => Precio * Cantidad;
 
+	public string ItemNombre => Item?.Nombre ?? string.Empty;
+
 	public DetalleVenta() { }
 
 	public DetalleVenta(Item item, int cantidad)
