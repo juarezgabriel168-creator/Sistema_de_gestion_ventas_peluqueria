@@ -7,14 +7,18 @@ namespace TFI_1.Datos;
 
 public class UsuarioDatos
 {
+	// Igual que en AuditoriaDatos: la base puede mezclar colaciones y las
+	// comparaciones de texto deben hacerse con una colación explícita.
+	private const string Collation = "utf8mb4_unicode_ci";
+
 	public Usuario? ObtenerPorNombre(string nombreUsuario)
 	{
-		const string sql = @"
+		string sql = $@"
                 SELECT u.id_usuario, u.nombre_usuario, u.contrasena, u.activo,
                        r.id_rol, r.nombre AS rol
                 FROM usuarios AS u
                 INNER JOIN roles AS r ON r.id_rol = u.id_rol
-                WHERE u.nombre_usuario = @usuario;";
+                WHERE u.nombre_usuario = @usuario COLLATE {Collation};";
 
 		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
 		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
@@ -40,12 +44,14 @@ public class UsuarioDatos
 
 	public List<Usuario> Listar(string? filtro = null)
 	{
-		const string sql = @"
+		string sql = $@"
                 SELECT u.id_usuario, u.nombre_usuario, u.contrasena, u.activo,
                        r.id_rol, r.nombre AS rol
                 FROM usuarios AS u
                 INNER JOIN roles AS r ON r.id_rol = u.id_rol
-                WHERE (@filtro = '' OR u.nombre_usuario LIKE CONCAT('%', @filtro, '%'))
+                WHERE (@filtro = ''
+                       OR u.nombre_usuario COLLATE {Collation}
+                          LIKE CONCAT('%', @filtro, '%') COLLATE {Collation})
                 ORDER BY u.nombre_usuario;";
 
 		List<Usuario> lista = new();
@@ -98,10 +104,10 @@ public class UsuarioDatos
 
 	public bool ExisteNombre(string nombreUsuario, int? exceptoId = null)
 	{
-		const string sql = @"
+		string sql = $@"
                 SELECT COUNT(*)
                 FROM usuarios
-                WHERE nombre_usuario = @usuario
+                WHERE nombre_usuario = @usuario COLLATE {Collation}
                   AND (@exceptoId IS NULL OR id_usuario <> @exceptoId);";
 
 		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())

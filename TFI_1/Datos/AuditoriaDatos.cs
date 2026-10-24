@@ -10,6 +10,11 @@ namespace TFI_1.Datos;
 /// </summary>
 public class AuditoriaDatos
 {
+	// La base puede tener tablas creadas con distintas colaciones (por ejemplo,
+	// utf8mb4_unicode_ci y utf8mb4_0900_ai_ci). Forzamos una sola al comparar
+	// textos para evitar el error "Illegal mix of collations".
+	private const string Collation = "utf8mb4_unicode_ci";
+
 	// Traduce el código interno de la acción a un texto legible para el usuario.
 	private const string CamposAccion =
 		"CASE {0} " +
@@ -51,13 +56,14 @@ public class AuditoriaDatos
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
 			"SELECT a.id_auditoria AS Id, a.fecha AS Fecha, u.nombre_usuario AS Usuario, " +
-			"       a.accion AS Codigo, " + string.Format(CamposAccion, "a.accion") + " AS Accion, " +
+			"       a.accion AS Codigo, " +
+			string.Format(CamposAccion, $"a.accion COLLATE {Collation}") + " AS Accion, " +
 			"       a.entidad AS Entidad, a.id_entidad AS IdEntidad, a.detalle AS Detalle " +
 			"FROM auditoria AS a " +
 			"INNER JOIN usuarios AS u ON u.id_usuario = a.id_usuario " +
 			"WHERE DATE(a.fecha) BETWEEN @desde AND @hasta " +
 			"  AND (@usuario IS NULL OR a.id_usuario = @usuario) " +
-			"  AND (@accion IS NULL OR a.accion = @accion) " +
+			$"  AND (@accion IS NULL OR a.accion = @accion COLLATE {Collation}) " +
 			"ORDER BY a.fecha DESC, a.id_auditoria DESC " +
 			"LIMIT @limite OFFSET @desplazamiento;", conexion);
 		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
@@ -80,7 +86,7 @@ public class AuditoriaDatos
 			"SELECT COUNT(*) FROM auditoria AS a " +
 			"WHERE DATE(a.fecha) BETWEEN @desde AND @hasta " +
 			"  AND (@usuario IS NULL OR a.id_usuario = @usuario) " +
-			"  AND (@accion IS NULL OR a.accion = @accion);", conexion);
+			$"  AND (@accion IS NULL OR a.accion = @accion COLLATE {Collation});", conexion);
 		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
 		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
 		cmd.Parameters.Add(Parametros.EnteroNulo("@usuario", usuarioId));
@@ -94,7 +100,8 @@ public class AuditoriaDatos
 	{
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
-			"SELECT DISTINCT accion AS Codigo, " + string.Format(CamposAccion, "accion") + " AS Nombre " +
+			"SELECT DISTINCT accion AS Codigo, " +
+			string.Format(CamposAccion, $"accion COLLATE {Collation}") + " AS Nombre " +
 			"FROM auditoria ORDER BY Nombre;", conexion);
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
 		DataTable tabla = new DataTable();
