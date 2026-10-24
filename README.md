@@ -14,9 +14,9 @@ base de datos **MySQL**.
 | Módulo | Pantalla | Qué permite hacer |
 |---|---|---|
 | Inicio | Dashboard | Ver totales del día (vendido, ventas, clientes, stock bajo) y un gráfico de las últimas 10 ventas, con escala, importes y detalle al pasar el mouse. |
-| Ventas | Nueva venta | Armar el carrito con productos y servicios, elegir medio de pago (efectivo, tarjeta, transferencia o cuenta corriente) y registrar la venta. Al registrar, ofrece ver el ticket. |
+| Ventas | Nueva venta | Armar el carrito con productos y servicios, elegir medio de pago (efectivo, tarjeta, transferencia o cuenta corriente) y registrar la venta. Requiere una **caja abierta**: si está cerrada, muestra un aviso y no permite registrar. Al registrar, ofrece ver el ticket. |
 | Ventas | Historial de ventas | Buscar y ver las ventas realizadas por rango de fechas, empleado o número de venta, ver el detalle de cada una y ver/imprimir el ticket. Permite **anular** una venta indicando el motivo: se devuelve el stock, se revierte el cargo de la cuenta corriente y la venta queda marcada como anulada (no se borra). |
-| Ventas | Caja | Abrir el turno con un fondo inicial, registrar ingresos y egresos de efectivo, ver las ventas del turno por medio de pago y cerrar la caja con el efectivo contado y la diferencia contra lo esperado. Incluye el historial de cierres. |
+| Ventas | Caja | Abrir el turno con un fondo inicial, registrar ingresos y egresos de efectivo, ver las ventas del turno por medio de pago y cerrar la caja con el efectivo contado y la diferencia contra lo esperado. Incluye el historial de cierres. Es obligatoria para poder registrar ventas. |
 | Productos | Productos y servicios | Alta, edición, activación/desactivación y filtros de productos y servicios. Incluye el filtro **Solo stock bajo** para ver los productos que llegaron a su stock mínimo. Los **servicios** exigen una duración y no manejan stock ni costo; los **productos** manejan stock, stock mínimo y costo de compra, y no duración. |
 | Productos | Categorías | Administrar las categorías de productos y servicios. |
 | Clientes | Clientes | Alta, edición, activación/desactivación y búsqueda de clientes. |
@@ -25,10 +25,10 @@ base de datos **MySQL**.
 | Administración | Usuarios | Crear y editar usuarios y asignarles un rol. Las contraseñas nuevas deben tener al menos 8 caracteres, con una mayúscula, una minúscula y un número, y no pueden contener el nombre de usuario. |
 | Administración | Empleados | Alta y edición de empleados (con turnos u orden de llegada). |
 | Administración | Tarjetas de crédito | Administrar bancos y tarjetas, con su porcentaje de recargo y cantidad de cuotas. |
-| Administración | Gastos | Registrar y consultar los gastos del negocio por rango de fechas, con el total del período y el usuario que los cargó. |
-| Administración | Proveedores | Alta, edición, activación/desactivación y búsqueda de proveedores (nombre, CUIT, teléfono, email y dirección). |
-| Administración | Ingreso de mercadería | Registrar la compra de productos a un proveedor de la lista, actualizando stock y costo. Solo admite productos (no servicios). |
-| Administración | Historial de mercadería | Consultar los ingresos por rango de fechas y proveedor, ver el detalle de cada uno (productos, cantidades y costos) y el total del período. |
+| Gastos | Gastos | Registrar y consultar los gastos del negocio por rango de fechas, con el total del período y el usuario que los cargó. |
+| Productos | Proveedores | Alta, edición, activación/desactivación y búsqueda de proveedores (nombre, CUIT, teléfono, email y dirección). |
+| Productos | Ingreso de mercadería | Registrar la compra de productos a un proveedor de la lista, actualizando stock y costo. Solo admite productos (no servicios). |
+| Productos | Historial de mercadería | Consultar los ingresos por rango de fechas y proveedor, ver el detalle de cada uno (productos, cantidades y costos) y el total del período. |
 | Administración | Auditoría | Consultar quién hizo cada operación sensible (ventas, anulaciones, pagos de cuenta corriente, gastos, mercadería y usuarios), filtrando por rango de fechas, usuario y tipo de acción. |
 | Administración | Copia de seguridad | Generar un archivo `.sql` con toda la base (tablas y datos) en la carpeta elegida, con fecha y hora en el nombre. Solo para administradores; incluye cómo restaurarla. |
 | Reportes | Reporte diario / mensual | Ver ventas, gastos e ingresos por período. |
@@ -217,7 +217,9 @@ rol del usuario:
 | Productos y servicios | ✔ | ✔ | ✔ |
 | Clientes (incluye Cuenta corriente) | ✔ | ✔ | ✔ |
 | Turnos | ✔ | ✔ | ✔ |
-| Administración (usuarios, empleados, tarjetas, gastos, proveedores, mercadería, auditoría, copia de seguridad) | ✔ | | |
+| Administración (usuarios, empleados, tarjetas, auditoría, copia de seguridad) | ✔ | | |
+| Gastos (primer nivel) | ✔ | | |
+| Proveedores, ingreso e historial de mercadería (dentro de Productos) | ✔ | | |
 | Reportes | ✔ | ✔ | |
 | Categorías (dentro de Productos) | ✔ | | |
 
@@ -292,9 +294,9 @@ Cada formulario se compone de tres archivos:
   se pueden **anular** (con motivo): se devuelve el stock y, si se pagó a cuenta
   corriente, se revierte el cargo. La venta anulada queda en el historial y no
   suma en los totales ni reportes.
-- La **caja** no bloquea la venta cuando está cerrada: se puede vender igual,
-  pero esa venta no queda asociada a ningún turno de caja. Conviene abrir la
-  caja antes de empezar a vender para poder controlar el efectivo del turno.
+- La **caja** es obligatoria para vender: si está cerrada, el sistema
+  muestra un aviso y no registra la venta. Abrí la caja desde **Ventas → Caja**
+  antes de comenzar a vender para poder controlar el efectivo del turno.
 - El **límite de aviso de deuda** en cuenta corriente es de **$50.000** por
   defecto y se cambia con la clave `LimiteDeudaCuentaCorriente` de
   `App.config` (ver la sección de configuración). Es solo un aviso: si el

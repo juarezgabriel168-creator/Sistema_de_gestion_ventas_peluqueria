@@ -14,6 +14,8 @@ public class VentaNegocio
 
 	private readonly ItemDatos _itemDatos = new ItemDatos();
 
+	private readonly CajaNegocio _cajaNegocio = new();
+
 	private readonly AuditoriaNegocio _auditoria = new();
 
 	public int Registrar(Venta venta)
@@ -30,6 +32,11 @@ public class VentaNegocio
 			throw new ArgumentException("Debe seleccionar un medio de pago.");
 		if (venta.Descuento < 0m)
 			throw new ArgumentException("El descuento no puede ser negativo.");
+
+		// Una venta siempre debe pertenecer a un turno de caja abierto.
+		if (_cajaNegocio.ObtenerAbierta() == null)
+			throw new InvalidOperationException(
+				"No hay una caja abierta. Abra la caja desde Ventas → Caja antes de registrar una venta.");
 
 		// Validaciones según medio de pago.
 		if (venta.MedioPago == "tarjeta")

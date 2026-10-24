@@ -60,7 +60,7 @@ El proyecto implementa una peluquería que:
 | Seguridad | `FormLog` | Inicio de sesión contra MySQL. |
 | Seguridad | `FormPrincipal` | Menú MDI, visibilidad según rol, cierre de sesión. |
 | Inicio | `FormDashboard` | Indicadores del día, stock bajo, últimas ventas y gráfico. |
-| Ventas | `FormNuevaVenta` | Carrito, descuento, medio de pago, recargo de tarjeta, registro transaccional. |
+| Ventas | `FormNuevaVenta` | Carrito, descuento, medio de pago, recargo de tarjeta y registro transaccional. Requiere una caja abierta. |
 | Ventas | `FormHistorialVentas` | Búsqueda paginada, filtros, detalle, ticket y anulación. |
 | Ventas | `FormDetalleVenta` | Cabecera, ítems, impresión y anulación. |
 | Ventas | `FormTicket` | Comprobante no fiscal, formato de 37 caracteres e impresión. |
@@ -1078,15 +1078,16 @@ Ya explicado. Es la fuente de identidad y permisos.
 4. al menos un detalle;
 5. medio de pago;
 6. descuento no negativo;
-7. tarjeta: tarjeta y cuotas válidas;
-8. cuenta corriente: no Consumidor Final;
-9. **relee cada ítem desde la base** para evitar precios manipulados;
-10. descuento no mayor al subtotal;
-11. recargo de tarjeta según porcentaje;
-12. cuotas no mayores al máximo;
-13. fecha actual;
-14. transacción;
-15. auditoría.
+7. caja abierta;
+8. tarjeta: tarjeta y cuotas válidas;
+9. cuenta corriente: no Consumidor Final;
+10. **relee cada ítem desde la base** para evitar precios manipulados;
+11. descuento no mayor al subtotal;
+12. recargo de tarjeta según porcentaje;
+13. cuotas no mayores al máximo;
+14. fecha actual;
+15. transacción;
+16. auditoría.
 
 **Variables locales importantes:**
 
@@ -1173,7 +1174,7 @@ Métodos:
 
 Variables:
 
-- `_ventaNegocio`, `_clienteNegocio`, `_itemNegocio`, `_empleadoNegocio`, `_tarjetaNegocio`, `_ccNegocio`, `_bancoNegocio`.
+- `_ventaNegocio`, `_clienteNegocio`, `_itemNegocio`, `_empleadoNegocio`, `_tarjetaNegocio`, `_ccNegocio`, `_cajaNegocio`, `_bancoNegocio`.
 - `_carrito`: lista de `DetalleVenta`.
 - `MediosPago`: array `efectivo`, `tarjeta`, `transferencia`, `cuenta_corriente`.
 - `_recalculando`: evita recursión al ajustar el descuento.
@@ -1186,7 +1187,9 @@ Flujo:
 3. `btnAgregar`: valida stock acumulado y agrega/actualiza línea.
 4. `RecalcularTotales`: subtotal, descuento y total.
 5. `CalcularRecargo`: aplica porcentaje de la tarjeta.
-6. `btnRegistrar`: valida cliente y carrito; arma `Venta`; avisa si la deuda supera el límite; registra; ofrece ticket; limpia.
+6. `btnRegistrar`: valida cliente y carrito; **verifica que la caja esté abierta** (si no, muestra un aviso y cancela); arma `Venta`; avisa si la deuda supera el límite; registra; ofrece ticket; limpia.
+
+**Regla de caja:** la venta solo se registra si existe una caja abierta. La comprobación se hace en `FormNuevaVenta` para mostrar el `MessageBox` de advertencia y también en `VentaNegocio.Registrar` como segunda barrera.
 
 **Variables locales de `btnRegistrar`:**
 
@@ -1961,6 +1964,7 @@ Archivo de referencia: `TFI_1/Archivos.md/segundo-parcial-programacion-2.md`.
 | Sin stock | Validación en UI + UPDATE condicional en SQL. |
 | Venta vacía | `VentaNegocio` exige al menos un detalle. |
 | Datos obligatorios | Cliente, usuario, medio de pago y tarjeta cuando corresponde. |
+| Caja abierta | `FormNuevaVenta` muestra un aviso y `VentaNegocio.Registrar` rechaza la venta si no hay caja abierta. |
 
 ### 12.11 Punto 4.8 — Detalle de venta
 
@@ -2200,16 +2204,18 @@ dotnet format whitespace TFI_1.slnx --verify-no-changes --exclude "**/*.Designer
 1. Mostrar `peluqueria.sql` y explicar las 20 tablas y las FK.
 2. Iniciar sesión como `admin` y mostrar el Dashboard.
 3. Crear un cliente y un ítem producto/servicio.
-4. Registrar una venta con dos ítems, descuento y tarjeta.
-5. Mostrar el ticket y el descuento de stock.
-6. Consultar el historial y el detalle.
-7. Anular la venta y mostrar la devolución de stock.
-8. Abrir caja, registrar un ingreso/egreso y cerrar con diferencia.
-9. Registrar un turno y mostrar la detección de superposición.
-10. Registrar un gasto y verlo en el reporte diario.
-11. Mostrar un reporte avanzado.
-12. Abrir auditoría y backup.
-13. Cerrar sesión y entrar como `vendedor` para mostrar las restricciones.
+4. Intentar registrar una venta con la caja cerrada para mostrar el aviso.
+5. Abrir la caja desde **Ventas → Caja** con un fondo inicial.
+6. Registrar una venta con dos ítems, descuento y tarjeta.
+7. Mostrar el ticket y el descuento de stock.
+8. Consultar el historial y el detalle.
+9. Anular la venta y mostrar la devolución de stock.
+10. Registrar un ingreso/egreso de caja y cerrar con diferencia.
+11. Registrar un turno y mostrar la detección de superposición.
+12. Registrar un gasto y verlo en el reporte diario.
+13. Mostrar un reporte avanzado.
+14. Abrir auditoría y backup.
+15. Cerrar sesión y entrar como `vendedor` para mostrar las restricciones.
 
 ### 14.2 Preguntas probables
 
@@ -2240,6 +2246,9 @@ Menú visible por rol y `ExigirAdministrador` en cada acción administrativa.
 **¿Cómo se calcula el efectivo esperado?**  
 `inicial + ventas en efectivo + ingresos - egresos`; las anuladas no cuentan.
 
+**¿Se puede vender sin caja?**  
+No. La venta exige una caja abierta; si no la hay, se muestra un aviso y no se registra.
+
 **¿La cuenta corriente bloquea la venta?**  
 No. Avisa si supera `LimiteDeCuentaCorriente`; el usuario decide.
 
@@ -2262,7 +2271,7 @@ Estas observaciones no impiden la entrega, pero conviene revisarlas antes de la 
 1. **`ReporteDatos.Resumen`** tiene `AND v.anulada = 0` duplicado. Es inocuo, pero se puede limpiar.
 2. **`ReporteDatos.VentasPorEmpleado`** no filtra `v.anulada = 0`, a diferencia de los demás reportes. Si se usa para totales, puede incluir ventas anuladas. Conviene agregar el filtro.
 3. **La caja no está asociada por FK a la venta**: el efectivo se calcula por rango de fechas. Es una decisión simple y funciona, pero si se abren/cierran cajas varias veces el mismo día, el rango debe interpretarse correctamente.
-4. **La venta no se bloquea si la caja está cerrada**: se permite vender, pero esa venta no entra en un turno de caja. Está documentado en el README.
+4. **La caja es obligatoria para vender**: si está cerrada, `FormNuevaVenta` muestra un `MessageBox` de advertencia y `VentaNegocio.Registrar` rechaza la operación. El efectivo se calcula por rango de fechas, no por una FK entre venta y caja.
 5. **Las pruebas no cubren MySQL real**: son de dominio y validaciones. Para la defensa, hacer una prueba manual completa.
 6. **Los diseñadores tienen cambios locales de Visual Studio** que no deben commitearse junto con la documentación. Mantener fuera del commit los `.Designer.cs`/`.resx` modificados y `TFI_1/Archivos.md/` salvo pedido explícito.
 

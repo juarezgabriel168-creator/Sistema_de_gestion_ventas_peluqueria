@@ -16,6 +16,7 @@ public partial class FormNuevaVenta : Form
 	private readonly EmpleadoNegocio _empleadoNegocio = new EmpleadoNegocio();
 	private readonly TarjetaCreditoNegocio _tarjetaNegocio = new TarjetaCreditoNegocio();
 	private readonly CuentaCorrienteNegocio _ccNegocio = new CuentaCorrienteNegocio();
+	private readonly CajaNegocio _cajaNegocio = new();
 	private readonly List<DetalleVenta> _carrito = new List<DetalleVenta>();
 
 	private static readonly string[] MediosPago = { "efectivo", "tarjeta", "transferencia", "cuenta_corriente" };
@@ -310,6 +311,15 @@ public partial class FormNuevaVenta : Form
 
 		try
 		{
+			if (_cajaNegocio.ObtenerAbierta() == null)
+			{
+				MessageBox.Show(
+					"Para registrar una venta primero debe abrir la caja.\n\n" +
+					"Vaya a Ventas → Caja, abra el turno con el fondo inicial y vuelva a intentarlo.",
+					"Caja cerrada", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				return;
+			}
+
 			// Aviso (no bloqueo) si la venta a cuenta corriente deja al cliente
 			// por encima del límite de deuda.
 			if (MediosPago[cboMedioPago.SelectedIndex] == "cuenta_corriente")
@@ -372,7 +382,7 @@ public partial class FormNuevaVenta : Form
 		}
 		catch (InvalidOperationException ex)
 		{
-			MessageBox.Show(ex.Message, "Stock", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+			MessageBox.Show(ex.Message, "Venta no permitida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 		}
 		catch (Exception ex)
 		{
