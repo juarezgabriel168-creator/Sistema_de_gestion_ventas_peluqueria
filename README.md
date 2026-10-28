@@ -25,7 +25,7 @@ base de datos **MySQL**.
 | Administración | Usuarios | Crear y editar usuarios y asignarles un rol. Las contraseñas nuevas deben tener al menos 8 caracteres, con una mayúscula, una minúscula y un número, y no pueden contener el nombre de usuario. |
 | Administración | Empleados | Alta y edición de empleados (con turnos u orden de llegada). |
 | Administración | Tarjetas de crédito | Administrar bancos y tarjetas, con su porcentaje de recargo y cantidad de cuotas. |
-| Gastos | Gastos | Registrar y consultar los gastos del negocio por rango de fechas, con el total del período y el usuario que los cargó. |
+| Gastos | Gastos | Registrar, consultar y eliminar los gastos del negocio por rango de fechas, con el total del período y el usuario que los cargó. La eliminación es solo para administradores y pide la contraseña del usuario actual. |
 | Productos | Proveedores | Alta, edición, activación/desactivación y búsqueda de proveedores (nombre, CUIT, teléfono, email y dirección). |
 | Productos | Ingreso de mercadería | Registrar la compra de productos a un proveedor de la lista, actualizando stock y costo. Solo admite productos (no servicios). |
 | Productos | Historial de mercadería | Consultar los ingresos por rango de fechas y proveedor, ver el detalle de cada uno (productos, cantidades y costos) y el total vigente del período. Permite **anular** un ingreso indicando el motivo: se descuenta el stock y el ingreso queda marcado como anulado (no se borra). |

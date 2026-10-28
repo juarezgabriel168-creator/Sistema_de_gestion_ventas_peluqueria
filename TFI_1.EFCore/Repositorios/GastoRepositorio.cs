@@ -69,6 +69,17 @@ public class GastoRepositorio
 		db.SaveChanges();
 	}
 
+	public void Eliminar(int id)
+	{
+		using var db = new PeluqueriaDbContext();
+		Gasto? gasto = db.Gastos.Find(id);
+		if (gasto == null)
+			return;
+
+		db.Gastos.Remove(gasto);
+		db.SaveChanges();
+	}
+
 	public decimal TotalGastos(DateTime desde, DateTime hasta)
 	{
 		using var db = new PeluqueriaDbContext();

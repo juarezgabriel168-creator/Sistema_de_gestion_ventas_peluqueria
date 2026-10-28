@@ -15,6 +15,7 @@ public partial class FormGastos : Form
 	public FormGastos()
 	{
 		InitializeComponent();
+		btnEliminar.Visible = Sesion.EsAdministrador;
 		txtConcepto.MaxLength = 150;
 		txtCategoria.MaxLength = 100;
 		txtObservacion.MaxLength = 255;
@@ -133,6 +134,40 @@ public partial class FormGastos : Form
 		catch (Exception ex)
 		{
 			MessageBox.Show(ex.Message, "Validación", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+		}
+	}
+
+	private void btnEliminar_Click(object sender, EventArgs e)
+	{
+		Gasto? gasto = dgvGastos.CurrentRow?.DataBoundItem as Gasto;
+		if (gasto == null)
+		{
+			MessageBox.Show("Seleccione un gasto de la lista.", "Aviso",
+				MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
+		}
+
+		if (!ConfirmacionEliminacion.Confirmar(
+			this,
+			$"el gasto '{gasto.Concepto}' del {gasto.Fecha:dd/MM/yyyy} por {gasto.Monto:C2}",
+			"Esta acción no se puede deshacer. El gasto dejará de aparecer en los listados y reportes."))
+		{
+			return;
+		}
+
+		try
+		{
+			_negocio.Eliminar(gasto.Id);
+			Cargar();
+		}
+		catch (InvalidOperationException ex)
+		{
+			MessageBox.Show(ex.Message, "No se puede eliminar",
+				MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+		catch (Exception ex)
+		{
+			Mensajes.Error(this, "No se pudo eliminar el gasto", ex);
 		}
 	}
 

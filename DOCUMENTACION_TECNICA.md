@@ -46,7 +46,7 @@ El proyecto implementa una peluquería que:
 - Se documenta el código de producción y los scripts SQL.
 - Los archivos `*.Designer.cs` no se transcriben línea por línea: contienen la declaración y ubicación visual de los controles generados por el diseñador. La lógica que los usa está en los `*.cs`.
 - En el árbol de trabajo actual hay **38 formularios funcionales**, todos con su archivo `.Designer.cs` y su `.resx`.
-- El relevamiento contó **625 declaraciones de controles/componentes** dentro de los diseñadores. Los formularios principales (`FormPrincipal`, `FormNuevaVenta`, `FormGastos`, `FormDashboard`) superan los 25 controles cada uno.
+- El relevamiento contó **626 declaraciones de controles/componentes** dentro de los diseñadores. Los formularios principales (`FormPrincipal`, `FormNuevaVenta`, `FormGastos`, `FormDashboard`) superan los 25 controles cada uno.
 - Los ajustes de tamaño y anclaje que se hacen desde el `.cs` **no crean controles**: solo acomodan controles que ya existen en el diseñador. Esto es importante para el requisito de que todo se vea en la vista **Diseño** de Visual Studio.
 
 ---
@@ -84,7 +84,7 @@ El proyecto implementa una peluquería que:
 | Administración | `FormTarjetaDeCredito` | Bancos, tarjetas, recargos y cuotas. |
 | Administración | `FormBancoEditar` | Alta/edición de banco. |
 | Administración | `FormTarjetaEditar` | Alta/edición de tarjeta. |
-| Gastos | `FormGastos` | Alta, edición y consulta de gastos. |
+| Gastos | `FormGastos` | Alta, edición, consulta y eliminación de gastos. |
 | Productos | `FormProveedores` | Listado y estado de proveedores. |
 | Productos | `FormProveedorEditar` | Alta/edición de proveedor. |
 | Productos | `FormIngresoMercaderia` | Compra de productos, stock y costo. |
@@ -733,6 +733,7 @@ La tabla `auditoria` tiene índices por fecha, usuario y acción.
 - `Listar(desde, hasta, filtro)`.
 - `ObtenerPorId`.
 - `Insertar`, `Actualizar`.
+- `Eliminar(id)`.
 - `TotalGastos(desde, hasta)`.
 - `GastosPorCategoria(desde, hasta)`.
 
@@ -1007,6 +1008,7 @@ Delega los ocho indicadores a `DashboardDatos`. No tiene lógica extra: es una f
   - fecha no futura;
   - audita.
 - `Actualizar`: mismas reglas.
+- `Eliminar`: solo administrador; verifica que exista, borra y audita `gasto_eliminacion`.
 - `TotalGastos`, `GastosPorCategoria`.
 
 ### 8.13 `IngresoMercaderiaNegocio.cs`
@@ -1442,6 +1444,7 @@ Métodos:
 - `Limpiar`: reinicia formulario.
 - `LeerFormulario`: valida concepto, monto y fecha; arma `Gasto`.
 - `btnGuardar`: inserta o actualiza.
+- `btnEliminar`: visible solo para administradores; pide confirmación y contraseña, y elimina el gasto seleccionado.
 - `CellDoubleClick`: carga el gasto para editar.
 
 #### `FormProveedores` / `FormProveedorEditar`
@@ -2186,7 +2189,7 @@ La organización prioriza las tareas cotidianas: Gastos quedó como acceso de pr
 | Bancos | `BancoDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` (o `Eliminar` si no tiene tarjetas) |
 | Tarjetas | `TarjetaCreditoDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` |
 | Ventas | `VentaDatos.Registrar` | `Listar` / `ObtenerCabecera` | No se edita; se anula | `anulada = 1` |
-| Gastos | `GastoDatos.Insertar` | `Listar` | `Actualizar` | No se borra; historial |
+| Gastos | `GastoDatos.Insertar` | `Listar` | `Actualizar` | `Eliminar` (solo administrador) |
 | Ingresos | `IngresoMercaderiaDatos.Insertar` | `Listar` / `ObtenerPorId` | No se edita | `Anular` (solo administrador) |
 | Atenciones | `AtencionDatos.Insertar` | `Listar` | `Actualizar` | `Cancelar` o `Eliminar` (solo administrador) |
 | Cajas | `CajaDatos.Abrir` | `ObtenerAbierta` / `Listar` | `Cerrar` | No se borra |

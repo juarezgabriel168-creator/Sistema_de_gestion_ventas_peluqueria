@@ -81,6 +81,16 @@ public class GastoDatos
 		cmd.ExecuteNonQuery();
 	}
 
+	public void Eliminar(int id)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"DELETE FROM gastos WHERE id_gasto = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
+	}
+
 	private static Gasto Leer(MySqlDataReader rd)
 	{
 		return new Gasto

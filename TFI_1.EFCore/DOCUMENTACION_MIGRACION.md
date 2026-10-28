@@ -481,6 +481,12 @@ Dentro de una transacción:
 No se borra el ingreso: queda en el historial y deja de sumar en los totales
 vigentes.
 
+### 8.9 `GastoRepositorio.Eliminar`
+
+Busca el gasto por clave primaria y, si existe, lo elimina con
+`db.Gastos.Remove` y `SaveChanges`. Si ya no existe, no hace nada. La
+validación de permisos y la auditoría quedan en la capa de negocio.
+
 ---
 
 ## 9. Traducción de consultas

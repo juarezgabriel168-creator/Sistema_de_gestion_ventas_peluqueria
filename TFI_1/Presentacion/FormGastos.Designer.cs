@@ -34,6 +34,7 @@ partial class FormGastos : Form
 	private Panel pnlBotones;
 	private Button btnNuevo;
 	private Button btnGuardar;
+	private Button btnEliminar;
 	private Button btnCerrar;
 	private Label lblTotal;
 	private DataGridView dgvGastos;
@@ -73,6 +74,7 @@ partial class FormGastos : Form
         pnlBotones = new Panel();
         btnNuevo = new Button();
         btnGuardar = new Button();
+        btnEliminar = new Button();
         btnCerrar = new Button();
         lblTotal = new Label();
         dgvGastos = new DataGridView();
@@ -360,6 +362,7 @@ partial class FormGastos : Form
         // 
         pnlBotones.Controls.Add(btnNuevo);
         pnlBotones.Controls.Add(btnGuardar);
+        pnlBotones.Controls.Add(btnEliminar);
         pnlBotones.Controls.Add(btnCerrar);
         pnlBotones.Controls.Add(lblTotal);
         pnlBotones.Dock = DockStyle.Fill;
@@ -387,9 +390,20 @@ partial class FormGastos : Form
         btnGuardar.Text = "Guardar";
         btnGuardar.UseVisualStyleBackColor = true;
         btnGuardar.Click += btnGuardar_Click;
-        // 
+        //
+        // btnEliminar
+        //
+        btnEliminar.ForeColor = Color.Firebrick;
+        btnEliminar.Location = new Point(185, 3);
+        btnEliminar.Name = "btnEliminar";
+        btnEliminar.Size = new Size(90, 30);
+        btnEliminar.TabIndex = 2;
+        btnEliminar.Text = "Eliminar";
+        btnEliminar.UseVisualStyleBackColor = true;
+        btnEliminar.Click += btnEliminar_Click;
+        //
         // btnCerrar
-        // 
+        //
         btnCerrar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         btnCerrar.DialogResult = DialogResult.Cancel;
         btnCerrar.Location = new Point(771, 3);

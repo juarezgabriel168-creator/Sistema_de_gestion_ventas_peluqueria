@@ -55,6 +55,26 @@ public class GastoNegocio
 			$"Gasto '{gasto.Concepto}' actualizado a {gasto.Monto:C2}.", gasto.IdUsuario);
 	}
 
+	/// <summary>
+	/// Elimina físicamente un gasto. Solo un administrador puede hacerlo y
+	/// queda registrado en la auditoría.
+	/// </summary>
+	public void Eliminar(int id)
+	{
+		if (id <= 0)
+			throw new ArgumentException("Debe seleccionar un gasto.");
+		if (!Sesion.EsAdministrador)
+			throw new InvalidOperationException("Solo un administrador puede eliminar gastos.");
+
+		Gasto? gasto = _datos.ObtenerPorId(id);
+		if (gasto == null)
+			throw new InvalidOperationException("El gasto ya no existe.");
+
+		_datos.Eliminar(id);
+		_auditoria.Registrar("gasto_eliminacion", "gastos", id,
+			$"Gasto '{gasto.Concepto}' del {gasto.Fecha:dd/MM/yyyy} por {gasto.Monto:C2} eliminado.");
+	}
+
 	public decimal TotalGastos(DateTime desde, DateTime hasta) => _datos.TotalGastos(desde, hasta);
 
 	public DataTable GastosPorCategoria(DateTime desde, DateTime hasta) => _datos.GastosPorCategoria(desde, hasta);
