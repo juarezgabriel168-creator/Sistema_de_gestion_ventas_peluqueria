@@ -488,9 +488,6 @@ $RECYCLE.BIN/
 # Cadena de conexión con credenciales reales (usar App.config.example).
 TFI_1/App.config
 
-# Cadena de conexión local de la capa EF Core (usar appsettings.example.json).
-TFI_1.EFCore/appsettings.json
-
 # Paquetes comprimidos del proyecto.
 *.zip
 
