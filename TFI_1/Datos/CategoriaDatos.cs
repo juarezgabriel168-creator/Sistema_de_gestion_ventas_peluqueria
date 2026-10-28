@@ -77,4 +77,23 @@ public class CategoriaDatos
 		conexion.Open();
 		cmd.ExecuteNonQuery();
 	}
+
+	public bool TieneDependencias(int id)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT COUNT(*) FROM items WHERE id_categoria = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+	}
+
+	public void Eliminar(int id)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("DELETE FROM categorias WHERE id_categoria = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
+	}
 }

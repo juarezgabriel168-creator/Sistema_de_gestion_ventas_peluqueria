@@ -8,7 +8,7 @@ namespace TFI_1.Presentacion;
 
 /// <summary>
 /// Listado de proveedores: permite buscar, filtrar los activos, y dar de
-/// alta, editar, desactivar o reactivar un proveedor.
+/// alta, editar, desactivar, reactivar o eliminar un proveedor.
 /// </summary>
 public partial class FormProveedores : Form
 {
@@ -17,6 +17,7 @@ public partial class FormProveedores : Form
 	public FormProveedores()
 	{
 		InitializeComponent();
+		btnEliminar.Visible = Sesion.EsAdministrador;
 	}
 
 	private void FormProveedores_Load(object sender, EventArgs e)
@@ -151,6 +152,41 @@ public partial class FormProveedores : Form
 		catch (Exception ex)
 		{
 			Mensajes.Error(this, "No se pudo cambiar el estado", ex);
+		}
+	}
+
+	private void btnEliminar_Click(object sender, EventArgs e)
+	{
+		Proveedor? proveedor = Seleccionado();
+		if (proveedor == null)
+		{
+			MessageBox.Show("Seleccione un proveedor de la lista.", "Aviso",
+				MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
+		}
+
+		if (!ConfirmacionEliminacion.Confirmar(
+			this,
+			$"el proveedor '{proveedor.Nombre}'",
+			"Esta acción no se puede deshacer. Si el proveedor tiene ingresos de mercadería " +
+			"asociados, no se podrá eliminar y deberá desactivarlo."))
+		{
+			return;
+		}
+
+		try
+		{
+			_negocio.Eliminar(proveedor.Id);
+			Cargar(txtBuscar.Text.Trim());
+		}
+		catch (InvalidOperationException ex)
+		{
+			MessageBox.Show(ex.Message, "No se puede eliminar",
+				MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+		catch (Exception ex)
+		{
+			Mensajes.Error(this, "No se pudo eliminar el proveedor", ex);
 		}
 	}
 

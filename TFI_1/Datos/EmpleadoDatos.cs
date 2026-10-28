@@ -68,6 +68,28 @@ public class EmpleadoDatos
 		cmd.ExecuteNonQuery();
 	}
 
+	public bool TieneDependencias(int id)
+	{
+		const string sql = @"
+                SELECT (SELECT COUNT(*) FROM ventas WHERE id_empleado = @id)
+                     + (SELECT COUNT(*) FROM atenciones WHERE id_empleado = @id);";
+
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(sql, conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+	}
+
+	public void Eliminar(int id)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("DELETE FROM empleados WHERE id_empleado = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
+	}
+
 	private static void AgregarParametros(MySqlCommand cmd, Empleado empleado)
 	{
 		cmd.Parameters.Add(Parametros.Texto("@nombre", empleado.Nombre));

@@ -99,6 +99,25 @@ public class UsuarioNegocio
 		return usuario;
 	}
 
+	/// <summary>
+	/// Comprueba la contraseña del usuario que tiene la sesión activa. Se usa
+	/// para confirmar operaciones sensibles, como eliminar registros.
+	/// </summary>
+	public bool ConfirmarContrasenaActual(string contrasena)
+	{
+		if (Sesion.UsuarioActual == null)
+			throw new InvalidOperationException("No hay una sesión activa.");
+
+		if (Validaciones.TextoVacio(contrasena))
+			return false;
+
+		Usuario? actual = _datos.ObtenerPorNombre(Sesion.NombreUsuario);
+		if (actual == null || !actual.Activo)
+			return false;
+
+		return VerificarContrasena(contrasena, actual.Contrasena);
+	}
+
 	public List<Usuario> Listar(string? filtro = null)
 	{
 		return _datos.Listar(filtro);

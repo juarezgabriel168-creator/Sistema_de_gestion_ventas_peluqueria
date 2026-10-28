@@ -19,6 +19,7 @@ partial class FormProveedores : Form
 	private Button btnNuevo;
 	private Button btnEditar;
 	private Button btnDesactivar;
+	private Button btnEliminar;
 	private Button btnCerrar;
 	private DataGridViewTextBoxColumn colNombre;
 	private DataGridViewTextBoxColumn colCuit;
@@ -50,6 +51,7 @@ partial class FormProveedores : Form
         btnNuevo = new Button();
         btnEditar = new Button();
         btnDesactivar = new Button();
+        btnEliminar = new Button();
         btnCerrar = new Button();
         ((ISupportInitialize)dgvProveedores).BeginInit();
         SuspendLayout();
@@ -186,6 +188,18 @@ partial class FormProveedores : Form
         btnDesactivar.UseVisualStyleBackColor = true;
         btnDesactivar.Click += btnDesactivar_Click;
         // 
+        // btnEliminar
+        // 
+        btnEliminar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        btnEliminar.ForeColor = Color.Firebrick;
+        btnEliminar.Location = new Point(310, 420);
+        btnEliminar.Name = "btnEliminar";
+        btnEliminar.Size = new Size(90, 30);
+        btnEliminar.TabIndex = 10;
+        btnEliminar.Text = "Eliminar";
+        btnEliminar.UseVisualStyleBackColor = true;
+        btnEliminar.Click += btnEliminar_Click;
+        // 
         // btnCerrar
         // 
         btnCerrar.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
@@ -193,7 +207,7 @@ partial class FormProveedores : Form
         btnCerrar.Location = new Point(768, 420);
         btnCerrar.Name = "btnCerrar";
         btnCerrar.Size = new Size(80, 30);
-        btnCerrar.TabIndex = 10;
+        btnCerrar.TabIndex = 11;
         btnCerrar.Text = "Cerrar";
         btnCerrar.UseVisualStyleBackColor = true;
         btnCerrar.Click += btnCerrar_Click;
@@ -206,6 +220,7 @@ partial class FormProveedores : Form
         CancelButton = btnCerrar;
         ClientSize = new Size(860, 464);
         Controls.Add(btnCerrar);
+        Controls.Add(btnEliminar);
         Controls.Add(btnDesactivar);
         Controls.Add(btnEditar);
         Controls.Add(btnNuevo);

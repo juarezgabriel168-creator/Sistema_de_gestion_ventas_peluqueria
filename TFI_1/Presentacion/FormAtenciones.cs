@@ -131,13 +131,11 @@ public partial class FormAtenciones : Form
 			return;
 		}
 
-		DialogResult respuesta = MessageBox.Show(
-			"¿Eliminar definitivamente la atención de " + atencion.ClienteNombre +
-			" (" + atencion.ServicioNombre + ", " + atencion.Fecha + " " + atencion.Hora + ")?" +
-			Environment.NewLine + Environment.NewLine +
-			"Esta acción no se puede deshacer. Si solo desea anular el turno, use 'Cancelar turno'.",
-			"Eliminar atención", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-		if (respuesta != DialogResult.Yes)
+		if (!ConfirmacionEliminacion.Confirmar(
+			this,
+			$"la atención de {atencion.ClienteNombre} " +
+			$"({atencion.ServicioNombre}, {atencion.Fecha} {atencion.Hora})",
+			"Esta acción no se puede deshacer. Si solo desea anular el turno, use 'Cancelar turno'."))
 		{
 			return;
 		}

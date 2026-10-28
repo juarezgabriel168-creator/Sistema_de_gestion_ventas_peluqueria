@@ -112,11 +112,13 @@ public partial class FormTarjetaDeCredito : Form
 	private void btnBancoEliminar_Click(object? sender, EventArgs e)
 	{
 		if (_banco == null) { Aviso("Seleccione un banco de la lista."); return; }
-		string pregunta = $"¿Eliminar definitivamente '{_banco.Nombre}'?" +
-			Environment.NewLine + Environment.NewLine +
-			"Solo se permite si el banco no tiene tarjetas asociadas.";
-		if (MessageBox.Show(pregunta, "Confirmar",
-				MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+		if (!ConfirmacionEliminacion.Confirmar(
+			this,
+			$"el banco '{_banco.Nombre}'",
+			"Solo se permite si el banco no tiene tarjetas asociadas."))
+		{
+			return;
+		}
 		try
 		{
 			_bancos.Eliminar(_banco.Id);

@@ -670,6 +670,8 @@ La tabla `auditoria` tiene índices por fecha, usuario y acción.
 - `Listar(filtro)`.
 - `ExisteNombre`.
 - `Insertar`, `Actualizar`, `Desactivar`, `Reactivar`.
+- `TieneDependencias(id)`: verifica si la categoría tiene ítems asociados.
+- `Eliminar(id)`: borrado físico solo si no tiene dependencias.
 
 ### 7.7 `ClienteDatos.cs`
 
@@ -713,6 +715,8 @@ La tabla `auditoria` tiene índices por fecha, usuario y acción.
 
 - `Listar(filtro)`.
 - `Insertar`, `Actualizar`, `Desactivar`, `Reactivar`.
+- `TieneDependencias(id)`: verifica ventas y atenciones asociadas.
+- `Eliminar(id)`: borrado físico solo si no tiene dependencias.
 - Traducción de `Modalidad` a `turnos`/`orden_llegada`.
 
 ### 7.11 `GastoDatos.cs`
@@ -765,6 +769,8 @@ AND (@soloStockBajo = 0
 - `ExisteNombre`.
 - `ExisteCuit`.
 - `Insertar`, `Actualizar`, `Desactivar`, `Reactivar`.
+- `TieneDependencias(id)`: verifica ingresos de mercadería asociados.
+- `Eliminar(id)`: borrado físico solo si no tiene dependencias.
 - `AgregarParametros`, `Leer`.
 
 ### 7.15 `ReporteDatos.cs`
@@ -911,7 +917,7 @@ Transacción:
 - `Listar`.
 - `Insertar`, `Actualizar`: validan nombre obligatorio y longitud.
 - `Desactivar`, `Reactivar`: bajan/suben el banco y todas sus tarjetas.
-- `Eliminar`: borrado físico solo si el banco no tiene tarjetas; en caso contrario lanza error.
+- `Eliminar`: solo administrador; borrado físico solo si el banco no tiene tarjetas; en caso contrario lanza error.
 - `Validar(banco)`.
 
 ### 8.5 `CajaNegocio.cs`
@@ -933,6 +939,7 @@ Transacción:
 - `Listar`.
 - `Guardar`: nombre obligatorio, máximo 100, sin duplicados.
 - `Desactivar`, `Reactivar`.
+- `Eliminar(id)`: solo administrador; bloquea categorías con ítems asociados; audita.
 
 ### 8.7 `ClienteNegocio.cs`
 
@@ -975,6 +982,7 @@ Delega los ocho indicadores a `DashboardDatos`. No tiene lógica extra: es una f
 - `Listar`.
 - `Guardar`: nombre/apellido obligatorios; modalidad válida; duplicados.
 - `Desactivar`, `Reactivar`.
+- `Eliminar(id)`: solo administrador; bloquea empleados con ventas o atenciones asociadas; audita.
 
 ### 8.12 `GastoNegocio.cs`
 
@@ -1029,6 +1037,7 @@ Delega los ocho indicadores a `DashboardDatos`. No tiene lógica extra: es una f
   - nombre único;
   - CUIT único si se cargó.
 - `Desactivar`, `Reactivar`.
+- `Eliminar(id)`: solo administrador; bloquea proveedores con ingresos de mercadería asociados; audita.
 - `Limpiar(valor)`.
 
 ### 8.16 `ReporteNegocio.cs`
@@ -1084,6 +1093,7 @@ Ya explicado. Es la fuente de identidad y permisos.
 - `Desactivar`: no permite desactivar el propio usuario; audita.
 - `Reactivar`.
 - `Eliminar`: solo administrador; no permite el propio usuario, el último administrador activo ni usuarios con historial asociado; audita.
+- `ConfirmarContrasenaActual`: relee el usuario de la sesión y valida su contraseña con BCrypt antes de una operación sensible.
 - `VerificarContrasena`: maneja hash inválido como error de acceso, no como crash.
 
 ### 8.20 `VentaNegocio.cs`
@@ -1312,7 +1322,7 @@ Métodos:
 - `CargarFiltros`: tipos y categorías.
 - `Cargar`: filtros + stock bajo.
 - `Filtro_Changed`.
-- `btnNuevo`, `btnEditar`, `btnDesactivar`, `btnEliminar` (solo administrador).
+- `btnNuevo`, `btnEditar`, `btnDesactivar`, `btnEliminar` (solo administrador, con contraseña).
 - `ActualizarBotonEstado`.
 
 #### `FormItemEditar`
@@ -1325,12 +1335,13 @@ Métodos:
 #### `FormCategorias` / `FormCategoriaEditar`
 
 - Listado con búsqueda, activos y baja lógica.
+- `btnEliminar` visible solo para el administrador; pide contraseña y solo borra categorías sin ítems asociados.
 - Edición con nombre obligatorio y único.
 
 #### `FormClientes` / `FormClienteEditar`
 
 - Listado con búsqueda por DNI/nombre/apellido y filtro de activos.
-- `btnEliminar` visible solo para el administrador; borrado físico con validación de dependencias.
+- `btnEliminar` visible solo para el administrador; pide contraseña y borra físicamente con validación de dependencias.
 - Edición: nombre, apellido, DNI, teléfono, activo.
 - DNI único y de 8 dígitos.
 
@@ -1355,7 +1366,7 @@ Métodos:
 - `EstadosFiltro`: `null`, `pendiente`, `en_atencion`, `finalizada`, `cancelada`.
 - `_cargandoEstado`.
 - `Cargar`.
-- `btnNuevo`, `btnEditar`, `btnCancelarAtencion`, `btnEliminar` (solo administrador).
+- `btnNuevo`, `btnEditar`, `btnCancelarAtencion`, `btnEliminar` (solo administrador, con contraseña).
 - Columnas explícitas: Fecha, Hora, Cliente, Peluquero, Servicio, Tipo, Estado.
 
 #### `FormAtencionEditar`
@@ -1369,7 +1380,7 @@ Métodos:
 
 #### `FormUsuarios` / `FormUsuarioEditar`
 
-- `FormUsuarios`: listado, búsqueda, activos, estado y `btnEliminar` (solo administrador).
+- `FormUsuarios`: listado, búsqueda, activos, estado y `btnEliminar` (solo administrador, con contraseña).
 - `FormUsuarioEditar`:
   - `_usuario`, `_esNuevo`, `_ayuda` (ToolTip);
   - `txtContrasena`, `txtConfirmar` con longitud máxima;
@@ -1379,6 +1390,7 @@ Métodos:
 #### `FormEmpleados` / `FormEmpleadoEditar`
 
 - Listado con activos y baja lógica.
+- `btnEliminar` visible solo para el administrador; pide contraseña y solo borra empleados sin ventas ni atenciones.
 - Edición: nombre, apellido, modalidad, activo.
 
 #### `FormTarjetaDeCredito`
@@ -1387,7 +1399,7 @@ Métodos:
 - `_cargando`.
 - `CargarBancos`, `BancoCambiado`, `CargarTarjetas`, `TarjetaCambiada`.
 - Alta/edición/baja lógica de bancos y tarjetas.
-- `btnBancoEliminar`: borra físicamente un banco sin tarjetas asociadas.
+- `btnBancoEliminar`: pide contraseña y borra físicamente un banco sin tarjetas asociadas.
 - Muestra recargo y cuotas máximas.
 - `Aviso` y `Error` para mensajes.
 
@@ -1417,6 +1429,7 @@ Métodos:
 #### `FormProveedores` / `FormProveedorEditar`
 
 - Listado con búsqueda, activos y baja lógica.
+- `btnEliminar` visible solo para el administrador; pide contraseña y solo borra proveedores sin ingresos de mercadería.
 - Edición: nombre, CUIT, teléfono, email, dirección, activo.
 - Valida longitudes, email y duplicados.
 
@@ -1916,7 +1929,7 @@ Archivo de referencia: `TFI_1/Archivos.md/segundo-parcial-programacion-2.md`.
 | Crear | `FormUsuarioEditar` + `UsuarioNegocio.Guardar`. |
 | Modificar | Mismo formulario con `_esNuevo = false`. |
 | Desactivar | `UsuarioNegocio.Desactivar`; no permite autodesactivarse. |
-| Eliminar | `UsuarioNegocio.Eliminar`; solo administrador, sin historial y sin dejar el sistema sin administradores. |
+| Eliminar | `UsuarioNegocio.Eliminar`; solo administrador, con contraseña, sin historial y sin dejar el sistema sin administradores. |
 | Consultar | `FormUsuarios` con búsqueda y filtro de activos. |
 | Establecer contraseña | Campo + BCrypt + política. |
 | Asignar rol | ComboBox de roles. |
@@ -1961,6 +1974,7 @@ Archivo de referencia: `TFI_1/Archivos.md/segundo-parcial-programacion-2.md`.
 | Administrar categorías | `FormCategorias` + `FormCategoriaEditar`. |
 | Categorías de peluquería | Cortes, Coloración, Tratamientos, Productos. |
 | Baja lógica | `activo`. |
+| Eliminar | `CategoriaNegocio.Eliminar`; solo administrador, con contraseña y sin ítems asociados. |
 
 ### 12.9 Punto 4.6 — Gestión de clientes
 
@@ -2136,9 +2150,9 @@ La organización prioriza las tareas cotidianas: Gastos quedó como acceso de pr
 | Usuarios | `UsuarioDatos.Insertar` | `Listar` / `ObtenerPorNombre` | `Actualizar` | `Desactivar` o `Eliminar` (solo sin historial) |
 | Clientes | `ClienteDatos.Insertar` | `Listar` / `ObtenerPorDni` | `Actualizar` | `Desactivar` o `Eliminar` (solo sin historial) |
 | Ítems | `ItemDatos.Insertar` | `Listar` / `ObtenerPorId` | `Actualizar` | `Desactivar` o `Eliminar` (solo sin historial) |
-| Categorías | `CategoriaDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` |
-| Empleados | `EmpleadoDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` |
-| Proveedores | `ProveedorDatos.Insertar` | `Listar` / `ObtenerPorId` | `Actualizar` | `Desactivar` |
+| Categorías | `CategoriaDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` o `Eliminar` (solo sin ítems) |
+| Empleados | `EmpleadoDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` o `Eliminar` (solo sin ventas/atenciones) |
+| Proveedores | `ProveedorDatos.Insertar` | `Listar` / `ObtenerPorId` | `Actualizar` | `Desactivar` o `Eliminar` (solo sin ingresos) |
 | Bancos | `BancoDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` (o `Eliminar` si no tiene tarjetas) |
 | Tarjetas | `TarjetaCreditoDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` |
 | Ventas | `VentaDatos.Registrar` | `Listar` / `ObtenerCabecera` | No se edita; se anula | `anulada = 1` |
@@ -2148,7 +2162,7 @@ La organización prioriza las tareas cotidianas: Gastos quedó como acceso de pr
 | Cajas | `CajaDatos.Abrir` | `ObtenerAbierta` / `Listar` | `Cerrar` | No se borra |
 | Movimientos CC | `InsertarMovimiento` | `ListarMovimientos` | No se edita | Historial |
 
-**Criterio:** la información histórica no se elimina físicamente. Se usa `activo = 0`, `anulada = 1` o estados. Excepciones controladas, siempre para el administrador y solo si el registro no tiene dependencias: bancos sin tarjetas, ítems sin ventas/ingresos/turnos, clientes sin ventas/cuenta corriente/turnos (nunca el Consumidor Final), atenciones y usuarios sin historial (ni el propio usuario ni el último administrador activo).
+**Criterio:** la información histórica no se elimina físicamente. Se usa `activo = 0`, `anulada = 1` o estados. Excepciones controladas, siempre para el administrador, con confirmación de contraseña y solo si el registro no tiene dependencias: bancos sin tarjetas, ítems sin ventas/ingresos/turnos, clientes sin ventas/cuenta corriente/turnos (nunca el Consumidor Final), atenciones, usuarios sin historial (ni el propio usuario ni el último administrador activo), categorías sin ítems, empleados sin ventas/atenciones y proveedores sin ingresos de mercadería.
 
 ### 12.20 Punto 10 — Búsquedas y filtros
 
@@ -2342,7 +2356,7 @@ Estas observaciones no impiden la entrega, pero conviene revisarlas antes de la 
 
 ### 16.6 Formularios
 
-`FormAnularVenta`, `FormAtencionEditar`, `FormAtenciones`, `FormAuditoria`, `FormBackup`, `FormBancoEditar`, `FormCaja`, `FormCategoriaEditar`, `FormCategorias`, `FormCerrarCaja`, `FormClienteEditar`, `FormClientes`, `FormCuentaCorriente`, `FormDashboard`, `FormDetalleVenta`, `FormEmpleadoEditar`, `FormEmpleados`, `FormGastos`, `FormHistorialCaja`, `FormHistorialMercaderia`, `FormHistorialVentas`, `FormIngresoMercaderia`, `FormItemEditar`, `FormItems`, `FormLog`, `FormNuevaVenta`, `FormPrincipal`, `FormProveedorEditar`, `FormProveedores`, `FormReporteAvanzado`, `FormReporteDiario`, `FormReporteMensual`, `FormTarjetaDeCredito`, `FormTarjetaEditar`, `FormTicket`, `FormUsuarioEditar`, `FormUsuarios`.
+`FormAnularVenta`, `FormAtencionEditar`, `FormAtenciones`, `FormAuditoria`, `FormBackup`, `FormBancoEditar`, `FormCaja`, `FormCategoriaEditar`, `FormCategorias`, `FormCerrarCaja`, `FormClienteEditar`, `FormClientes`, `FormConfirmarContrasena`, `FormCuentaCorriente`, `FormDashboard`, `FormDetalleVenta`, `FormEmpleadoEditar`, `FormEmpleados`, `FormGastos`, `FormHistorialCaja`, `FormHistorialMercaderia`, `FormHistorialVentas`, `FormIngresoMercaderia`, `FormItemEditar`, `FormItems`, `FormLog`, `FormNuevaVenta`, `FormPrincipal`, `FormProveedorEditar`, `FormProveedores`, `FormReporteAvanzado`, `FormReporteDiario`, `FormReporteMensual`, `FormTarjetaDeCredito`, `FormTarjetaEditar`, `FormTicket`, `FormUsuarioEditar`, `FormUsuarios`.
 
 ---
 

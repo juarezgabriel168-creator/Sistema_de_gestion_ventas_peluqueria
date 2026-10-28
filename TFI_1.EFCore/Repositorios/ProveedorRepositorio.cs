@@ -88,4 +88,21 @@ public class ProveedorRepositorio
 		using var db = new PeluqueriaDbContext();
 		db.Proveedores.Where(p => p.Id == id).ExecuteUpdate(s => s.SetProperty(p => p.Activo, true));
 	}
+
+	public bool TieneDependencias(int id)
+	{
+		using var db = new PeluqueriaDbContext();
+		return db.IngresosMercaderia.Any(i => i.IdProveedor == id);
+	}
+
+	public void Eliminar(int id)
+	{
+		using var db = new PeluqueriaDbContext();
+		Proveedor? proveedor = db.Proveedores.Find(id);
+		if (proveedor == null)
+			return;
+
+		db.Proveedores.Remove(proveedor);
+		db.SaveChanges();
+	}
 }

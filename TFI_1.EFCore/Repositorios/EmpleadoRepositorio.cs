@@ -60,4 +60,22 @@ public class EmpleadoRepositorio
 		using var db = new PeluqueriaDbContext();
 		db.Empleados.Where(e => e.Id == id).ExecuteUpdate(s => s.SetProperty(e => e.Activo, true));
 	}
+
+	public bool TieneDependencias(int id)
+	{
+		using var db = new PeluqueriaDbContext();
+		return db.Ventas.Any(v => v.IdEmpleado == id)
+			|| db.Atenciones.Any(a => a.IdEmpleado == id);
+	}
+
+	public void Eliminar(int id)
+	{
+		using var db = new PeluqueriaDbContext();
+		Empleado? empleado = db.Empleados.Find(id);
+		if (empleado == null)
+			return;
+
+		db.Empleados.Remove(empleado);
+		db.SaveChanges();
+	}
 }

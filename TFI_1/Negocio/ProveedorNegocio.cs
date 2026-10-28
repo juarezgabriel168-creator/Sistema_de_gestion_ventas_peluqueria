@@ -8,6 +8,7 @@ namespace TFI_1.Negocio;
 public class ProveedorNegocio
 {
 	private readonly ProveedorDatos _datos = new();
+	private readonly AuditoriaNegocio _auditoria = new();
 
 	public List<Proveedor> Listar(string? filtro = null)
 	{
@@ -74,6 +75,31 @@ public class ProveedorNegocio
 	public void Reactivar(int id)
 	{
 		_datos.Reactivar(id);
+	}
+
+	/// <summary>
+	/// Elimina físicamente un proveedor. Solo se permite si no tiene ingresos
+	/// de mercadería asociados, para no romper el historial.
+	/// </summary>
+	public void Eliminar(int id)
+	{
+		if (id <= 0)
+		{
+			throw new ArgumentException("Debe seleccionar un proveedor.");
+		}
+		if (!Sesion.EsAdministrador)
+		{
+			throw new InvalidOperationException("Solo un administrador puede eliminar proveedores.");
+		}
+		if (_datos.TieneDependencias(id))
+		{
+			throw new InvalidOperationException(
+				"No se puede eliminar el proveedor porque tiene ingresos de mercadería asociados. " +
+				"Desactívelo en su lugar.");
+		}
+
+		_datos.Eliminar(id);
+		_auditoria.Registrar("proveedor_eliminacion", "proveedores", id, $"Proveedor con id {id} eliminado.");
 	}
 
 	private static string? Limpiar(string? valor)

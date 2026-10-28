@@ -14,6 +14,7 @@ public partial class FormCategorias : Form
 	public FormCategorias()
 	{
 		InitializeComponent();
+		btnEliminar.Visible = Sesion.EsAdministrador;
 	}
 
 	private void FormCategorias_Load(object sender, EventArgs e)
@@ -127,6 +128,41 @@ public partial class FormCategorias : Form
 		catch (Exception ex)
 		{
 			Mensajes.Error(this, "No se pudo cambiar el estado", ex);
+		}
+	}
+
+	private void btnEliminar_Click(object sender, EventArgs e)
+	{
+		Categoria? categoria = Seleccionada();
+		if (categoria == null)
+		{
+			MessageBox.Show("Seleccione una categoría de la lista.", "Aviso",
+				MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
+		}
+
+		if (!ConfirmacionEliminacion.Confirmar(
+			this,
+			$"la categoría '{categoria.Nombre}'",
+			"Esta acción no se puede deshacer. Si la categoría tiene ítems asociados, " +
+			"no se podrá eliminar y deberá desactivarla."))
+		{
+			return;
+		}
+
+		try
+		{
+			_negocio.Eliminar(categoria.Id);
+			Cargar(txtBuscar.Text.Trim());
+		}
+		catch (InvalidOperationException ex)
+		{
+			MessageBox.Show(ex.Message, "No se puede eliminar",
+				MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+		catch (Exception ex)
+		{
+			Mensajes.Error(this, "No se pudo eliminar la categoría", ex);
 		}
 	}
 }

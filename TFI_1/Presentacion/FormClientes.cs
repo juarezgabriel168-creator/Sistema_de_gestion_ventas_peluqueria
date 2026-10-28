@@ -140,12 +140,11 @@ public partial class FormClientes : Form
 			return;
 		}
 
-		DialogResult respuesta = MessageBox.Show(
-			"¿Eliminar definitivamente a " + cliente.NombreCompleto + "?" + Environment.NewLine + Environment.NewLine +
+		if (!ConfirmacionEliminacion.Confirmar(
+			this,
+			$"a {cliente.NombreCompleto}",
 			"Esta acción no se puede deshacer. Si el cliente tiene ventas, cuenta corriente o turnos asociados, " +
-			"no se podrá eliminar y deberá desactivarlo.",
-			"Eliminar cliente", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-		if (respuesta != DialogResult.Yes)
+			"no se podrá eliminar y deberá desactivarlo."))
 		{
 			return;
 		}

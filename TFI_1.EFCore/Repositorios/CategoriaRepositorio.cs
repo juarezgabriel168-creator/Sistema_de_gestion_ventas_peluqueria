@@ -58,4 +58,21 @@ public class CategoriaRepositorio
 		using var db = new PeluqueriaDbContext();
 		db.Categorias.Where(c => c.Id == id).ExecuteUpdate(s => s.SetProperty(c => c.Activo, true));
 	}
+
+	public bool TieneDependencias(int id)
+	{
+		using var db = new PeluqueriaDbContext();
+		return db.Items.Any(i => i.IdCategoria == id);
+	}
+
+	public void Eliminar(int id)
+	{
+		using var db = new PeluqueriaDbContext();
+		Categoria? categoria = db.Categorias.Find(id);
+		if (categoria == null)
+			return;
+
+		db.Categorias.Remove(categoria);
+		db.SaveChanges();
+	}
 }

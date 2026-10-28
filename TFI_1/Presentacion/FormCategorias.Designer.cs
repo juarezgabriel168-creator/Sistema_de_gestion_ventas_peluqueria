@@ -22,6 +22,8 @@ partial class FormCategorias : Form
 
 	private Button btnDesactivar;
 
+	private Button btnEliminar;
+
 	private Button btnRefrescar;
 
 	private DataGridView dgvCategorias;
@@ -47,6 +49,7 @@ partial class FormCategorias : Form
         btnNuevo = new Button();
         btnEditar = new Button();
         btnDesactivar = new Button();
+        btnEliminar = new Button();
         btnRefrescar = new Button();
         chkSoloActivos = new CheckBox();
         dgvCategorias = new DataGridView();
@@ -111,13 +114,24 @@ partial class FormCategorias : Form
         btnDesactivar.UseVisualStyleBackColor = true;
         btnDesactivar.Click += btnDesactivar_Click;
         // 
+        // btnEliminar
+        // 
+        btnEliminar.ForeColor = Color.Firebrick;
+        btnEliminar.Location = new Point(648, 44);
+        btnEliminar.Name = "btnEliminar";
+        btnEliminar.Size = new Size(90, 25);
+        btnEliminar.TabIndex = 6;
+        btnEliminar.Text = "Eliminar";
+        btnEliminar.UseVisualStyleBackColor = true;
+        btnEliminar.Click += btnEliminar_Click;
+        // 
         // btnRefrescar
         // 
         btnRefrescar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        btnRefrescar.Location = new Point(648, 44);
+        btnRefrescar.Location = new Point(750, 44);
         btnRefrescar.Name = "btnRefrescar";
         btnRefrescar.Size = new Size(100, 25);
-        btnRefrescar.TabIndex = 6;
+        btnRefrescar.TabIndex = 7;
         btnRefrescar.Text = "Refrescar";
         btnRefrescar.UseVisualStyleBackColor = true;
         btnRefrescar.Click += btnRefrescar_Click;
@@ -128,10 +142,10 @@ partial class FormCategorias : Form
         chkSoloActivos.AutoSize = true;
         chkSoloActivos.Checked = true;
         chkSoloActivos.CheckState = CheckState.Checked;
-        chkSoloActivos.Location = new Point(657, 16);
+        chkSoloActivos.Location = new Point(759, 16);
         chkSoloActivos.Name = "chkSoloActivos";
         chkSoloActivos.Size = new Size(91, 19);
-        chkSoloActivos.TabIndex = 8;
+        chkSoloActivos.TabIndex = 9;
         chkSoloActivos.Text = "Solo Activos";
         chkSoloActivos.UseVisualStyleBackColor = true;
         chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
@@ -167,8 +181,8 @@ partial class FormCategorias : Form
         dgvCategorias.ReadOnly = true;
         dgvCategorias.RowHeadersVisible = false;
         dgvCategorias.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-        dgvCategorias.Size = new Size(736, 360);
-        dgvCategorias.TabIndex = 7;
+        dgvCategorias.Size = new Size(838, 360);
+        dgvCategorias.TabIndex = 8;
         dgvCategorias.SelectionChanged += dgvCategorias_SelectionChanged;
         // 
         // FormCategorias
@@ -176,10 +190,11 @@ partial class FormCategorias : Form
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         BackColor = SystemColors.ActiveCaption;
-        ClientSize = new Size(760, 462);
+        ClientSize = new Size(862, 462);
         Controls.Add(dgvCategorias);
         Controls.Add(chkSoloActivos);
         Controls.Add(btnRefrescar);
+        Controls.Add(btnEliminar);
         Controls.Add(btnDesactivar);
         Controls.Add(btnEditar);
         Controls.Add(btnNuevo);

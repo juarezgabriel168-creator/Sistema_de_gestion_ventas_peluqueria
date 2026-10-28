@@ -140,12 +140,11 @@ public partial class FormUsuarios : Form
 			return;
 		}
 
-		DialogResult respuesta = MessageBox.Show(
-			"¿Eliminar definitivamente al usuario '" + usuario.NombreUsuario + "'?" + Environment.NewLine + Environment.NewLine +
+		if (!ConfirmacionEliminacion.Confirmar(
+			this,
+			$"al usuario '{usuario.NombreUsuario}'",
 			"Esta acción no se puede deshacer. No se puede eliminar su propio usuario, el último administrador " +
-			"ni usuarios con ventas, cajas, movimientos o auditoría asociados.",
-			"Eliminar usuario", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-		if (respuesta != DialogResult.Yes)
+			"ni usuarios con ventas, cajas, movimientos o auditoría asociados."))
 		{
 			return;
 		}

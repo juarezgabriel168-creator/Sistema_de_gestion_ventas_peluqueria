@@ -189,12 +189,11 @@ public partial class FormItems : Form
 			return;
 		}
 
-		DialogResult respuesta = MessageBox.Show(
-			"¿Eliminar definitivamente '" + item.Nombre + "'?" + Environment.NewLine + Environment.NewLine +
+		if (!ConfirmacionEliminacion.Confirmar(
+			this,
+			$"el ítem '{item.Nombre}'",
 			"Esta acción no se puede deshacer. Si el ítem tiene ventas, ingresos o turnos asociados, " +
-			"no se podrá eliminar y deberá desactivarlo.",
-			"Eliminar ítem", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-		if (respuesta != DialogResult.Yes)
+			"no se podrá eliminar y deberá desactivarlo."))
 		{
 			return;
 		}

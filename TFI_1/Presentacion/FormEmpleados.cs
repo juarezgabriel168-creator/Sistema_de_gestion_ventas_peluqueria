@@ -14,6 +14,7 @@ public partial class FormEmpleados : Form
 	public FormEmpleados()
 	{
 		InitializeComponent();
+		btnEliminar.Visible = Sesion.EsAdministrador;
 	}
 
 	private void FormEmpleados_Load(object sender, EventArgs e)
@@ -127,6 +128,41 @@ public partial class FormEmpleados : Form
 		catch (Exception ex)
 		{
 			Mensajes.Error(this, "No se pudo cambiar el estado", ex);
+		}
+	}
+
+	private void btnEliminar_Click(object sender, EventArgs e)
+	{
+		Empleado? empleado = Seleccionado();
+		if (empleado == null)
+		{
+			MessageBox.Show("Seleccione un empleado de la lista.", "Aviso",
+				MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
+		}
+
+		if (!ConfirmacionEliminacion.Confirmar(
+			this,
+			$"al empleado {empleado.Nombre} {empleado.Apellido}",
+			"Esta acción no se puede deshacer. Si el empleado tiene ventas o atenciones asociadas, " +
+			"no se podrá eliminar y deberá desactivarlo."))
+		{
+			return;
+		}
+
+		try
+		{
+			_negocio.Eliminar(empleado.Id);
+			Cargar();
+		}
+		catch (InvalidOperationException ex)
+		{
+			MessageBox.Show(ex.Message, "No se puede eliminar",
+				MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+		catch (Exception ex)
+		{
+			Mensajes.Error(this, "No se pudo eliminar el empleado", ex);
 		}
 	}
 }

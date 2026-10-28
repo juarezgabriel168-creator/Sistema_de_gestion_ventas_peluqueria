@@ -68,6 +68,8 @@ var cuenta = db.CuentasCorrientes.AsNoTracking()
 int? cajaId = db.Cajas.AsNoTracking().OrderBy(c => c.Id).Select(c => (int?)c.Id).FirstOrDefault();
 int? empleadoId = db.Empleados.AsNoTracking().OrderBy(e => e.Id).Select(e => (int?)e.Id).FirstOrDefault();
 int? itemId = db.Items.AsNoTracking().OrderBy(i => i.Id).Select(i => (int?)i.Id).FirstOrDefault();
+int? categoriaId = db.Categorias.AsNoTracking().OrderBy(c => c.Id).Select(c => (int?)c.Id).FirstOrDefault();
+int? proveedorId = db.Proveedores.AsNoTracking().OrderBy(p => p.Id).Select(p => (int?)p.Id).FirstOrDefault();
 int? clienteId = db.Clientes.AsNoTracking().OrderBy(c => c.Id).Select(c => (int?)c.Id).FirstOrDefault();
 int? usuarioId = db.Usuarios.AsNoTracking().OrderBy(u => u.Id).Select(u => (int?)u.Id).FirstOrDefault();
 var atencion = db.Atenciones.AsNoTracking()
@@ -95,13 +97,19 @@ if (clienteId.HasValue)
 	Verificar("Cliente.TieneDependencias", () => new ClienteRepositorio().TieneDependencias(id));
 }
 Verificar("Categoria.Listar", () => new CategoriaRepositorio().Listar());
+if (categoriaId.HasValue)
+	Verificar("Categoria.TieneDependencias", () => new CategoriaRepositorio().TieneDependencias(categoriaId.Value));
 Verificar("Item.Listar", () => new ItemRepositorio().Listar());
 Verificar("Item.Listar(servicios)", () => new ItemRepositorio().Listar(tipo: TipoItem.Servicio));
 Verificar("Item.Listar(stock bajo)", () => new ItemRepositorio().Listar(soloStockBajo: true));
 if (itemId.HasValue)
 	Verificar("Item.TieneDependencias", () => new ItemRepositorio().TieneDependencias(itemId.Value));
 Verificar("Empleado.Listar", () => new EmpleadoRepositorio().Listar());
+if (empleadoId.HasValue)
+	Verificar("Empleado.TieneDependencias", () => new EmpleadoRepositorio().TieneDependencias(empleadoId.Value));
 Verificar("Proveedor.Listar", () => new ProveedorRepositorio().Listar());
+if (proveedorId.HasValue)
+	Verificar("Proveedor.TieneDependencias", () => new ProveedorRepositorio().TieneDependencias(proveedorId.Value));
 Verificar("Banco.Listar(incluye inactivos)", () => new BancoRepositorio().Listar(false));
 Verificar("TarjetaCredito.Listar(incluye inactivas)", () => new TarjetaCreditoRepositorio().Listar(false));
 

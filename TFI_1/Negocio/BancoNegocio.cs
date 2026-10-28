@@ -39,6 +39,8 @@ public class BancoNegocio
 	public void Eliminar(int id)
 	{
 		if (id <= 0) throw new ArgumentException("Banco inválido.");
+		if (!Sesion.EsAdministrador)
+			throw new InvalidOperationException("Solo un administrador puede eliminar bancos.");
 		if (_datos.TieneTarjetas(id))
 			throw new InvalidOperationException(
 				"No se puede eliminar el banco porque tiene tarjetas asociadas. Desactívelo en su lugar.");
