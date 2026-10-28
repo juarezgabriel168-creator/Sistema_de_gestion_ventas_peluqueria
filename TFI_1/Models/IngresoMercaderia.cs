@@ -14,6 +14,12 @@ public class IngresoMercaderia
 	public int IdUsuario { get; set; }
 	public string? NombreUsuario { get; set; }
 	public string? Observacion { get; set; }
+	public bool Anulada { get; set; }
+	public DateTime? FechaAnulacion { get; set; }
+	public int? IdUsuarioAnulacion { get; set; }
+	public string? NombreUsuarioAnulacion { get; set; }
+	public string? MotivoAnulacion { get; set; }
+	public string Estado => Anulada ? "Anulada" : "Vigente";
 	public List<IngresoMercaderiaDetalle> Detalles { get; } = new();
 
 	public void AgregarDetalle(Item item, int cantidad, decimal costoUnitario)

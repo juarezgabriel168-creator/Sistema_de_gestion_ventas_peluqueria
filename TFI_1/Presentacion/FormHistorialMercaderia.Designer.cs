@@ -28,6 +28,7 @@ partial class FormHistorialMercaderia : Form
 private Button btnAnterior;
 private Label lblPagina;
 private Button btnSiguiente;
+	private Button btnAnular;
 
 	protected override void Dispose(bool disposing)
 	{
@@ -57,6 +58,7 @@ private Button btnSiguiente;
 btnAnterior = new Button();
 lblPagina = new Label();
 btnSiguiente = new Button();
+        btnAnular = new Button();
         ((ISupportInitialize)dgvIngresos).BeginInit();
         ((ISupportInitialize)dgvDetalle).BeginInit();
         SuspendLayout();
@@ -267,9 +269,22 @@ btnSiguiente = new Button();
         btnSiguiente.Text = "Siguiente ▶";
         btnSiguiente.UseVisualStyleBackColor = true;
         btnSiguiente.Click += btnSiguiente_Click;
-        // 
+        //
+        // btnAnular
+        //
+        btnAnular.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        btnAnular.Enabled = false;
+        btnAnular.ForeColor = Color.DarkRed;
+        btnAnular.Location = new Point(788, 334);
+        btnAnular.Name = "btnAnular";
+        btnAnular.Size = new Size(120, 25);
+        btnAnular.TabIndex = 19;
+        btnAnular.Text = "Anular ingreso";
+        btnAnular.UseVisualStyleBackColor = true;
+        btnAnular.Click += btnAnular_Click;
+        //
         // FormHistorialMercaderia
-        // 
+        //
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         BackColor = SystemColors.ActiveCaption;
@@ -281,6 +296,7 @@ btnSiguiente = new Button();
         Controls.Add(btnSiguiente);
         Controls.Add(lblCantidad);
         Controls.Add(lblTotal);
+        Controls.Add(btnAnular);
         Controls.Add(dgvDetalle);
         Controls.Add(lblDetalle);
         Controls.Add(dgvIngresos);

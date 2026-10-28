@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using TFI_1.Models;
@@ -23,6 +24,7 @@ public partial class FormHistorialMercaderia : Form
 	public FormHistorialMercaderia()
 	{
 		InitializeComponent();
+		btnAnular.Visible = Sesion.EsAdministrador;
 	}
 
 	private void FormHistorialMercaderia_Load(object? sender, EventArgs e)
@@ -86,7 +88,7 @@ public partial class FormHistorialMercaderia : Form
 			dgvIngresos.DataSource = ingresos;
 			FormatearIngresos();
 			lblCantidad.Text = $"Ingresos: {_totalRegistros}";
-			lblTotal.Text = $"Total del período: {_negocio.Sumar(dtpDesde.Value.Date, dtpHasta.Value.Date, filtro):C2}";
+			lblTotal.Text = $"Total vigente del período: {_negocio.Sumar(dtpDesde.Value.Date, dtpHasta.Value.Date, filtro):C2}";
 			ActualizarPaginacion();
 		}
 		catch (Exception ex)
@@ -137,19 +139,38 @@ public partial class FormHistorialMercaderia : Form
 	private void FormatearIngresos()
 	{
 		OcultarColumna(dgvIngresos, "Id");
+		OcultarColumna(dgvIngresos, "IdProveedor");
 		OcultarColumna(dgvIngresos, "IdUsuario");
 		OcultarColumna(dgvIngresos, "Detalles");
+		OcultarColumna(dgvIngresos, "Anulada");
+		OcultarColumna(dgvIngresos, "FechaAnulacion");
+		OcultarColumna(dgvIngresos, "IdUsuarioAnulacion");
+		OcultarColumna(dgvIngresos, "NombreUsuarioAnulacion");
+		OcultarColumna(dgvIngresos, "MotivoAnulacion");
 		FormatearColumna(dgvIngresos, "Fecha", "Fecha", "dd/MM/yyyy");
 		FormatearColumna(dgvIngresos, "Proveedor", "Proveedor");
 		FormatearColumna(dgvIngresos, "Total", "Total", "C2");
 		FormatearColumna(dgvIngresos, "NombreUsuario", "Usuario");
 		FormatearColumna(dgvIngresos, "Observacion", "Observación");
+		FormatearColumna(dgvIngresos, "Estado", "Estado");
+
+		foreach (DataGridViewRow fila in dgvIngresos.Rows)
+		{
+			if (fila.DataBoundItem is IngresoMercaderia ingreso && ingreso.Anulada)
+			{
+				fila.DefaultCellStyle.ForeColor = Color.Gray;
+			}
+		}
+
+		ActualizarBotonAnular();
 	}
 
 	private void CargarDetalle()
 	{
 		dgvDetalle.DataSource = null;
 		lblDetalle.Text = "Detalle del ingreso seleccionado:";
+		lblDetalle.ForeColor = SystemColors.ControlText;
+		ActualizarBotonAnular();
 
 		if (dgvIngresos.CurrentRow?.DataBoundItem is not IngresoMercaderia ingreso)
 			return;
@@ -174,14 +195,33 @@ public partial class FormHistorialMercaderia : Form
 			FormatearColumna(dgvDetalle, "CostoUnitario", "Costo unitario", "C2");
 			FormatearColumna(dgvDetalle, "Subtotal", "Subtotal", "C2");
 
+			string estado = string.Empty;
+			if (completo.Anulada)
+			{
+				string fecha = completo.FechaAnulacion?.ToString("g") ?? "fecha desconocida";
+				estado = $" — ANULADO el {fecha}";
+				if (!string.IsNullOrWhiteSpace(completo.NombreUsuarioAnulacion))
+					estado += $" por {completo.NombreUsuarioAnulacion}";
+				if (!string.IsNullOrWhiteSpace(completo.MotivoAnulacion))
+					estado += $". Motivo: {completo.MotivoAnulacion}";
+			}
+
 			lblDetalle.Text =
-				$"Detalle del ingreso #{completo.Id} — {completo.Proveedor} — {completo.Fecha:dd/MM/yyyy}";
+				$"Detalle del ingreso #{completo.Id} — {completo.Proveedor} — {completo.Fecha:dd/MM/yyyy}{estado}";
+			lblDetalle.ForeColor = completo.Anulada ? Color.DarkRed : SystemColors.ControlText;
 		}
 		catch (Exception ex)
 		{
 			// No se muestra un diálogo para no interrumpir cada cambio de fila.
 			lblDetalle.Text = "No se pudo cargar el detalle: " + ex.Message;
 		}
+	}
+
+	private void ActualizarBotonAnular()
+	{
+		bool puedeAnular = dgvIngresos.CurrentRow?.DataBoundItem is IngresoMercaderia ingreso
+			&& !ingreso.Anulada;
+		btnAnular.Enabled = puedeAnular;
 	}
 
 	private void dgvIngresos_SelectionChanged(object? sender, EventArgs e)
@@ -218,6 +258,53 @@ public partial class FormHistorialMercaderia : Form
 			formulario.ShowDialog(this);
 		}
 		Cargar();
+	}
+
+	private void btnAnular_Click(object? sender, EventArgs e)
+	{
+		if (dgvIngresos.CurrentRow?.DataBoundItem is not IngresoMercaderia ingreso)
+		{
+			MessageBox.Show("Seleccione un ingreso de la lista.", "Aviso",
+				MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
+		}
+
+		if (ingreso.Anulada)
+		{
+			MessageBox.Show("El ingreso seleccionado ya está anulado.", "Aviso",
+				MessageBoxButtons.OK, MessageBoxIcon.Information);
+			return;
+		}
+
+		using FormAnularIngresoMercaderia dialogo = new(
+			ingreso.Id,
+			ingreso.Proveedor ?? "Sin proveedor",
+			ingreso.Total);
+		if (dialogo.ShowDialog(this) != DialogResult.OK)
+			return;
+
+		try
+		{
+			_negocio.Anular(ingreso.Id, Sesion.UsuarioActual?.Id ?? 0, dialogo.Motivo);
+			MessageBox.Show(
+				"El ingreso fue anulado y se descontó del stock la cantidad ingresada.",
+				"Ingreso anulado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			CargarPagina();
+		}
+		catch (InvalidOperationException ex)
+		{
+			MessageBox.Show(ex.Message, "No se puede anular",
+				MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+		catch (ArgumentException ex)
+		{
+			MessageBox.Show(ex.Message, "No se puede anular",
+				MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+		catch (Exception ex)
+		{
+			Mensajes.Error(this, "No se pudo anular el ingreso", ex);
+		}
 	}
 
 	private void btnCerrar_Click(object? sender, EventArgs e)

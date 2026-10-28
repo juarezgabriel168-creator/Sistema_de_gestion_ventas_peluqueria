@@ -29,10 +29,17 @@ public class IngresoMercaderia
 	public int IdUsuario { get; set; }
 	public Usuario Usuario { get; set; } = null!;
 	public string? Observacion { get; set; }
+	public bool Anulada { get; set; }
+	public DateTime? FechaAnulacion { get; set; }
+	public int? IdUsuarioAnulacion { get; set; }
+	public Usuario? UsuarioAnulacion { get; set; }
+	public string? MotivoAnulacion { get; set; }
 
 	public List<IngresoMercaderiaDetalle> Detalles { get; set; } = new();
 
 	public string? NombreUsuario => Usuario?.NombreUsuario;
+	public string? NombreUsuarioAnulacion => UsuarioAnulacion?.NombreUsuario;
+	public string Estado => Anulada ? "Anulada" : "Vigente";
 }
 
 public class IngresoMercaderiaDetalle

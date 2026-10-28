@@ -379,8 +379,13 @@ public class PeluqueriaDbContext : DbContext
 			e.Property(x => x.Total).HasColumnName("total").HasPrecision(12, 2).HasDefaultValue(0m);
 			e.Property(x => x.IdUsuario).HasColumnName("id_usuario");
 			e.Property(x => x.Observacion).HasColumnName("observacion").HasMaxLength(255);
+			e.Property(x => x.Anulada).HasColumnName("anulada").HasDefaultValue(false);
+			e.Property(x => x.FechaAnulacion).HasColumnName("fecha_anulacion").HasColumnType("datetime");
+			e.Property(x => x.IdUsuarioAnulacion).HasColumnName("id_usuario_anulacion");
+			e.Property(x => x.MotivoAnulacion).HasColumnName("motivo_anulacion").HasMaxLength(255);
 			e.HasIndex(x => x.Fecha).HasDatabaseName("ix_ingresos_fecha");
 			e.HasIndex(x => x.IdProveedor).HasDatabaseName("ix_ingresos_proveedor");
+			e.HasIndex(x => x.Anulada).HasDatabaseName("ix_ingresos_anulada");
 			e.HasOne(x => x.ProveedorEntidad)
 				.WithMany()
 				.HasForeignKey(x => x.IdProveedor)
@@ -391,6 +396,11 @@ public class PeluqueriaDbContext : DbContext
 				.HasForeignKey(x => x.IdUsuario)
 				.OnDelete(DeleteBehavior.Restrict)
 				.HasConstraintName("fk_ingresos_usuario");
+			e.HasOne(x => x.UsuarioAnulacion)
+				.WithMany()
+				.HasForeignKey(x => x.IdUsuarioAnulacion)
+				.OnDelete(DeleteBehavior.Restrict)
+				.HasConstraintName("fk_ingresos_usuario_anulacion");
 		});
 
 		modelBuilder.Entity<IngresoMercaderiaDetalle>(e =>

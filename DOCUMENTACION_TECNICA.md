@@ -43,10 +43,10 @@ El proyecto implementa una peluquería que:
 
 ### Convenciones
 
-- Se documenta el código de producción y los dos scripts SQL.
+- Se documenta el código de producción y los scripts SQL.
 - Los archivos `*.Designer.cs` no se transcriben línea por línea: contienen la declaración y ubicación visual de los controles generados por el diseñador. La lógica que los usa está en los `*.cs`.
-- En el árbol de trabajo actual hay **37 formularios funcionales**, todos con su archivo `.Designer.cs` y su `.resx`.
-- El relevamiento contó **617 declaraciones de controles/componentes** dentro de los diseñadores. Los formularios principales (`FormPrincipal`, `FormNuevaVenta`, `FormGastos`, `FormDashboard`) superan los 25 controles cada uno.
+- En el árbol de trabajo actual hay **38 formularios funcionales**, todos con su archivo `.Designer.cs` y su `.resx`.
+- El relevamiento contó **625 declaraciones de controles/componentes** dentro de los diseñadores. Los formularios principales (`FormPrincipal`, `FormNuevaVenta`, `FormGastos`, `FormDashboard`) superan los 25 controles cada uno.
 - Los ajustes de tamaño y anclaje que se hacen desde el `.cs` **no crean controles**: solo acomodan controles que ya existen en el diseñador. Esto es importante para el requisito de que todo se vea en la vista **Diseño** de Visual Studio.
 
 ---
@@ -88,7 +88,8 @@ El proyecto implementa una peluquería que:
 | Productos | `FormProveedores` | Listado y estado de proveedores. |
 | Productos | `FormProveedorEditar` | Alta/edición de proveedor. |
 | Productos | `FormIngresoMercaderia` | Compra de productos, stock y costo. |
-| Productos | `FormHistorialMercaderia` | Historial paginado y detalle de ingresos. |
+| Productos | `FormHistorialMercaderia` | Historial paginado y detalle de ingresos; permite anular. |
+| Productos | `FormAnularIngresoMercaderia` | Pide el motivo y confirma la anulación de un ingreso. |
 | Administración | `FormAuditoria` | Consulta paginada de acciones sensibles. |
 | Administración | `FormBackup` | Generación de copia `.sql` con `mysqldump`. |
 | Reportes | `FormReporteDiario` | Resumen del día, medios de pago, más vendidos, gastos, empleados y anulaciones. |
@@ -158,7 +159,7 @@ Validaciones, Sesion, Configuracion y Mensajes: soporte transversal.
 - **Servicio de aplicación** en `Negocio`.
 - **Sesión global controlada** (`Sesion`).
 - **Eliminación lógica** con `activo`.
-- **Transacciones** en venta, anulación, abono e ingreso de mercadería.
+- **Transacciones** en venta, anulación, abono e ingreso/anulación de mercadería.
 - **Parámetros tipados** en lugar de concatenar SQL.
 - **Auditoría** de operaciones sensibles.
 - **Paginación** en historiales.
@@ -477,10 +478,18 @@ Los modelos están en `TFI_1/Models`. Se usan realmente en las capas de datos, n
 | `IdUsuario` | Quién registró. |
 | `NombreUsuario` | Nombre por JOIN. |
 | `Observacion` | Nota. |
+| `Anulada` | Marca de anulación; el ingreso no se borra. |
+| `FechaAnulacion` | Momento en que se anuló. |
+| `IdUsuarioAnulacion` | Usuario que anuló. |
+| `NombreUsuarioAnulacion` | Nombre por JOIN. |
+| `MotivoAnulacion` | Motivo obligatorio de la anulación. |
+| `Estado` | `Vigente` o `Anulada`, para mostrar en el historial. |
 | `Detalles` | Composición de líneas. |
 | `AgregarDetalle(...)` | Crea y agrega una línea. |
 
 **Por qué se guarda el nombre del proveedor además de la FK:** si el proveedor se renombra, el historial conserva el nombre que tenía al momento del ingreso.
+
+**Anulación:** no se elimina la compra. Se conserva el registro, se descuenta el stock ingresado y se guarda fecha, usuario y motivo. Los totales del período excluyen los ingresos anulados.
 
 ### 6.12 `IngresoMercaderiaDetalle`
 
@@ -731,15 +740,18 @@ La tabla `auditoria` tiene índices por fecha, usuario y acción.
 
 | Método | Qué hace |
 |---|---|
-| `Listar(...)` | Cabeceras filtradas y paginadas. |
-| `Contar`, `Sumar` | Totales del filtro, independientes de la página. |
+| `Listar(...)` | Cabeceras filtradas y paginadas; incluye anuladas y sus datos. |
+| `Contar`, `Sumar` | Totales del filtro, independientes de la página. `Sumar` excluye anuladas. |
 | `ObtenerPorId` | Cabecera + detalle. |
 | `Insertar` | Transacción: cabecera, detalle, stock y costo. |
+| `Anular` | Transacción: bloquea la cabecera, descuenta stock y marca la anulación. |
 | `ObtenerDetalles` | Líneas de un ingreso. |
 | `LeerCabecera` | Mapeo. |
-| `IngresosResumen` | Agrupado por día para reportes. |
+| `IngresosResumen` | Agrupado por día para reportes; excluye anuladas. |
 
 **Transacción de ingreso:** por cada línea inserta el detalle y actualiza `items.stock = stock + cantidad`, `precio` y `costo`. Si algo falla, `Rollback`.
+
+**Transacción de anulación:** bloquea la cabecera con `FOR UPDATE`, verifica que no esté anulada, descuenta del stock cada cantidad ingresada, guarda `anulada = 1`, `fecha_anulacion`, `id_usuario_anulacion` y `motivo_anulacion`. Si algo falla, `Rollback`.
 
 ### 7.13 `ItemDatos.cs`
 
@@ -1007,6 +1019,12 @@ Delega los ocho indicadores a `DashboardDatos`. No tiene lógica extra: es una f
   - al menos una línea;
   - usuario activo;
   - cada línea: ítem válido, **solo producto**, cantidad > 0, costo >= 0.
+- `Anular`:
+  - solo administrador;
+  - ingreso existente y no anulado;
+  - usuario de sesión válido;
+  - motivo obligatorio, máximo 255 caracteres;
+  - audita `anulacion_ingreso_mercaderia`.
 - `IngresosResumen`.
 
 ### 8.14 `ItemNegocio.cs`
@@ -1455,9 +1473,11 @@ Métodos:
 - `TamanoPagina = 50`.
 - `_cargando`, `_pagina`, `_totalRegistros`.
 - `Cargar`, `CargarPagina`, `ActualizarPaginacion`.
-- `FormatearIngresos`, `CargarDetalle`.
+- `FormatearIngresos`, `CargarDetalle`, `ActualizarBotonAnular`.
 - `btnNuevo`: abre `FormIngresoMercaderia`.
+- `btnAnular`: abre `FormAnularIngresoMercaderia`, pide el motivo y llama a `IngresoMercaderiaNegocio.Anular`. Solo se habilita para un ingreso vigente y para administradores.
 - Filtros por fecha y proveedor.
+- Los ingresos anulados se muestran en gris, con estado `Anulada` y el motivo/fecha/usuario en el detalle.
 
 #### `FormAuditoria`
 
@@ -1698,6 +1718,8 @@ Restricciones:
 - `id_proveedor` FK opcional.
 - `proveedor` snapshot de texto.
 - `total`, `id_usuario`, `observacion`.
+- `anulada`, `fecha_anulacion`, `id_usuario_anulacion`, `motivo_anulacion`.
+- Índice por `anulada` y FK restrictiva al usuario que anula.
 
 `ingresos_mercaderia_detalle`:
 
@@ -1781,7 +1803,15 @@ FLUSH PRIVILEGES;
 
 **Principio de menor privilegio:** la aplicación no puede `CREATE`, `DROP` ni `ALTER`. Las copias de seguridad se restauran con un usuario administrador, no con `peluqueria_app`.
 
-### 10.3 Relaciones principales
+### 10.3 `BaseDatos/actualizacion_anulacion_ingresos.sql`
+
+Script idempotente para bases creadas antes de incorporar la anulación de
+ingresos de mercadería. Agrega las columnas `anulada`, `fecha_anulacion`,
+`id_usuario_anulacion` y `motivo_anulacion`, el índice
+`ix_ingresos_anulada` y la FK `fk_ingresos_usuario_anulacion`. Se ejecuta
+como `root`, porque `peluqueria_app` no tiene permiso `ALTER`.
+
+### 10.4 Relaciones principales
 
 ```text
 roles 1──N usuarios
@@ -1808,7 +1838,7 @@ usuarios 1──N cajas (apertura/cierre)
 cajas 1──N caja_movimientos
 ```
 
-### 10.4 Normalización y duplicación
+### 10.5 Normalización y duplicación
 
 - Las entidades tienen su propia tabla.
 - Los nombres se obtienen por JOIN, salvo dos **snapshots deliberados**:
@@ -1818,7 +1848,7 @@ cajas 1──N caja_movimientos
 - Los totales de venta se guardan porque son el importe histórico cobrado.
 - El saldo de cuenta corriente se guarda para consulta rápida, y se respalda con el historial de movimientos.
 
-### 10.5 Restricciones e integridad
+### 10.6 Restricciones e integridad
 
 - PK en todas las tablas.
 - FK con `RESTRICT`, `CASCADE` o `SET NULL` según el caso.
@@ -1896,7 +1926,7 @@ Archivo de referencia: `TFI_1/Archivos.md/segundo-parcial-programacion-2.md`.
 | Dashboard | `FormDashboard` con datos de MySQL. |
 | Manejar errores y validar | `Mensajes`, `Validaciones`, try/catch y reglas de negocio. |
 | POO | 18 modelos, servicios, DAO, composición y encapsulamiento. |
-| Múltiples formularios | 37 formularios funcionales. |
+| Múltiples formularios | 38 formularios funcionales. |
 | Persistir en MySQL | 20 tablas y operaciones CRUD. |
 
 ### 12.3 Punto 3 — Requisitos tecnológicos
@@ -1904,7 +1934,7 @@ Archivo de referencia: `TFI_1/Archivos.md/segundo-parcial-programacion-2.md`.
 | Requisito | Cumplimiento |
 |---|---|
 | C# | Todo el proyecto. |
-| Windows Forms | 37 formularios WinForms. |
+| Windows Forms | 38 formularios WinForms. |
 | MySQL | Base `peluqueria`, scripts y `MySql.Data`. |
 | Persistencia real | No se usan listas como almacenamiento principal. |
 | Alta, baja, modificación y consulta | Implementadas en las entidades principales. |
@@ -2157,7 +2187,7 @@ La organización prioriza las tareas cotidianas: Gastos quedó como acceso de pr
 | Tarjetas | `TarjetaCreditoDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` |
 | Ventas | `VentaDatos.Registrar` | `Listar` / `ObtenerCabecera` | No se edita; se anula | `anulada = 1` |
 | Gastos | `GastoDatos.Insertar` | `Listar` | `Actualizar` | No se borra; historial |
-| Ingresos | `IngresoMercaderiaDatos.Insertar` | `Listar` / `ObtenerPorId` | No se edita | Historial |
+| Ingresos | `IngresoMercaderiaDatos.Insertar` | `Listar` / `ObtenerPorId` | No se edita | `Anular` (solo administrador) |
 | Atenciones | `AtencionDatos.Insertar` | `Listar` | `Actualizar` | `Cancelar` o `Eliminar` (solo administrador) |
 | Cajas | `CajaDatos.Abrir` | `ObtenerAbierta` / `Listar` | `Cerrar` | No se borra |
 | Movimientos CC | `InsertarMovimiento` | `ListarMovimientos` | No se edita | Historial |
@@ -2296,7 +2326,7 @@ No. Avisa si supera `LimiteDeCuentaCorriente`; el usuario decide.
 
 ### 14.3 Puntos a remarcar
 
-- 37 formularios, muy por encima del mínimo de 10.
+- 38 formularios, muy por encima del mínimo de 10.
 - 20 tablas con PK, FK, UNIQUE, CHECK e índices.
 - 101 pruebas automatizadas.
 - Separación real en capas.
@@ -2328,6 +2358,7 @@ Estas observaciones no impiden la entrega, pero conviene revisarlas antes de la 
 | `TFI_1.slnx` | Solución con app y pruebas. |
 | `BaseDatos/peluqueria.sql` | Esquema y datos iniciales. |
 | `BaseDatos/crear_usuario_app.sql` | Usuario MySQL con permisos mínimos. |
+| `BaseDatos/actualizacion_anulacion_ingresos.sql` | Migración idempotente para bases existentes. |
 
 ### 16.2 `TFI_1`
 
@@ -2340,7 +2371,7 @@ Estas observaciones no impiden la entrega, pero conviene revisarlas antes de la 
 | `Models/` | 18 clases + enums. |
 | `Datos/` | 19 clases de acceso y utilidades. |
 | `Negocio/` | 20 clases de reglas y soporte. |
-| `Presentacion/` | 37 formularios + `Mensajes`. |
+| `Presentacion/` | 38 formularios + `Mensajes`. |
 
 ### 16.3 Modelos
 
@@ -2356,7 +2387,7 @@ Estas observaciones no impiden la entrega, pero conviene revisarlas antes de la 
 
 ### 16.6 Formularios
 
-`FormAnularVenta`, `FormAtencionEditar`, `FormAtenciones`, `FormAuditoria`, `FormBackup`, `FormBancoEditar`, `FormCaja`, `FormCategoriaEditar`, `FormCategorias`, `FormCerrarCaja`, `FormClienteEditar`, `FormClientes`, `FormConfirmarContrasena`, `FormCuentaCorriente`, `FormDashboard`, `FormDetalleVenta`, `FormEmpleadoEditar`, `FormEmpleados`, `FormGastos`, `FormHistorialCaja`, `FormHistorialMercaderia`, `FormHistorialVentas`, `FormIngresoMercaderia`, `FormItemEditar`, `FormItems`, `FormLog`, `FormNuevaVenta`, `FormPrincipal`, `FormProveedorEditar`, `FormProveedores`, `FormReporteAvanzado`, `FormReporteDiario`, `FormReporteMensual`, `FormTarjetaDeCredito`, `FormTarjetaEditar`, `FormTicket`, `FormUsuarioEditar`, `FormUsuarios`.
+`FormAnularIngresoMercaderia`, `FormAnularVenta`, `FormAtencionEditar`, `FormAtenciones`, `FormAuditoria`, `FormBackup`, `FormBancoEditar`, `FormCaja`, `FormCategoriaEditar`, `FormCategorias`, `FormCerrarCaja`, `FormClienteEditar`, `FormClientes`, `FormConfirmarContrasena`, `FormCuentaCorriente`, `FormDashboard`, `FormDetalleVenta`, `FormEmpleadoEditar`, `FormEmpleados`, `FormGastos`, `FormHistorialCaja`, `FormHistorialMercaderia`, `FormHistorialVentas`, `FormIngresoMercaderia`, `FormItemEditar`, `FormItems`, `FormLog`, `FormNuevaVenta`, `FormPrincipal`, `FormProveedorEditar`, `FormProveedores`, `FormReporteAvanzado`, `FormReporteDiario`, `FormReporteMensual`, `FormTarjetaDeCredito`, `FormTarjetaEditar`, `FormTicket`, `FormUsuarioEditar`, `FormUsuarios`.
 
 ---
 

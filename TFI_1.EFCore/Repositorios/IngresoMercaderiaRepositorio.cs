@@ -15,7 +15,8 @@ public class IngresoMercaderiaRepositorio
 		using var db = new PeluqueriaDbContext();
 		IQueryable<IngresoMercaderia> consulta = db.IngresosMercaderia
 			.AsNoTracking()
-			.Include(i => i.Usuario);
+			.Include(i => i.Usuario)
+			.Include(i => i.UsuarioAnulacion);
 
 		if (desde.HasValue)
 			consulta = consulta.Where(i => i.Fecha >= desde.Value.Date);
@@ -39,6 +40,7 @@ public class IngresoMercaderiaRepositorio
 	{
 		using var db = new PeluqueriaDbContext();
 		return Filtrar(db.IngresosMercaderia.AsNoTracking(), desde, hasta, filtro)
+			.Where(i => !i.Anulada)
 			.Sum(i => (decimal?)i.Total) ?? 0m;
 	}
 
@@ -47,6 +49,7 @@ public class IngresoMercaderiaRepositorio
 		using var db = new PeluqueriaDbContext();
 		return db.IngresosMercaderia.AsNoTracking()
 			.Include(i => i.Usuario)
+			.Include(i => i.UsuarioAnulacion)
 			.Include(i => i.Detalles)
 				.ThenInclude(d => d.Item)
 			.SingleOrDefault(i => i.Id == id);
@@ -107,13 +110,50 @@ public class IngresoMercaderiaRepositorio
 		}
 	}
 
+	public void Anular(int id, int usuarioId, string motivo)
+	{
+		using var db = new PeluqueriaDbContext();
+		using var tx = db.Database.BeginTransaction();
+
+		try
+		{
+			IngresoMercaderia ingreso = db.IngresosMercaderia
+				.Include(i => i.Detalles)
+				.SingleOrDefault(i => i.Id == id)
+				?? throw new InvalidOperationException("El ingreso no existe.");
+
+			if (ingreso.Anulada)
+				throw new InvalidOperationException("El ingreso ya fue anulado.");
+
+			foreach (IngresoMercaderiaDetalle detalle in ingreso.Detalles)
+			{
+				Item item = db.Items.Find(detalle.IdItem)
+					?? throw new InvalidOperationException("El producto del ingreso no existe.");
+				item.Stock = (item.Stock ?? 0) - detalle.Cantidad;
+			}
+
+			ingreso.Anulada = true;
+			ingreso.FechaAnulacion = DateTime.Now;
+			ingreso.IdUsuarioAnulacion = usuarioId;
+			ingreso.MotivoAnulacion = motivo;
+
+			db.SaveChanges();
+			tx.Commit();
+		}
+		catch
+		{
+			tx.Rollback();
+			throw;
+		}
+	}
+
 	public List<IngresoResumenDto> IngresosResumen(DateTime desde, DateTime hasta)
 	{
 		using var db = new PeluqueriaDbContext();
 		(DateTime inicio, DateTime fin) = Comun.Rango(desde, hasta);
 
 		return db.IngresosMercaderia.AsNoTracking()
-			.Where(i => i.Fecha >= inicio && i.Fecha < fin)
+			.Where(i => i.Fecha >= inicio && i.Fecha < fin && !i.Anulada)
 			.GroupBy(i => i.Fecha.Date)
 			.Select(g => new IngresoResumenDto
 			{

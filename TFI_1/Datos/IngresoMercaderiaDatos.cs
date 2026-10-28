@@ -15,9 +15,11 @@ public class IngresoMercaderiaDatos
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
 			"SELECT i.id_ingreso, i.fecha, i.id_proveedor, i.proveedor, i.total, i.id_usuario, i.observacion, " +
-			"       u.nombre_usuario " +
+			"       i.anulada, i.fecha_anulacion, i.id_usuario_anulacion, i.motivo_anulacion, " +
+			"       u.nombre_usuario, ua.nombre_usuario AS usuario_anulacion " +
 			"FROM ingresos_mercaderia AS i " +
 			"INNER JOIN usuarios AS u ON u.id_usuario = i.id_usuario " +
+			"LEFT JOIN usuarios AS ua ON ua.id_usuario = i.id_usuario_anulacion " +
 			"WHERE (@desde IS NULL OR DATE(i.fecha) >= @desde) " +
 			"  AND (@hasta IS NULL OR DATE(i.fecha) <= @hasta) " +
 			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%')) " +
@@ -59,7 +61,8 @@ public class IngresoMercaderiaDatos
 			"SELECT COALESCE(SUM(i.total), 0) FROM ingresos_mercaderia AS i " +
 			"WHERE (@desde IS NULL OR DATE(i.fecha) >= @desde) " +
 			"  AND (@hasta IS NULL OR DATE(i.fecha) <= @hasta) " +
-			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%'));", conexion);
+			"  AND (@filtro = '' OR i.proveedor LIKE CONCAT('%', @filtro, '%')) " +
+			"  AND i.anulada = 0;", conexion);
 		cmd.Parameters.Add(Parametros.SoloFechaNula("@desde", desde?.Date));
 		cmd.Parameters.Add(Parametros.SoloFechaNula("@hasta", hasta?.Date));
 		cmd.Parameters.Add(Parametros.Texto("@filtro", filtro ?? string.Empty));
@@ -72,9 +75,11 @@ public class IngresoMercaderiaDatos
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
 		using MySqlCommand cmd = new MySqlCommand(
 			"SELECT i.id_ingreso, i.fecha, i.id_proveedor, i.proveedor, i.total, i.id_usuario, i.observacion, " +
-			"       u.nombre_usuario " +
+			"       i.anulada, i.fecha_anulacion, i.id_usuario_anulacion, i.motivo_anulacion, " +
+			"       u.nombre_usuario, ua.nombre_usuario AS usuario_anulacion " +
 			"FROM ingresos_mercaderia AS i " +
 			"INNER JOIN usuarios AS u ON u.id_usuario = i.id_usuario " +
+			"LEFT JOIN usuarios AS ua ON ua.id_usuario = i.id_usuario_anulacion " +
 			"WHERE i.id_ingreso = @id;", conexion);
 		cmd.Parameters.Add(Parametros.Entero("@id", id));
 		conexion.Open();
@@ -152,6 +157,60 @@ public class IngresoMercaderiaDatos
 		}
 	}
 
+	/// <summary>
+	/// Anula un ingreso sin borrarlo: descuenta del stock las cantidades
+	/// ingresadas y deja registrado el motivo, la fecha y el usuario.
+	/// </summary>
+	public void Anular(int idIngreso, int usuarioId, string motivo)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		conexion.Open();
+		using MySqlTransaction transaccion = conexion.BeginTransaction();
+		try
+		{
+			using (MySqlCommand cmd = new MySqlCommand(
+				"SELECT id_ingreso FROM ingresos_mercaderia " +
+				"WHERE id_ingreso = @id AND anulada = 0 FOR UPDATE;", conexion, transaccion))
+			{
+				cmd.Parameters.Add(Parametros.Entero("@id", idIngreso));
+				using MySqlDataReader rd = cmd.ExecuteReader();
+				if (!rd.Read())
+					throw new InvalidOperationException("El ingreso no existe o ya fue anulado.");
+			}
+
+			// Revertir el stock de todos los productos del ingreso.
+			using (MySqlCommand cmd = new MySqlCommand(
+				"UPDATE items AS i " +
+				"INNER JOIN ingresos_mercaderia_detalle AS d ON d.id_item = i.id_item " +
+				"SET i.stock = COALESCE(i.stock, 0) - d.cantidad " +
+				"WHERE d.id_ingreso = @id;", conexion, transaccion))
+			{
+				cmd.Parameters.Add(Parametros.Entero("@id", idIngreso));
+				cmd.ExecuteNonQuery();
+			}
+
+			using (MySqlCommand cmd = new MySqlCommand(
+				"UPDATE ingresos_mercaderia " +
+				"SET anulada = 1, fecha_anulacion = NOW(), " +
+				"    id_usuario_anulacion = @usuario, motivo_anulacion = @motivo " +
+				"WHERE id_ingreso = @id AND anulada = 0;", conexion, transaccion))
+			{
+				cmd.Parameters.Add(Parametros.Entero("@usuario", usuarioId));
+				cmd.Parameters.Add(Parametros.Texto("@motivo", motivo));
+				cmd.Parameters.Add(Parametros.Entero("@id", idIngreso));
+				if (cmd.ExecuteNonQuery() == 0)
+					throw new InvalidOperationException("El ingreso ya fue anulado.");
+			}
+
+			transaccion.Commit();
+		}
+		catch
+		{
+			transaccion.Rollback();
+			throw;
+		}
+	}
+
 	private List<IngresoMercaderiaDetalle> ObtenerDetalles(int idIngreso, MySqlConnection conexion)
 	{
 		List<IngresoMercaderiaDetalle> detalles = new();
@@ -191,7 +250,18 @@ public class IngresoMercaderiaDatos
 			Total = rd.GetDecimal("total"),
 			IdUsuario = rd.GetInt32("id_usuario"),
 			NombreUsuario = rd.IsDBNull(rd.GetOrdinal("nombre_usuario")) ? null : rd.GetString("nombre_usuario"),
-			Observacion = rd.IsDBNull(rd.GetOrdinal("observacion")) ? null : rd.GetString("observacion")
+			Observacion = rd.IsDBNull(rd.GetOrdinal("observacion")) ? null : rd.GetString("observacion"),
+			Anulada = rd.GetBoolean("anulada"),
+			FechaAnulacion = rd.IsDBNull(rd.GetOrdinal("fecha_anulacion")) ? null : rd.GetDateTime("fecha_anulacion"),
+			IdUsuarioAnulacion = rd.IsDBNull(rd.GetOrdinal("id_usuario_anulacion"))
+				? null
+				: rd.GetInt32("id_usuario_anulacion"),
+			NombreUsuarioAnulacion = rd.IsDBNull(rd.GetOrdinal("usuario_anulacion"))
+				? null
+				: rd.GetString("usuario_anulacion"),
+			MotivoAnulacion = rd.IsDBNull(rd.GetOrdinal("motivo_anulacion"))
+				? null
+				: rd.GetString("motivo_anulacion")
 		};
 	}
 
@@ -201,6 +271,7 @@ public class IngresoMercaderiaDatos
 		using MySqlCommand cmd = new MySqlCommand(
 			"SELECT DATE(fecha) AS Fecha, COUNT(*) AS Cantidad, COALESCE(SUM(total), 0) AS Total " +
 			"FROM ingresos_mercaderia WHERE DATE(fecha) BETWEEN @desde AND @hasta " +
+			"  AND anulada = 0 " +
 			"GROUP BY DATE(fecha) ORDER BY Fecha;", conexion);
 		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde));
 		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta));

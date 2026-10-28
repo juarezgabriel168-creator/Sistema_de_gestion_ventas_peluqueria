@@ -249,6 +249,7 @@ e.Property(x => x.Tipo)
 | `movimientos_cuenta_corriente -> ventas` | `SetNull` |
 | `gastos -> usuarios` | `Restrict` |
 | `ingresos_mercaderia -> proveedores/usuarios` | `Restrict` |
+| `ingresos_mercaderia -> usuarios (anulación)` | `Restrict` |
 | `ingresos_mercaderia_detalle -> ingresos_mercaderia` | `Cascade` |
 | `atenciones -> clientes/empleados/items` | `Restrict` |
 | `auditoria -> usuarios` | `Restrict` |
@@ -467,6 +468,19 @@ Dentro de una transacción:
 2. Inserta cada detalle.
 3. Actualiza el stock, el costo y, si corresponde, el precio del ítem.
 
+### 8.8 `IngresoMercaderiaRepositorio.Anular`
+
+Dentro de una transacción:
+
+1. Carga la cabecera con sus detalles.
+2. Verifica que exista y que no esté anulada.
+3. Descuenta del stock de cada producto la cantidad ingresada.
+4. Marca `Anulada`, `FechaAnulacion`, `IdUsuarioAnulacion` y `MotivoAnulacion`.
+5. Confirma o revierte.
+
+No se borra el ingreso: queda en el historial y deja de sumar en los totales
+vigentes.
+
 ---
 
 ## 9. Traducción de consultas
@@ -513,6 +527,9 @@ return db.Ventas.AsNoTracking()
 
 Los `SUM` sobre conjuntos vacíos se manejan con `(decimal?)` y `?? 0m` para
 devolver `0` en lugar de `NULL`.
+
+En ingresos de mercadería, `Sumar` e `IngresosResumen` agregan
+`&& !i.Anulada` para que las anulaciones no sumen en los totales vigentes.
 
 ### 9.4 `Resumen` sin ventas
 

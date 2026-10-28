@@ -305,10 +305,18 @@ CREATE TABLE ingresos_mercaderia (
     total       DECIMAL(12,2) NOT NULL DEFAULT 0,
     id_usuario  INT           NOT NULL,
     observacion VARCHAR(255)  NULL,
+    -- El ingreso anulado no se borra: se marca para conservar el historial.
+    anulada             TINYINT(1)   NOT NULL DEFAULT 0,
+    fecha_anulacion     DATETIME     NULL,
+    id_usuario_anulacion INT         NULL,
+    motivo_anulacion    VARCHAR(255) NULL,
     PRIMARY KEY (id_ingreso),
     KEY ix_ingresos_fecha (fecha),
     KEY ix_ingresos_proveedor (id_proveedor),
+    KEY ix_ingresos_anulada (anulada),
     CONSTRAINT fk_ingresos_usuario FOREIGN KEY (id_usuario) REFERENCES usuarios (id_usuario)
+        ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_ingresos_usuario_anulacion FOREIGN KEY (id_usuario_anulacion) REFERENCES usuarios (id_usuario)
         ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_ingresos_proveedor FOREIGN KEY (id_proveedor) REFERENCES proveedores (id_proveedor)
         ON UPDATE CASCADE ON DELETE RESTRICT

@@ -59,5 +59,29 @@ public class IngresoMercaderiaNegocio
 		return id;
 	}
 
+	/// <summary>
+	/// Anula un ingreso de mercadería. No se borra: se descuenta el stock y
+	/// queda registrado el motivo, la fecha y el usuario que lo anuló.
+	/// </summary>
+	public void Anular(int id, int usuarioId, string motivo)
+	{
+		if (id <= 0)
+			throw new ArgumentException("Debe seleccionar un ingreso.");
+		if (!Sesion.EsAdministrador)
+			throw new InvalidOperationException("Solo un administrador puede anular ingresos de mercadería.");
+		if (usuarioId <= 0)
+			throw new ArgumentException("No hay un usuario en sesión.");
+		if (string.IsNullOrWhiteSpace(motivo))
+			throw new ArgumentException("Indique el motivo de la anulación.");
+
+		motivo = motivo.Trim();
+		Validaciones.ExigirLongitudMaxima(motivo, 255,
+			"El motivo no puede superar los 255 caracteres.");
+
+		_datos.Anular(id, usuarioId, motivo);
+		_auditoria.Registrar("anulacion_ingreso_mercaderia", "ingresos_mercaderia", id,
+			$"Ingreso #{id} anulado. Motivo: {motivo}", usuarioId);
+	}
+
 	public DataTable IngresosResumen(DateTime desde, DateTime hasta) => _datos.IngresosResumen(desde, hasta);
 }

@@ -28,7 +28,7 @@ base de datos **MySQL**.
 | Gastos | Gastos | Registrar y consultar los gastos del negocio por rango de fechas, con el total del período y el usuario que los cargó. |
 | Productos | Proveedores | Alta, edición, activación/desactivación y búsqueda de proveedores (nombre, CUIT, teléfono, email y dirección). |
 | Productos | Ingreso de mercadería | Registrar la compra de productos a un proveedor de la lista, actualizando stock y costo. Solo admite productos (no servicios). |
-| Productos | Historial de mercadería | Consultar los ingresos por rango de fechas y proveedor, ver el detalle de cada uno (productos, cantidades y costos) y el total del período. |
+| Productos | Historial de mercadería | Consultar los ingresos por rango de fechas y proveedor, ver el detalle de cada uno (productos, cantidades y costos) y el total vigente del período. Permite **anular** un ingreso indicando el motivo: se descuenta el stock y el ingreso queda marcado como anulado (no se borra). |
 | Administración | Auditoría | Consultar quién hizo cada operación sensible (ventas, anulaciones, pagos de cuenta corriente, gastos, mercadería y usuarios), filtrando por rango de fechas, usuario y tipo de acción. |
 | Administración | Copia de seguridad | Generar un archivo `.sql` con toda la base (tablas y datos) en la carpeta elegida, con fecha y hora en el nombre. Solo para administradores; incluye cómo restaurarla. |
 | Reportes | Reporte diario / mensual | Ver ventas, gastos e ingresos por período. |
@@ -102,6 +102,11 @@ con todas sus tablas y datos de ejemplo.
 > ⚠️ El script **borra y vuelve a crear las tablas**. Si ya tenías datos
 > cargados, se pierden. Usalo solo para la primera instalación o para
 > reiniciar la base desde cero.
+
+> Si la base ya existía antes de incorporar la anulación de ingresos de
+> mercadería, ejecutá una sola vez como `root`
+> `BaseDatos/actualizacion_anulacion_ingresos.sql`. Agrega las columnas de
+> anulación sin borrar datos y se puede volver a ejecutar sin problema.
 
 ### 2. Crear el usuario de la base de datos
 
@@ -294,6 +299,10 @@ Cada formulario se compone de tres archivos:
   se pueden **anular** (con motivo): se devuelve el stock y, si se pagó a cuenta
   corriente, se revierte el cargo. La venta anulada queda en el historial y no
   suma en los totales ni reportes.
+- Los **ingresos de mercadería** tampoco se editan. Se pueden **anular** con un
+  motivo: se descuenta del stock la cantidad ingresada y el ingreso queda
+  marcado como anulado en el historial. Solo un administrador puede hacerlo y
+  el total del período excluye los ingresos anulados.
 - La **caja** es obligatoria para vender: si está cerrada, el sistema
   muestra un aviso y no registra la venta. Abrí la caja desde **Ventas → Caja**
   antes de comenzar a vender para poder controlar el efectivo del turno.
@@ -307,8 +316,8 @@ Cada formulario se compone de tres archivos:
   línea de comandos.
 - Los **listados largos** (historial de ventas, auditoría, mercadería y caja)
   muestran **50 filas por página** con botones **Anterior/Siguiente**. El total
-  y los importes siempre se calculan sobre todos los registros del período,
-  no solo sobre la página visible.
+  y los importes se calculan sobre todos los registros vigentes del período,
+  no solo sobre la página visible; las anulaciones se excluyen de los totales.
 - Las consultas usan **parámetros tipados** (`MySqlDbType`) en lugar de
   `AddWithValue`. Cada dato viaja con su tipo real (entero, decimal, fecha,
   texto, booleano o nulo), lo que evita conversiones implícitas y problemas

@@ -24,6 +24,7 @@ public class AuditoriaDatos
 		"  WHEN 'gasto_alta' THEN 'Alta de gasto' " +
 		"  WHEN 'gasto_edicion' THEN 'Edición de gasto' " +
 		"  WHEN 'ingreso_mercaderia' THEN 'Ingreso de mercadería' " +
+		"  WHEN 'anulacion_ingreso_mercaderia' THEN 'Anulación de ingreso de mercadería' " +
 		"  WHEN 'usuario_alta' THEN 'Alta de usuario' " +
 		"  WHEN 'usuario_edicion' THEN 'Edición de usuario' " +
 		"  WHEN 'usuario_desactivacion' THEN 'Desactivación de usuario' " +
