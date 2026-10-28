@@ -241,6 +241,7 @@ partial class FormAuditoria : Form
 		Name = "FormAuditoria";
 		StartPosition = FormStartPosition.CenterParent;
 		Text = "Auditoría";
+		Load += FormAuditoria_Load;
 		((ISupportInitialize)dgvAuditoria).EndInit();
 		ResumeLayout(false);
 		PerformLayout();
