@@ -15,6 +15,7 @@ public partial class FormAtenciones : Form
 	public FormAtenciones()
 	{
 		InitializeComponent();
+		btnEliminar.Visible = Sesion.EsAdministrador;
 	}
 
 	private void FormAtenciones_Load(object sender, EventArgs e)
@@ -118,6 +119,41 @@ public partial class FormAtenciones : Form
 		catch (Exception ex)
 		{
 			Mensajes.Error(this, "No se pudo cancelar la atención", ex);
+		}
+	}
+
+	private void btnEliminar_Click(object sender, EventArgs e)
+	{
+		Atencion? atencion = Seleccionada();
+		if (atencion == null)
+		{
+			MessageBox.Show("Seleccione una atención de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
+		}
+
+		DialogResult respuesta = MessageBox.Show(
+			"¿Eliminar definitivamente la atención de " + atencion.ClienteNombre +
+			" (" + atencion.ServicioNombre + ", " + atencion.Fecha + " " + atencion.Hora + ")?" +
+			Environment.NewLine + Environment.NewLine +
+			"Esta acción no se puede deshacer. Si solo desea anular el turno, use 'Cancelar turno'.",
+			"Eliminar atención", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+		if (respuesta != DialogResult.Yes)
+		{
+			return;
+		}
+
+		try
+		{
+			_negocio.Eliminar(atencion.Id);
+			Cargar();
+		}
+		catch (InvalidOperationException ex)
+		{
+			MessageBox.Show(ex.Message, "No se puede eliminar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+		catch (Exception ex)
+		{
+			Mensajes.Error(this, "No se pudo eliminar la atención", ex);
 		}
 	}
 }

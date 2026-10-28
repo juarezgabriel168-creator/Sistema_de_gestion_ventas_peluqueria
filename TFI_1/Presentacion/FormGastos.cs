@@ -156,6 +156,8 @@ public partial class FormGastos : Form
 
 	private void btnRefrescar_Click(object sender, EventArgs e) => Cargar();
 
+	private void btnCerrar_Click(object sender, EventArgs e) => Close();
+
 	private void btnBuscar_Click(object sender, EventArgs e) => Cargar();
 
 	private void dtpDesde_ValueChanged(object sender, EventArgs e)

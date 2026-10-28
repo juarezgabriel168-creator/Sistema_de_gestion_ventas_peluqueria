@@ -22,6 +22,8 @@ partial class FormClientes : Form
 
 	private Button btnDesactivar;
 
+	private Button btnEliminar;
+
 	private Button btnRefrescar;
 
 	private DataGridView dgvClientes;
@@ -47,6 +49,7 @@ partial class FormClientes : Form
         btnNuevo = new Button();
         btnEditar = new Button();
         btnDesactivar = new Button();
+        btnEliminar = new Button();
         btnRefrescar = new Button();
         chkSoloActivos = new CheckBox();
         dgvClientes = new DataGridView();
@@ -68,12 +71,12 @@ partial class FormClientes : Form
         txtBuscar.Location = new Point(12, 45);
         txtBuscar.Name = "txtBuscar";
         txtBuscar.PlaceholderText = "Buscar por DNI, nombre o apellido...";
-        txtBuscar.Size = new Size(260, 23);
+        txtBuscar.Size = new Size(200, 23);
         txtBuscar.TabIndex = 1;
         // 
         // btnBuscar
         // 
-        btnBuscar.Location = new Point(280, 44);
+        btnBuscar.Location = new Point(218, 44);
         btnBuscar.Name = "btnBuscar";
         btnBuscar.Size = new Size(80, 25);
         btnBuscar.TabIndex = 2;
@@ -83,9 +86,9 @@ partial class FormClientes : Form
         // 
         // btnNuevo
         // 
-        btnNuevo.Location = new Point(370, 44);
+        btnNuevo.Location = new Point(304, 44);
         btnNuevo.Name = "btnNuevo";
-        btnNuevo.Size = new Size(90, 25);
+        btnNuevo.Size = new Size(80, 25);
         btnNuevo.TabIndex = 3;
         btnNuevo.Text = "Nuevo";
         btnNuevo.UseVisualStyleBackColor = true;
@@ -93,9 +96,9 @@ partial class FormClientes : Form
         // 
         // btnEditar
         // 
-        btnEditar.Location = new Point(466, 44);
+        btnEditar.Location = new Point(390, 44);
         btnEditar.Name = "btnEditar";
-        btnEditar.Size = new Size(90, 25);
+        btnEditar.Size = new Size(80, 25);
         btnEditar.TabIndex = 4;
         btnEditar.Text = "Editar";
         btnEditar.UseVisualStyleBackColor = true;
@@ -103,13 +106,24 @@ partial class FormClientes : Form
         // 
         // btnDesactivar
         // 
-        btnDesactivar.Location = new Point(562, 44);
+        btnDesactivar.Location = new Point(476, 44);
         btnDesactivar.Name = "btnDesactivar";
-        btnDesactivar.Size = new Size(110, 25);
+        btnDesactivar.Size = new Size(100, 25);
         btnDesactivar.TabIndex = 5;
         btnDesactivar.Text = "Desactivar";
         btnDesactivar.UseVisualStyleBackColor = true;
         btnDesactivar.Click += btnDesactivar_Click;
+        // 
+        // btnEliminar
+        // 
+        btnEliminar.ForeColor = Color.Firebrick;
+        btnEliminar.Location = new Point(582, 44);
+        btnEliminar.Name = "btnEliminar";
+        btnEliminar.Size = new Size(90, 25);
+        btnEliminar.TabIndex = 6;
+        btnEliminar.Text = "Eliminar";
+        btnEliminar.UseVisualStyleBackColor = true;
+        btnEliminar.Click += btnEliminar_Click;
         // 
         // btnRefrescar
         // 
@@ -117,7 +131,7 @@ partial class FormClientes : Form
         btnRefrescar.Location = new Point(678, 44);
         btnRefrescar.Name = "btnRefrescar";
         btnRefrescar.Size = new Size(100, 25);
-        btnRefrescar.TabIndex = 6;
+        btnRefrescar.TabIndex = 7;
         btnRefrescar.Text = "Refrescar";
         btnRefrescar.UseVisualStyleBackColor = true;
         btnRefrescar.Click += btnRefrescar_Click;
@@ -131,7 +145,7 @@ partial class FormClientes : Form
         chkSoloActivos.Location = new Point(687, 16);
         chkSoloActivos.Name = "chkSoloActivos";
         chkSoloActivos.Size = new Size(91, 19);
-        chkSoloActivos.TabIndex = 8;
+        chkSoloActivos.TabIndex = 9;
         chkSoloActivos.Text = "Solo Activos";
         chkSoloActivos.UseVisualStyleBackColor = true;
         chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
@@ -168,7 +182,7 @@ partial class FormClientes : Form
         dgvClientes.RowHeadersVisible = false;
         dgvClientes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvClientes.Size = new Size(766, 360);
-        dgvClientes.TabIndex = 7;
+        dgvClientes.TabIndex = 8;
         dgvClientes.SelectionChanged += dgvClientes_SelectionChanged;
         // 
         // FormClientes
@@ -180,6 +194,7 @@ partial class FormClientes : Form
         Controls.Add(dgvClientes);
         Controls.Add(chkSoloActivos);
         Controls.Add(btnRefrescar);
+        Controls.Add(btnEliminar);
         Controls.Add(btnDesactivar);
         Controls.Add(btnEditar);
         Controls.Add(btnNuevo);

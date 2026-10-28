@@ -9,6 +9,8 @@ public class AtencionNegocio
 {
 	private readonly AtencionDatos _datos = new AtencionDatos();
 
+	private readonly AuditoriaNegocio _auditoria = new();
+
 	public List<Atencion> Listar(string? filtro = null, string? estado = null)
 	{
 		return _datos.Listar(filtro, estado);
@@ -94,5 +96,24 @@ public class AtencionNegocio
 	public int CantidadHoy()
 	{
 		return _datos.CantidadHoy();
+	}
+
+	/// <summary>
+	/// Elimina físicamente una atención o turno. Se usa para corregir
+	/// registros cargados por error; no tiene tablas dependientes.
+	/// </summary>
+	public void Eliminar(int id)
+	{
+		if (id <= 0)
+		{
+			throw new ArgumentException("Debe seleccionar una atención.");
+		}
+		if (!Sesion.EsAdministrador)
+		{
+			throw new InvalidOperationException("Solo un administrador puede eliminar atenciones.");
+		}
+
+		_datos.Eliminar(id);
+		_auditoria.Registrar("atencion_eliminacion", "atenciones", id, $"Atención con id {id} eliminada.");
 	}
 }

@@ -141,6 +141,17 @@ public class CajaNegocio
 
 	public DataTable ListarMovimientos(int idCaja) => _datos.ListarMovimientos(idCaja);
 
+	// Anulaciones del turno para mostrarlas en la caja. No afectan el cálculo:
+	// las ventas en efectivo anuladas ya quedan fuera de VentasEfectivo.
+	public DataTable ListarAnulaciones(Caja caja)
+	{
+		if (caja == null)
+		{
+			throw new ArgumentNullException(nameof(caja));
+		}
+		return _datos.ListarAnulaciones(caja.FechaApertura, caja.FechaCierre);
+	}
+
 	public DataTable Listar(DateTime desde, DateTime hasta, int? limite = null, int? desplazamiento = null) =>
 		_datos.Listar(desde, hasta, limite, desplazamiento);
 

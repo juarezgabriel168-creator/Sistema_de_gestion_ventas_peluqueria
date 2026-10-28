@@ -36,6 +36,15 @@ public class BancoNegocio
 		_datos.Reactivar(id);
 	}
 
+	public void Eliminar(int id)
+	{
+		if (id <= 0) throw new ArgumentException("Banco inválido.");
+		if (_datos.TieneTarjetas(id))
+			throw new InvalidOperationException(
+				"No se puede eliminar el banco porque tiene tarjetas asociadas. Desactívelo en su lugar.");
+		_datos.Eliminar(id);
+	}
+
 	private void Validar(Banco banco)
 	{
 		if (banco == null || string.IsNullOrWhiteSpace(banco.Nombre))

@@ -76,6 +76,16 @@ public class AtencionDatos
 		cmd.ExecuteNonQuery();
 	}
 
+	public void Eliminar(int id)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"DELETE FROM atenciones WHERE id_atencion = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
+	}
+
 	public bool ExisteConflictoHorario(int idEmpleado, DateTime fechaHora, int duracionMin, int? exceptoId = null)
 	{
 		using MySqlConnection conexion = ConexionBD.ObtenerConexion();

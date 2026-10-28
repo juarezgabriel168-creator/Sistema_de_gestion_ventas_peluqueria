@@ -91,8 +91,8 @@ El proyecto implementa una peluquería que:
 | Productos | `FormHistorialMercaderia` | Historial paginado y detalle de ingresos. |
 | Administración | `FormAuditoria` | Consulta paginada de acciones sensibles. |
 | Administración | `FormBackup` | Generación de copia `.sql` con `mysqldump`. |
-| Reportes | `FormReporteDiario` | Resumen del día, medios de pago, más vendidos, gastos y empleados. |
-| Reportes | `FormReporteMensual` | Evolución por día, medios de pago, gastos y empleados. |
+| Reportes | `FormReporteDiario` | Resumen del día, medios de pago, más vendidos, gastos, empleados y anulaciones. |
+| Reportes | `FormReporteMensual` | Evolución por día, medios de pago, gastos, empleados y anulaciones. |
 | Reportes | `FormReporteAvanzado` | Clientes con más compras, ventas por usuario y servicios más solicitados. |
 
 ### 2.2 Roles
@@ -641,6 +641,10 @@ La tabla `auditoria` tiene índices por fecha, usuario y acción.
 - `Listar(soloActivos)`.
 - `ExisteNombre` para evitar duplicados.
 - `Insertar`, `Actualizar`, `Desactivar`, `Reactivar`.
+- `Desactivar`/`Reactivar` cambian el estado del banco y el de todas sus tarjetas.
+- `Actualizar` hace lo mismo solo cuando el estado activo/inactivo realmente cambia (editar solo el nombre no toca las tarjetas).
+- `TieneTarjetas` verifica si el banco tiene tarjetas antes de intentar borrarlo.
+- `Eliminar` borra físicamente el banco; solo se permite si no tiene tarjetas.
 
 ### 7.5 `CajaDatos.cs`
 
@@ -652,6 +656,7 @@ La tabla `auditoria` tiene índices por fecha, usuario y acción.
 | `Cerrar` | Actualiza cierre, esperado, contado, diferencia y estado; solo si estaba abierta. |
 | `RegistrarMovimiento` | Inserta ingreso/egreso de efectivo. |
 | `ListarMovimientos` | Historial del turno. |
+| `ListarAnulaciones` | Ventas anuladas en el rango por `fecha_anulacion`, con cliente, pago, total, usuario y motivo. |
 | `ResumenVentas` | Agrupa ventas por medio de pago. |
 | `VentasEfectivo` | Suma ventas no anuladas en efectivo del rango. |
 | `TotalMovimientos` | Suma ingresos o egresos. |
@@ -674,6 +679,9 @@ La tabla `auditoria` tiene índices por fecha, usuario y acción.
 | `ExisteDni` | Evita duplicados, excluyendo el propio ID al editar. |
 | `ObtenerPorDni` | Usado para recuperar el Consumidor Final. |
 | `Insertar`, `Actualizar`, `Desactivar`, `Reactivar`. |
+| `EsConsumidorFinal(id)` | Detecta el cliente `00000000`, que no se puede borrar. |
+| `TieneDependencias(id)` | Verifica ventas, cuenta corriente y turnos antes de borrar. |
+| `Eliminar(id)` | Borrado físico solo si no tiene dependencias. |
 | `AgregarParametros`, `Leer` | Centralizan parámetros y mapeo. |
 
 ### 7.8 `CuentaCorrienteDatos.cs`
@@ -737,6 +745,8 @@ La tabla `auditoria` tiene índices por fecha, usuario y acción.
 | `ObtenerPorId` | Relee el ítem real antes de vender. |
 | `ExisteNombre` | Evita duplicados. |
 | `Insertar`, `Actualizar`, `Desactivar`, `Reactivar`. |
+| `TieneDependencias(id)` | Verifica ventas, ingresos de mercadería y turnos antes de borrar. |
+| `Eliminar(id)` | Borrado físico solo si no tiene dependencias. |
 | `AgregarParametros`, `Leer` | Mapeo y parámetros. |
 | `LeerIntNulo`, `LeerDecimalNulo` | Manejo de NULL. |
 | `ATexto`, `ATipo` | Traducción del ENUM. |
@@ -769,8 +779,9 @@ AND (@soloStockBajo = 0
 | `VentasPorUsuario` | Agrupado por usuario y rol. |
 | `ServiciosMasSolicitados` | Top 20 de ítems tipo servicio. |
 | `VentasPorEmpleado` | Agrupado por empleado. |
+| `Anulaciones` | Ventas anuladas del período por `fecha_anulacion`, con venta, cliente, pago, total, usuario y motivo. |
 
-Todas filtran ventas no anuladas, salvo la observación indicada en la sección 15.
+Todas filtran ventas no anuladas. `Anulaciones` es la excepción: lista las ventas anuladas por fecha de anulación.
 
 ### 7.16 `TarjetaCreditoDatos.cs`
 
@@ -791,6 +802,9 @@ Todas filtran ventas no anuladas, salvo la observación indicada en la sección 
 | `ObtenerRoles` | ComboBox de roles. |
 | `ExisteNombre` | Evita duplicados. |
 | `Insertar`, `Actualizar`, `Desactivar`, `Reactivar`. |
+| `TieneDependencias(id)` | Verifica ventas, cajas, gastos, ingresos, movimientos y auditoría. |
+| `EsUltimoAdministrador(id)` | Evita dejar el sistema sin administradores activos. |
+| `Eliminar(id)` | Borrado físico solo si no tiene dependencias. |
 
 ### 7.18 `VentaDatos.cs`
 
@@ -848,7 +862,7 @@ Transacción:
 4. Marca `anulada = 1`, fecha, usuario y motivo.
 5. `Commit`.
 
-**No se borra la venta:** queda en el historial para auditoría.
+**No se borra la venta:** queda en el historial para auditoría. La anulación se muestra en la pestaña `Anulaciones` del reporte diario/mensual y en la caja del turno; no se suma dos veces al efectivo esperado.
 
 ---
 
@@ -866,6 +880,7 @@ Transacción:
   - inserta o actualiza.
 - `Cancelar(atencion)`: llama al modelo y persiste el estado.
 - `CambiarEstado(atencion)`.
+- `Eliminar(id)`: solo administrador; borra la atención y audita.
 - `CantidadHoy()`.
 
 ### 8.2 `AuditoriaNegocio.cs`
@@ -895,7 +910,8 @@ Transacción:
 
 - `Listar`.
 - `Insertar`, `Actualizar`: validan nombre obligatorio y longitud.
-- `Desactivar`, `Reactivar`.
+- `Desactivar`, `Reactivar`: bajan/suben el banco y todas sus tarjetas.
+- `Eliminar`: borrado físico solo si el banco no tiene tarjetas; en caso contrario lanza error.
 - `Validar(banco)`.
 
 ### 8.5 `CajaNegocio.cs`
@@ -909,6 +925,7 @@ Transacción:
 | `VentasEfectivo` | Ventas no anuladas en efectivo del rango. |
 | `TotalMovimientos` | Suma por tipo. |
 | `ResumenVentas` | Agrupado por medio de pago. |
+| `ListarAnulaciones` | Anulaciones del turno para mostrarlas en la caja; no se suman al efectivo. |
 | `Listar` / `Contar` | Historial paginado. |
 
 ### 8.6 `CategoriaNegocio.cs`
@@ -926,6 +943,7 @@ Transacción:
   - DNI único;
   - inserta o actualiza.
 - `Desactivar`, `Reactivar`.
+- `Eliminar(id)`: solo administrador; bloquea el Consumidor Final y clientes con ventas, cuenta corriente o turnos; audita.
 - `ObtenerOCrearConsumidorFinal()`: crea el cliente `00000000` si no existe.
 
 ### 8.8 `Configuracion.cs`
@@ -996,6 +1014,7 @@ Delega los ocho indicadores a `DashboardDatos`. No tiene lógica extra: es una f
   - nombre único;
   - inserta o actualiza.
 - `Desactivar`, `Reactivar`.
+- `Eliminar(id)`: solo administrador; bloquea ítems con ventas, ingresos de mercadería o turnos; audita.
 
 **Esta validación es la que sostiene la adaptación al negocio:** un servicio no maneja stock; un producto sí.
 
@@ -1014,7 +1033,7 @@ Delega los ocho indicadores a `DashboardDatos`. No tiene lógica extra: es una f
 
 ### 8.16 `ReporteNegocio.cs`
 
-- `Resumen`, `VentasPorMedioPago`, `ProductosMasVendidos`, `VentasPorDia`, `ClientesConMasCompras`, `VentasPorUsuario`, `ServiciosMasSolicitados`, `VentasPorEmpleado`.
+- `Resumen`, `VentasPorMedioPago`, `ProductosMasVendidos`, `VentasPorDia`, `ClientesConMasCompras`, `VentasPorUsuario`, `ServiciosMasSolicitados`, `VentasPorEmpleado`, `Anulaciones`.
 - `ValidarRango`: `desde <= hasta`.
 - Todas las consultas se delegan a `ReporteDatos`.
 
@@ -1064,6 +1083,7 @@ Ya explicado. Es la fuente de identidad y permisos.
   - audita alta/edición.
 - `Desactivar`: no permite desactivar el propio usuario; audita.
 - `Reactivar`.
+- `Eliminar`: solo administrador; no permite el propio usuario, el último administrador activo ni usuarios con historial asociado; audita.
 - `VerificarContrasena`: maneja hash inválido como error de acceso, no como crash.
 
 ### 8.20 `VentaNegocio.cs`
@@ -1127,6 +1147,7 @@ Los controles se declaran en el diseñador con `new()`. Los `.cs` pueden ajustar
 - `btnNuevo`: abre el formulario de alta.
 - `btnEditar`: abre el formulario de edición.
 - `btnDesactivar`: baja lógica.
+- `btnEliminar`: visible solo para administradores; borrado físico con validación de dependencias.
 - `Mensajes.Error`: error contextual.
 
 ### 9.3 Catálogo de formularios
@@ -1253,14 +1274,15 @@ Variables:
 
 Métodos:
 
-- `Cargar`: estado, resumen, grilla.
+- `Cargar`: estado, resumen, grilla de ventas, movimientos y anulaciones.
 - `Habilitar(abierta)`: habilita/deshabilita operaciones.
 - `btnAbrir`: pide monto inicial.
 - `btnIngreso` / `btnEgreso`: piden monto y concepto.
 - `RegistrarMovimiento(tipo)`.
 - `btnCerrarCaja`: abre `FormCerrarCaja`.
 - `btnHistorial`: abre `FormHistorialCaja`.
-- `FormatearResumen`, `FormatearMovimientos`.
+- `FormatearResumen`, `FormatearMovimientos`, `FormatearAnulaciones`.
+- Pestañas `Movimientos` y `Anulaciones`; las anulaciones se muestran con su total, pero no se suman dos veces al efectivo esperado.
 
 #### `FormCerrarCaja`
 
@@ -1290,7 +1312,7 @@ Métodos:
 - `CargarFiltros`: tipos y categorías.
 - `Cargar`: filtros + stock bajo.
 - `Filtro_Changed`.
-- `btnNuevo`, `btnEditar`, `btnDesactivar`.
+- `btnNuevo`, `btnEditar`, `btnDesactivar`, `btnEliminar` (solo administrador).
 - `ActualizarBotonEstado`.
 
 #### `FormItemEditar`
@@ -1308,6 +1330,7 @@ Métodos:
 #### `FormClientes` / `FormClienteEditar`
 
 - Listado con búsqueda por DNI/nombre/apellido y filtro de activos.
+- `btnEliminar` visible solo para el administrador; borrado físico con validación de dependencias.
 - Edición: nombre, apellido, DNI, teléfono, activo.
 - DNI único y de 8 dígitos.
 
@@ -1332,7 +1355,7 @@ Métodos:
 - `EstadosFiltro`: `null`, `pendiente`, `en_atencion`, `finalizada`, `cancelada`.
 - `_cargandoEstado`.
 - `Cargar`.
-- `btnNuevo`, `btnEditar`, `btnCancelarAtencion`.
+- `btnNuevo`, `btnEditar`, `btnCancelarAtencion`, `btnEliminar` (solo administrador).
 - Columnas explícitas: Fecha, Hora, Cliente, Peluquero, Servicio, Tipo, Estado.
 
 #### `FormAtencionEditar`
@@ -1346,7 +1369,7 @@ Métodos:
 
 #### `FormUsuarios` / `FormUsuarioEditar`
 
-- `FormUsuarios`: listado, búsqueda, activos, estado.
+- `FormUsuarios`: listado, búsqueda, activos, estado y `btnEliminar` (solo administrador).
 - `FormUsuarioEditar`:
   - `_usuario`, `_esNuevo`, `_ayuda` (ToolTip);
   - `txtContrasena`, `txtConfirmar` con longitud máxima;
@@ -1363,7 +1386,8 @@ Métodos:
 - `_bancos`, `_tarjetas`.
 - `_cargando`.
 - `CargarBancos`, `BancoCambiado`, `CargarTarjetas`, `TarjetaCambiada`.
-- Alta/edición/baja de bancos y tarjetas.
+- Alta/edición/baja lógica de bancos y tarjetas.
+- `btnBancoEliminar`: borra físicamente un banco sin tarjetas asociadas.
 - Muestra recargo y cuotas máximas.
 - `Aviso` y `Error` para mensajes.
 
@@ -1449,14 +1473,15 @@ Variables:
 Métodos:
 
 - `AjustarLayout`.
-- `Cargar`: resumen, medios de pago, más vendidos, gastos por categoría, ventas por empleado.
+- `Cargar`: resumen, medios de pago, más vendidos, gastos por categoría, ventas por empleado y anulaciones.
 - `btnImprimir`.
-- `printDocument1_PrintPage`.
+- `printDocument1_PrintPage`: incluye el detalle y el resumen de anulaciones.
 
 #### `FormReporteMensual`
 
 - Misma estructura que el diario, con `VentasPorDia` y rango mensual.
-- Imprime el resumen.
+- Pestaña `Anulaciones` con el detalle y el total anulado del mes.
+- Imprime el resumen, incluidas las anulaciones.
 
 #### `FormReporteAvanzado`
 
@@ -1891,6 +1916,7 @@ Archivo de referencia: `TFI_1/Archivos.md/segundo-parcial-programacion-2.md`.
 | Crear | `FormUsuarioEditar` + `UsuarioNegocio.Guardar`. |
 | Modificar | Mismo formulario con `_esNuevo = false`. |
 | Desactivar | `UsuarioNegocio.Desactivar`; no permite autodesactivarse. |
+| Eliminar | `UsuarioNegocio.Eliminar`; solo administrador, sin historial y sin dejar el sistema sin administradores. |
 | Consultar | `FormUsuarios` con búsqueda y filtro de activos. |
 | Establecer contraseña | Campo + BCrypt + política. |
 | Asignar rol | ComboBox de roles. |
@@ -1919,6 +1945,7 @@ Archivo de referencia: `TFI_1/Archivos.md/segundo-parcial-programacion-2.md`.
 | Registrar | `FormItemEditar` + `ItemNegocio.Guardar`. |
 | Modificar | Mismo formulario en modo edición. |
 | Desactivar | `ItemNegocio.Desactivar`. |
+| Eliminar | `ItemNegocio.Eliminar`; solo administrador y sin ventas, ingresos ni turnos asociados. |
 | Consultar | `FormItems`. |
 | Buscar | Filtro por nombre. |
 | Filtrar | Tipo, categoría y stock bajo. |
@@ -1944,6 +1971,7 @@ Archivo de referencia: `TFI_1/Archivos.md/segundo-parcial-programacion-2.md`.
 | Consultar | `FormClientes`. |
 | Buscar | DNI, nombre o apellido. |
 | Desactivar | `ClienteNegocio.Desactivar`. |
+| Eliminar | `ClienteNegocio.Eliminar`; solo administrador, sin ventas/cuenta corriente/turnos y nunca el Consumidor Final. |
 | Identificación suficiente | Nombre, apellido, DNI único y teléfono. |
 
 ### 12.10 Punto 4.7 — Registro de ventas
@@ -2103,24 +2131,24 @@ La organización prioriza las tareas cotidianas: Gastos quedó como acceso de pr
 
 ### 12.19 Punto 9 — Operaciones CRUD
 
-| Entidad | Create | Read | Update | Delete lógico |
+| Entidad | Create | Read | Update | Delete |
 |---|---|---|---|---|
-| Usuarios | `UsuarioDatos.Insertar` | `Listar` / `ObtenerPorNombre` | `Actualizar` | `Desactivar` |
-| Clientes | `ClienteDatos.Insertar` | `Listar` / `ObtenerPorDni` | `Actualizar` | `Desactivar` |
-| Ítems | `ItemDatos.Insertar` | `Listar` / `ObtenerPorId` | `Actualizar` | `Desactivar` |
+| Usuarios | `UsuarioDatos.Insertar` | `Listar` / `ObtenerPorNombre` | `Actualizar` | `Desactivar` o `Eliminar` (solo sin historial) |
+| Clientes | `ClienteDatos.Insertar` | `Listar` / `ObtenerPorDni` | `Actualizar` | `Desactivar` o `Eliminar` (solo sin historial) |
+| Ítems | `ItemDatos.Insertar` | `Listar` / `ObtenerPorId` | `Actualizar` | `Desactivar` o `Eliminar` (solo sin historial) |
 | Categorías | `CategoriaDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` |
 | Empleados | `EmpleadoDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` |
 | Proveedores | `ProveedorDatos.Insertar` | `Listar` / `ObtenerPorId` | `Actualizar` | `Desactivar` |
-| Bancos | `BancoDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` |
+| Bancos | `BancoDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` (o `Eliminar` si no tiene tarjetas) |
 | Tarjetas | `TarjetaCreditoDatos.Insertar` | `Listar` | `Actualizar` | `Desactivar` |
 | Ventas | `VentaDatos.Registrar` | `Listar` / `ObtenerCabecera` | No se edita; se anula | `anulada = 1` |
 | Gastos | `GastoDatos.Insertar` | `Listar` | `Actualizar` | No se borra; historial |
 | Ingresos | `IngresoMercaderiaDatos.Insertar` | `Listar` / `ObtenerPorId` | No se edita | Historial |
-| Atenciones | `AtencionDatos.Insertar` | `Listar` | `Actualizar` | `Cancelar` |
+| Atenciones | `AtencionDatos.Insertar` | `Listar` | `Actualizar` | `Cancelar` o `Eliminar` (solo administrador) |
 | Cajas | `CajaDatos.Abrir` | `ObtenerAbierta` / `Listar` | `Cerrar` | No se borra |
 | Movimientos CC | `InsertarMovimiento` | `ListarMovimientos` | No se edita | Historial |
 
-**Criterio:** la información histórica no se elimina físicamente. Se usa `activo = 0`, `anulada = 1` o estados.
+**Criterio:** la información histórica no se elimina físicamente. Se usa `activo = 0`, `anulada = 1` o estados. Excepciones controladas, siempre para el administrador y solo si el registro no tiene dependencias: bancos sin tarjetas, ítems sin ventas/ingresos/turnos, clientes sin ventas/cuenta corriente/turnos (nunca el Consumidor Final), atenciones y usuarios sin historial (ni el propio usuario ni el último administrador activo).
 
 ### 12.20 Punto 10 — Búsquedas y filtros
 
@@ -2244,7 +2272,7 @@ Menú visible por rol y `ExigirAdministrador` en cada acción administrativa.
 `VentaDatos.Registrar` usa transacción y `Rollback`; no quedan cabeceras huérfanas.
 
 **¿Cómo se calcula el efectivo esperado?**  
-`inicial + ventas en efectivo + ingresos - egresos`; las anuladas no cuentan.
+`inicial + ventas en efectivo + ingresos - egresos`; las anuladas no cuentan. La caja muestra las anulaciones del turno en una pestaña separada para que queden registradas, pero no las suma dos veces.
 
 **¿Se puede vender sin caja?**  
 No. La venta exige una caja abierta; si no la hay, se muestra un aviso y no se registra.
@@ -2268,12 +2296,10 @@ No. Avisa si supera `LimiteDeCuentaCorriente`; el usuario decide.
 
 Estas observaciones no impiden la entrega, pero conviene revisarlas antes de la defensa:
 
-1. **`ReporteDatos.Resumen`** tiene `AND v.anulada = 0` duplicado. Es inocuo, pero se puede limpiar.
-2. **`ReporteDatos.VentasPorEmpleado`** no filtra `v.anulada = 0`, a diferencia de los demás reportes. Si se usa para totales, puede incluir ventas anuladas. Conviene agregar el filtro.
-3. **La caja no está asociada por FK a la venta**: el efectivo se calcula por rango de fechas. Es una decisión simple y funciona, pero si se abren/cierran cajas varias veces el mismo día, el rango debe interpretarse correctamente.
-4. **La caja es obligatoria para vender**: si está cerrada, `FormNuevaVenta` muestra un `MessageBox` de advertencia y `VentaNegocio.Registrar` rechaza la operación. El efectivo se calcula por rango de fechas, no por una FK entre venta y caja.
-5. **Las pruebas no cubren MySQL real**: son de dominio y validaciones. Para la defensa, hacer una prueba manual completa.
-6. **Los diseñadores tienen cambios locales de Visual Studio** que no deben commitearse junto con la documentación. Mantener fuera del commit los `.Designer.cs`/`.resx` modificados y `TFI_1/Archivos.md/` salvo pedido explícito.
+1. **La caja no está asociada por FK a la venta**: el efectivo se calcula por rango de fechas. Es una decisión simple y funciona, pero si se abren/cierran cajas varias veces el mismo día, el rango debe interpretarse correctamente.
+2. **La caja es obligatoria para vender**: si está cerrada, `FormNuevaVenta` muestra un `MessageBox` de advertencia y `VentaNegocio.Registrar` rechaza la operación. El efectivo se calcula por rango de fechas, no por una FK entre venta y caja.
+3. **Las pruebas no cubren MySQL real**: son de dominio y validaciones. Para la defensa, hacer una prueba manual completa.
+4. **Los diseñadores tienen cambios locales de Visual Studio** que no deben commitearse junto con la documentación. Mantener fuera del commit los `.Designer.cs`/`.resx` modificados y `TFI_1/Archivos.md/` salvo pedido explícito.
 
 ---
 

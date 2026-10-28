@@ -81,6 +81,7 @@ partial class FormDetalleVenta : Form
         dgvDetalle.AllowUserToResizeRows = false;
         dgvDetalle.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
         dgvDetalle.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        dgvDetalle.BackgroundColor = SystemColors.ButtonHighlight;
         dgvDetalle.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
         dgvDetalle.Location = new Point(12, 191);
         dgvDetalle.MultiSelect = false;
@@ -100,19 +101,6 @@ partial class FormDetalleVenta : Form
         lblTotales.Name = "lblTotales";
         lblTotales.Size = new Size(0, 20);
         lblTotales.TabIndex = 3;
-        // 
-        // lblAnulada
-        // 
-        lblAnulada.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        lblAnulada.AutoSize = true;
-        lblAnulada.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-        lblAnulada.ForeColor = Color.Red;
-        lblAnulada.Location = new Point(640, 10);
-        lblAnulada.Name = "lblAnulada";
-        lblAnulada.Size = new Size(102, 25);
-        lblAnulada.TabIndex = 7;
-        lblAnulada.Text = "ANULADA";
-        lblAnulada.Visible = false;
         // 
         // btnImprimir
         // 
@@ -158,6 +146,19 @@ partial class FormDetalleVenta : Form
         btnCerrar.TabIndex = 8;
         btnCerrar.Text = "Cerrar";
         btnCerrar.UseVisualStyleBackColor = true;
+        // 
+        // lblAnulada
+        // 
+        lblAnulada.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        lblAnulada.AutoSize = true;
+        lblAnulada.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+        lblAnulada.ForeColor = Color.Red;
+        lblAnulada.Location = new Point(640, 10);
+        lblAnulada.Name = "lblAnulada";
+        lblAnulada.Size = new Size(104, 25);
+        lblAnulada.TabIndex = 7;
+        lblAnulada.Text = "ANULADA";
+        lblAnulada.Visible = false;
         // 
         // printDocument1
         // 

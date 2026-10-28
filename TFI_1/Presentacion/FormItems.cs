@@ -16,6 +16,7 @@ public partial class FormItems : Form
 	public FormItems()
 	{
 		InitializeComponent();
+		btnEliminar.Visible = Sesion.EsAdministrador;
 	}
 
 	private void FormItems_Load(object sender, EventArgs e)
@@ -176,6 +177,40 @@ public partial class FormItems : Form
 		catch (Exception ex)
 		{
 			Mensajes.Error(this, "No se pudo cambiar el estado", ex);
+		}
+	}
+
+	private void btnEliminar_Click(object sender, EventArgs e)
+	{
+		Item? item = Seleccionado();
+		if (item == null)
+		{
+			MessageBox.Show("Seleccione un ítem de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
+		}
+
+		DialogResult respuesta = MessageBox.Show(
+			"¿Eliminar definitivamente '" + item.Nombre + "'?" + Environment.NewLine + Environment.NewLine +
+			"Esta acción no se puede deshacer. Si el ítem tiene ventas, ingresos o turnos asociados, " +
+			"no se podrá eliminar y deberá desactivarlo.",
+			"Eliminar ítem", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+		if (respuesta != DialogResult.Yes)
+		{
+			return;
+		}
+
+		try
+		{
+			_negocio.Eliminar(item.Id);
+			Cargar();
+		}
+		catch (InvalidOperationException ex)
+		{
+			MessageBox.Show(ex.Message, "No se puede eliminar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+		catch (Exception ex)
+		{
+			Mensajes.Error(this, "No se pudo eliminar el ítem", ex);
 		}
 	}
 }

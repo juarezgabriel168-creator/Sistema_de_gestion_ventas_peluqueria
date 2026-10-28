@@ -105,6 +105,34 @@ public class CajaDatos
 		return tabla;
 	}
 
+	// Anulaciones registradas durante el turno. No se suman al efectivo:
+	// las ventas en efectivo anuladas ya se excluyen de VentasEfectivo.
+	public DataTable ListarAnulaciones(DateTime desde, DateTime? hasta)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT v.id_venta AS Venta, v.fecha AS FechaVenta, " +
+			"       v.fecha_anulacion AS Fecha, " +
+			"       COALESCE(CONCAT(c.apellido, ', ', c.nombre), 'Consumidor final') AS Cliente, " +
+			"       v.medio_pago AS Pago, v.total AS Total, " +
+			"       COALESCE(u.nombre_usuario, 'Sin usuario') AS Usuario, " +
+			"       v.motivo_anulacion AS Motivo " +
+			"FROM ventas AS v " +
+			"LEFT JOIN clientes AS c ON c.id_cliente = v.id_cliente " +
+			"LEFT JOIN usuarios AS u ON u.id_usuario = v.id_usuario_anulacion " +
+			"WHERE v.anulada = 1 " +
+			"  AND v.fecha_anulacion IS NOT NULL " +
+			"  AND v.fecha_anulacion >= @desde " +
+			"  AND (@hasta IS NULL OR v.fecha_anulacion <= @hasta) " +
+			"ORDER BY v.fecha_anulacion DESC, v.id_venta DESC;", conexion);
+		cmd.Parameters.Add(Parametros.Fecha("@desde", desde));
+		cmd.Parameters.Add(Parametros.FechaNula("@hasta", hasta));
+		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
+		DataTable tabla = new DataTable();
+		adaptador.Fill(tabla);
+		return tabla;
+	}
+
 	// Ventas del turno agrupadas por medio de pago (las anuladas no cuentan).
 	public DataTable ResumenVentas(DateTime desde, DateTime? hasta)
 	{

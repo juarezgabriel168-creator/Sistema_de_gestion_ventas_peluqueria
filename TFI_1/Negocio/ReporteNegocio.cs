@@ -62,4 +62,10 @@ public class ReporteNegocio
 		ValidarRango(desde, hasta);
 		return _datos.VentasPorEmpleado(desde, hasta);
 	}
+
+	public DataTable Anulaciones(DateTime desde, DateTime hasta)
+	{
+		ValidarRango(desde, hasta);
+		return _datos.Anulaciones(desde, hasta);
+	}
 }

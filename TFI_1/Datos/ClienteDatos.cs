@@ -85,6 +85,42 @@ public class ClienteDatos
 		cmd.ExecuteNonQuery();
 	}
 
+	public bool EsConsumidorFinal(int id)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT COUNT(*) FROM clientes WHERE id_cliente = @id AND dni = @dni;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		cmd.Parameters.Add(Parametros.Texto("@dni", Cliente.DniConsumidorFinal));
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+	}
+
+	/// <summary>
+	/// Indica si el cliente está referenciado por ventas, cuenta corriente
+	/// o turnos. En ese caso no se puede borrar sin romper el historial.
+	/// </summary>
+	public bool TieneDependencias(int id)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT (SELECT COUNT(*) FROM ventas WHERE id_cliente = @id) " +
+			"     + (SELECT COUNT(*) FROM cuentas_corrientes WHERE id_cliente = @id) " +
+			"     + (SELECT COUNT(*) FROM atenciones WHERE id_cliente = @id);", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+	}
+
+	public void Eliminar(int id)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("DELETE FROM clientes WHERE id_cliente = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
+	}
+
 	private static void AgregarParametros(MySqlCommand cmd, Cliente cliente)
 	{
 		cmd.Parameters.Add(Parametros.Texto("@nombre", cliente.Nombre));

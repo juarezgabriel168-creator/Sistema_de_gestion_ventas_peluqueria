@@ -22,6 +22,8 @@ partial class FormUsuarios : Form
 
 	private Button btnDesactivar;
 
+	private Button btnEliminar;
+
 	private Button btnRefrescar;
 
 	private DataGridView dgvUsuarios;
@@ -55,6 +57,7 @@ partial class FormUsuarios : Form
         btnNuevo = new Button();
         btnEditar = new Button();
         btnDesactivar = new Button();
+        btnEliminar = new Button();
         btnRefrescar = new Button();
         chkSoloActivos = new CheckBox();
         dgvUsuarios = new DataGridView();
@@ -80,12 +83,12 @@ partial class FormUsuarios : Form
         txtBuscar.Location = new Point(12, 45);
         txtBuscar.Name = "txtBuscar";
         txtBuscar.PlaceholderText = "Buscar por nombre de usuario...";
-        txtBuscar.Size = new Size(220, 23);
+        txtBuscar.Size = new Size(190, 23);
         txtBuscar.TabIndex = 1;
         // 
         // btnBuscar
         // 
-        btnBuscar.Location = new Point(240, 44);
+        btnBuscar.Location = new Point(208, 44);
         btnBuscar.Name = "btnBuscar";
         btnBuscar.Size = new Size(80, 25);
         btnBuscar.TabIndex = 2;
@@ -95,9 +98,9 @@ partial class FormUsuarios : Form
         // 
         // btnNuevo
         // 
-        btnNuevo.Location = new Point(340, 44);
+        btnNuevo.Location = new Point(294, 44);
         btnNuevo.Name = "btnNuevo";
-        btnNuevo.Size = new Size(90, 25);
+        btnNuevo.Size = new Size(80, 25);
         btnNuevo.TabIndex = 3;
         btnNuevo.Text = "Nuevo";
         btnNuevo.UseVisualStyleBackColor = true;
@@ -105,9 +108,9 @@ partial class FormUsuarios : Form
         // 
         // btnEditar
         // 
-        btnEditar.Location = new Point(436, 44);
+        btnEditar.Location = new Point(380, 44);
         btnEditar.Name = "btnEditar";
-        btnEditar.Size = new Size(90, 25);
+        btnEditar.Size = new Size(80, 25);
         btnEditar.TabIndex = 4;
         btnEditar.Text = "Editar";
         btnEditar.UseVisualStyleBackColor = true;
@@ -115,21 +118,32 @@ partial class FormUsuarios : Form
         // 
         // btnDesactivar
         // 
-        btnDesactivar.Location = new Point(532, 44);
+        btnDesactivar.Location = new Point(466, 44);
         btnDesactivar.Name = "btnDesactivar";
-        btnDesactivar.Size = new Size(110, 25);
+        btnDesactivar.Size = new Size(100, 25);
         btnDesactivar.TabIndex = 5;
         btnDesactivar.Text = "Desactivar";
         btnDesactivar.UseVisualStyleBackColor = true;
         btnDesactivar.Click += btnDesactivar_Click;
         // 
+        // btnEliminar
+        // 
+        btnEliminar.ForeColor = Color.Firebrick;
+        btnEliminar.Location = new Point(572, 44);
+        btnEliminar.Name = "btnEliminar";
+        btnEliminar.Size = new Size(80, 25);
+        btnEliminar.TabIndex = 6;
+        btnEliminar.Text = "Eliminar";
+        btnEliminar.UseVisualStyleBackColor = true;
+        btnEliminar.Click += btnEliminar_Click;
+        // 
         // btnRefrescar
         // 
         btnRefrescar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        btnRefrescar.Location = new Point(648, 44);
+        btnRefrescar.Location = new Point(658, 44);
         btnRefrescar.Name = "btnRefrescar";
-        btnRefrescar.Size = new Size(100, 25);
-        btnRefrescar.TabIndex = 6;
+        btnRefrescar.Size = new Size(90, 25);
+        btnRefrescar.TabIndex = 7;
         btnRefrescar.Text = "Refrescar";
         btnRefrescar.UseVisualStyleBackColor = true;
         btnRefrescar.Click += btnRefrescar_Click;
@@ -143,7 +157,7 @@ partial class FormUsuarios : Form
         chkSoloActivos.Location = new Point(657, 16);
         chkSoloActivos.Name = "chkSoloActivos";
         chkSoloActivos.Size = new Size(91, 19);
-        chkSoloActivos.TabIndex = 8;
+        chkSoloActivos.TabIndex = 9;
         chkSoloActivos.Text = "Solo Activos";
         chkSoloActivos.UseVisualStyleBackColor = true;
         chkSoloActivos.CheckedChanged += chkSoloActivos_CheckedChanged;
@@ -181,7 +195,7 @@ partial class FormUsuarios : Form
         dgvUsuarios.RowHeadersVisible = false;
         dgvUsuarios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvUsuarios.Size = new Size(736, 360);
-        dgvUsuarios.TabIndex = 7;
+        dgvUsuarios.TabIndex = 8;
         dgvUsuarios.Columns.AddRange(new DataGridViewColumn[] { colId, colNombreUsuario, colRol, colActivo });
         dgvUsuarios.SelectionChanged += dgvUsuarios_SelectionChanged;
         // 
@@ -226,6 +240,7 @@ partial class FormUsuarios : Form
         Controls.Add(dgvUsuarios);
         Controls.Add(chkSoloActivos);
         Controls.Add(btnRefrescar);
+        Controls.Add(btnEliminar);
         Controls.Add(btnDesactivar);
         Controls.Add(btnEditar);
         Controls.Add(btnNuevo);

@@ -43,6 +43,9 @@ public partial class FormCaja : Form
 				lblEsperado.Text = string.Empty;
 				dgvResumen.DataSource = null;
 				dgvMovimientos.DataSource = null;
+				dgvAnulaciones.DataSource = null;
+				lblResumenAnulaciones.Text = string.Empty;
+				tabAnulaciones.Text = "Anulaciones";
 				Habilitar(false);
 				return;
 			}
@@ -57,10 +60,18 @@ public partial class FormCaja : Form
 			decimal egresos = _negocio.TotalMovimientos(caja.Id, "egreso");
 			decimal esperado = _negocio.CalcularEsperado(caja);
 
+			DataTable anulaciones = _negocio.ListarAnulaciones(caja);
+			decimal totalAnulado = 0m;
+			foreach (DataRow fila in anulaciones.Rows)
+			{
+				totalAnulado += Convert.ToDecimal(fila["Total"]);
+			}
+
 			lblResumen.Text =
 				$"Ventas en efectivo: {ventas:C2}{Environment.NewLine}" +
 				$"Ingresos de caja: {ingresos:C2}{Environment.NewLine}" +
 				$"Egresos de caja: {egresos:C2}{Environment.NewLine}" +
+				$"Anulaciones (excluidas de ventas): {anulaciones.Rows.Count} — Total: {totalAnulado:C2}{Environment.NewLine}" +
 				$"Fondo inicial: {caja.MontoInicial:C2}";
 			lblEsperado.Text = $"Efectivo esperado en caja: {esperado:C2}";
 
@@ -68,6 +79,11 @@ public partial class FormCaja : Form
 			FormatearResumen();
 			dgvMovimientos.DataSource = _negocio.ListarMovimientos(caja.Id);
 			FormatearMovimientos();
+			dgvAnulaciones.DataSource = anulaciones;
+			FormatearAnulaciones();
+			lblResumenAnulaciones.Text =
+				$"Anuladas en el turno (excluidas de ventas): {anulaciones.Rows.Count} — Total: {totalAnulado:C2}";
+			tabAnulaciones.Text = $"Anulaciones ({anulaciones.Rows.Count})";
 			Habilitar(true);
 		}
 		catch (Exception ex)
@@ -178,6 +194,35 @@ public partial class FormCaja : Form
 		OcultarColumna("Id");
 		AjustarColumna("Fecha", formato: "dd/MM/yyyy HH:mm");
 		AjustarColumna("Monto", formato: "C2");
+	}
+
+	private void FormatearAnulaciones()
+	{
+		AjustarColumna(dgvAnulaciones, "Venta", titulo: "Venta");
+		AjustarColumna(dgvAnulaciones, "Fecha", titulo: "Fecha anulación", formato: "dd/MM/yyyy HH:mm");
+		AjustarColumna(dgvAnulaciones, "FechaVenta", titulo: "Fecha venta", formato: "dd/MM/yyyy HH:mm");
+		AjustarColumna(dgvAnulaciones, "Cliente", titulo: "Cliente");
+		AjustarColumna(dgvAnulaciones, "Pago", titulo: "Pago");
+		AjustarColumna(dgvAnulaciones, "Total", titulo: "Total", formato: "C2");
+		AjustarColumna(dgvAnulaciones, "Usuario", titulo: "Usuario");
+		AjustarColumna(dgvAnulaciones, "Motivo", titulo: "Motivo");
+	}
+
+	private static void AjustarColumna(DataGridView grid, string nombre, string? titulo = null, string? formato = null)
+	{
+		DataGridViewColumn? columna = grid.Columns[nombre];
+		if (columna == null)
+		{
+			return;
+		}
+		if (titulo != null)
+		{
+			columna.HeaderText = titulo;
+		}
+		if (formato != null)
+		{
+			columna.DefaultCellStyle.Format = formato;
+		}
 	}
 
 	private void OcultarColumna(string nombre)

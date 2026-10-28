@@ -106,6 +106,7 @@ partial class FormCategoriaEditar : Form
         AcceptButton = btnGuardar;
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
+        BackColor = SystemColors.ActiveCaption;
         CancelButton = btnCancelar;
         ClientSize = new Size(420, 170);
         Controls.Add(btnCancelar);

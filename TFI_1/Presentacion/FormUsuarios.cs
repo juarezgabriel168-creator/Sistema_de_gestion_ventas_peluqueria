@@ -14,6 +14,7 @@ public partial class FormUsuarios : Form
 	public FormUsuarios()
 	{
 		InitializeComponent();
+		btnEliminar.Visible = Sesion.EsAdministrador;
 	}
 
 	private void FormUsuarios_Load(object sender, EventArgs e)
@@ -127,6 +128,40 @@ public partial class FormUsuarios : Form
 		catch (Exception ex)
 		{
 			Mensajes.Error(this, "No se pudo cambiar el estado", ex);
+		}
+	}
+
+	private void btnEliminar_Click(object sender, EventArgs e)
+	{
+		Usuario? usuario = Seleccionado();
+		if (usuario == null)
+		{
+			MessageBox.Show("Seleccione un usuario de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
+		}
+
+		DialogResult respuesta = MessageBox.Show(
+			"¿Eliminar definitivamente al usuario '" + usuario.NombreUsuario + "'?" + Environment.NewLine + Environment.NewLine +
+			"Esta acción no se puede deshacer. No se puede eliminar su propio usuario, el último administrador " +
+			"ni usuarios con ventas, cajas, movimientos o auditoría asociados.",
+			"Eliminar usuario", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+		if (respuesta != DialogResult.Yes)
+		{
+			return;
+		}
+
+		try
+		{
+			_negocio.Eliminar(usuario.Id);
+			Cargar(txtBuscar.Text.Trim());
+		}
+		catch (InvalidOperationException ex)
+		{
+			MessageBox.Show(ex.Message, "No se puede eliminar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+		catch (Exception ex)
+		{
+			Mensajes.Error(this, "No se pudo eliminar el usuario", ex);
 		}
 	}
 }

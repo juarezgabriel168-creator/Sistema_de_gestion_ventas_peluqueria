@@ -220,7 +220,7 @@ partial class FormNuevaVenta : Form
         // 
         // btnAgregar
         // 
-        btnAgregar.Location = new Point(547, 120);
+        btnAgregar.Location = new Point(752, 120);
         btnAgregar.Name = "btnAgregar";
         btnAgregar.Size = new Size(100, 26);
         btnAgregar.TabIndex = 9;
@@ -328,7 +328,7 @@ partial class FormNuevaVenta : Form
         // 
         lblSubtotalTitulo.AutoSize = true;
         lblSubtotalTitulo.Font = new Font("Segoe UI", 10F);
-        lblSubtotalTitulo.Location = new Point(704, 176);
+        lblSubtotalTitulo.Location = new Point(696, 262);
         lblSubtotalTitulo.Name = "lblSubtotalTitulo";
         lblSubtotalTitulo.Size = new Size(63, 19);
         lblSubtotalTitulo.TabIndex = 13;
@@ -338,7 +338,7 @@ partial class FormNuevaVenta : Form
         // 
         lblSubtotalValor.AutoSize = true;
         lblSubtotalValor.Font = new Font("Segoe UI", 10F);
-        lblSubtotalValor.Location = new Point(844, 179);
+        lblSubtotalValor.Location = new Point(836, 265);
         lblSubtotalValor.Name = "lblSubtotalValor";
         lblSubtotalValor.Size = new Size(44, 19);
         lblSubtotalValor.TabIndex = 14;
@@ -348,7 +348,7 @@ partial class FormNuevaVenta : Form
         // 
         lblDescuentoTitulo.AutoSize = true;
         lblDescuentoTitulo.Font = new Font("Segoe UI", 10F);
-        lblDescuentoTitulo.Location = new Point(690, 208);
+        lblDescuentoTitulo.Location = new Point(682, 294);
         lblDescuentoTitulo.Name = "lblDescuentoTitulo";
         lblDescuentoTitulo.Size = new Size(77, 19);
         lblDescuentoTitulo.TabIndex = 15;
@@ -358,7 +358,7 @@ partial class FormNuevaVenta : Form
         // 
         lblDescuentoValor.AutoSize = true;
         lblDescuentoValor.Font = new Font("Segoe UI", 10F);
-        lblDescuentoValor.Location = new Point(844, 208);
+        lblDescuentoValor.Location = new Point(836, 294);
         lblDescuentoValor.Name = "lblDescuentoValor";
         lblDescuentoValor.Size = new Size(44, 19);
         lblDescuentoValor.TabIndex = 16;
@@ -378,7 +378,7 @@ partial class FormNuevaVenta : Form
         // 
         lblTotalTitulo.AutoSize = true;
         lblTotalTitulo.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-        lblTotalTitulo.Location = new Point(694, 253);
+        lblTotalTitulo.Location = new Point(686, 339);
         lblTotalTitulo.Name = "lblTotalTitulo";
         lblTotalTitulo.Size = new Size(73, 25);
         lblTotalTitulo.TabIndex = 17;
@@ -389,7 +389,7 @@ partial class FormNuevaVenta : Form
         lblTotalValor.AutoSize = true;
         lblTotalValor.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblTotalValor.ForeColor = Color.FromArgb(0, 102, 51);
-        lblTotalValor.Location = new Point(817, 253);
+        lblTotalValor.Location = new Point(809, 339);
         lblTotalValor.Name = "lblTotalValor";
         lblTotalValor.Size = new Size(71, 30);
         lblTotalValor.TabIndex = 18;
@@ -475,7 +475,7 @@ partial class FormNuevaVenta : Form
         // lblCuotas
         // 
         lblCuotas.AutoSize = true;
-        lblCuotas.Location = new Point(587, 148);
+        lblCuotas.Location = new Point(574, 148);
         lblCuotas.Name = "lblCuotas";
         lblCuotas.Size = new Size(47, 15);
         lblCuotas.TabIndex = 27;
@@ -483,7 +483,7 @@ partial class FormNuevaVenta : Form
         // 
         // numCuotas
         // 
-        numCuotas.Location = new Point(587, 166);
+        numCuotas.Location = new Point(574, 166);
         numCuotas.Maximum = new decimal(new int[] { 36, 0, 0, 0 });
         numCuotas.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
         numCuotas.Name = "numCuotas";

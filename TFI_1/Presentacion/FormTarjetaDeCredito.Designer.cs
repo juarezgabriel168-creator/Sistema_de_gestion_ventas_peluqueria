@@ -30,6 +30,8 @@
         {
             tlpTarjetaCredito = new TableLayoutPanel();
             grpBancos = new GroupBox();
+            btnBancoEditar = new Button();
+            btnBancoEliminar = new Button();
             dgvBancos = new DataGridView();
             btnBancoGuardar = new Button();
             btnBancoDesactivar = new Button();
@@ -38,6 +40,7 @@
             txtBanco = new TextBox();
             lblNombreBanco = new Label();
             grpTarjetas = new GroupBox();
+            btnTarjetaEditar = new Button();
             dgvTarjetas = new DataGridView();
             chkSoloActivos = new CheckBox();
             btnTarjetaDesactivar = new Button();
@@ -51,8 +54,6 @@
             cboTipo = new ComboBox();
             lblTarjetas = new Label();
             btnCerrar = new Button();
-            btnBancoEditar = new Button();
-            btnTarjetaEditar = new Button();
             tlpTarjetaCredito.SuspendLayout();
             grpBancos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dgvBancos).BeginInit();
@@ -69,6 +70,7 @@
             tlpTarjetaCredito.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 56.81818F));
             tlpTarjetaCredito.Controls.Add(grpBancos, 0, 0);
             tlpTarjetaCredito.Controls.Add(grpTarjetas, 1, 0);
+            tlpTarjetaCredito.Controls.Add(chkSoloActivos, 0, 1);
             tlpTarjetaCredito.Controls.Add(btnCerrar, 1, 1);
             tlpTarjetaCredito.Dock = DockStyle.Fill;
             tlpTarjetaCredito.Location = new Point(0, 0);
@@ -83,6 +85,7 @@
             // grpBancos
             // 
             grpBancos.Controls.Add(btnBancoEditar);
+            grpBancos.Controls.Add(btnBancoEliminar);
             grpBancos.Controls.Add(dgvBancos);
             grpBancos.Controls.Add(btnBancoGuardar);
             grpBancos.Controls.Add(btnBancoDesactivar);
@@ -99,6 +102,26 @@
             grpBancos.TabStop = false;
             grpBancos.Text = "Bancos";
             // 
+            // btnBancoEditar
+            // 
+            btnBancoEditar.Location = new Point(280, 100);
+            btnBancoEditar.Name = "btnBancoEditar";
+            btnBancoEditar.Size = new Size(80, 30);
+            btnBancoEditar.TabIndex = 8;
+            btnBancoEditar.Text = "Editar";
+            btnBancoEditar.UseVisualStyleBackColor = true;
+            btnBancoEditar.Click += btnBancoEditar_Click;
+            // 
+            // btnBancoEliminar
+            // 
+            btnBancoEliminar.Location = new Point(12, 136);
+            btnBancoEliminar.Name = "btnBancoEliminar";
+            btnBancoEliminar.Size = new Size(80, 30);
+            btnBancoEliminar.TabIndex = 9;
+            btnBancoEliminar.Text = "Eliminar";
+            btnBancoEliminar.UseVisualStyleBackColor = true;
+            btnBancoEliminar.Click += btnBancoEliminar_Click;
+            // 
             // dgvBancos
             // 
             dgvBancos.AllowUserToAddRows = false;
@@ -106,14 +129,15 @@
             dgvBancos.AllowUserToResizeRows = false;
             dgvBancos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvBancos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvBancos.BackgroundColor = SystemColors.ButtonHighlight;
             dgvBancos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvBancos.Location = new Point(6, 136);
+            dgvBancos.Location = new Point(6, 172);
             dgvBancos.MultiSelect = false;
             dgvBancos.Name = "dgvBancos";
             dgvBancos.ReadOnly = true;
             dgvBancos.RowHeadersVisible = false;
             dgvBancos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvBancos.Size = new Size(359, 315);
+            dgvBancos.Size = new Size(359, 279);
             dgvBancos.TabIndex = 7;
             dgvBancos.SelectionChanged += dgvBancos_SelectionChanged;
             // 
@@ -180,7 +204,6 @@
             // 
             grpTarjetas.Controls.Add(btnTarjetaEditar);
             grpTarjetas.Controls.Add(dgvTarjetas);
-            grpTarjetas.Controls.Add(chkSoloActivos);
             grpTarjetas.Controls.Add(btnTarjetaDesactivar);
             grpTarjetas.Controls.Add(btnTarjetaGuardar);
             grpTarjetas.Controls.Add(btnTarjetaNuevo);
@@ -200,12 +223,24 @@
             grpTarjetas.TabStop = false;
             grpTarjetas.Text = "Tarjetas";
             // 
+            // btnTarjetaEditar
+            // 
+            btnTarjetaEditar.Cursor = Cursors.SizeAll;
+            btnTarjetaEditar.Location = new Point(387, 100);
+            btnTarjetaEditar.Name = "btnTarjetaEditar";
+            btnTarjetaEditar.Size = new Size(80, 30);
+            btnTarjetaEditar.TabIndex = 9;
+            btnTarjetaEditar.Text = "Editar";
+            btnTarjetaEditar.UseVisualStyleBackColor = true;
+            btnTarjetaEditar.Click += btnTarjetaEditar_Click;
+            // 
             // dgvTarjetas
             // 
             dgvTarjetas.AllowUserToAddRows = false;
             dgvTarjetas.AllowUserToDeleteRows = false;
             dgvTarjetas.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dgvTarjetas.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvTarjetas.BackgroundColor = SystemColors.ButtonHighlight;
             dgvTarjetas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvTarjetas.Location = new Point(6, 136);
             dgvTarjetas.MultiSelect = false;
@@ -219,10 +254,12 @@
             // 
             // chkSoloActivos
             // 
+            chkSoloActivos.Anchor = AnchorStyles.Left;
             chkSoloActivos.AutoSize = true;
             chkSoloActivos.Checked = true;
             chkSoloActivos.CheckState = CheckState.Checked;
-            chkSoloActivos.Location = new Point(290, 107);
+            chkSoloActivos.Location = new Point(18, 18);
+            chkSoloActivos.Margin = new Padding(6, 0, 0, 0);
             chkSoloActivos.Name = "chkSoloActivos";
             chkSoloActivos.Size = new Size(91, 19);
             chkSoloActivos.TabIndex = 8;
@@ -340,27 +377,6 @@
             btnCerrar.UseVisualStyleBackColor = true;
             btnCerrar.Click += btnCerrar_Click;
             // 
-            // btnBancoEditar
-            // 
-            btnBancoEditar.Location = new Point(280, 100);
-            btnBancoEditar.Name = "btnBancoEditar";
-            btnBancoEditar.Size = new Size(80, 30);
-            btnBancoEditar.TabIndex = 8;
-            btnBancoEditar.Text = "Editar";
-            btnBancoEditar.UseVisualStyleBackColor = true;
-            btnBancoEditar.Click += btnBancoEditar_Click;
-            // 
-            // btnTarjetaEditar
-            // 
-            btnTarjetaEditar.Cursor = Cursors.SizeAll;
-            btnTarjetaEditar.Location = new Point(387, 100);
-            btnTarjetaEditar.Name = "btnTarjetaEditar";
-            btnTarjetaEditar.Size = new Size(80, 30);
-            btnTarjetaEditar.TabIndex = 9;
-            btnTarjetaEditar.Text = "Editar";
-            btnTarjetaEditar.UseVisualStyleBackColor = true;
-            btnTarjetaEditar.Click += btnTarjetaEditar_Click;
-            // 
             // FormTarjetaDeCredito
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -410,6 +426,7 @@
         private DataGridView dgvTarjetas;
         private CheckBox chkSoloActivos;
         private Button btnBancoEditar;
+        private Button btnBancoEliminar;
         private Button btnTarjetaEditar;
     }
 }

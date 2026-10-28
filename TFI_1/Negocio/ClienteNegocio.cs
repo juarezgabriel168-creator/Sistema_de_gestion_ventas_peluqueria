@@ -10,6 +10,8 @@ public class ClienteNegocio
 {
 	private readonly ClienteDatos _datos = new ClienteDatos();
 
+	private readonly AuditoriaNegocio _auditoria = new();
+
 	public List<Cliente> Listar(string? filtro = null)
 	{
 		return _datos.Listar(filtro);
@@ -56,6 +58,36 @@ public class ClienteNegocio
 			throw new ArgumentException("Debe seleccionar un cliente.");
 		}
 		_datos.Reactivar(id);
+	}
+
+	/// <summary>
+	/// Elimina físicamente un cliente. No se permite borrar al Consumidor
+	/// Final ni a clientes con ventas, cuenta corriente o turnos asociados.
+	/// </summary>
+	public void Eliminar(int id)
+	{
+		if (id <= 0)
+		{
+			throw new ArgumentException("Debe seleccionar un cliente.");
+		}
+		if (!Sesion.EsAdministrador)
+		{
+			throw new InvalidOperationException("Solo un administrador puede eliminar clientes.");
+		}
+		if (_datos.EsConsumidorFinal(id))
+		{
+			throw new InvalidOperationException(
+				"No se puede eliminar el cliente 'Consumidor Final' porque se usa en las ventas sin cliente identificado.");
+		}
+		if (_datos.TieneDependencias(id))
+		{
+			throw new InvalidOperationException(
+				"No se puede eliminar el cliente porque tiene ventas, cuenta corriente o turnos asociados. " +
+				"Desactívelo en su lugar.");
+		}
+
+		_datos.Eliminar(id);
+		_auditoria.Registrar("cliente_eliminacion", "clientes", id, $"Cliente con id {id} eliminado.");
 	}
 
 	public Cliente ObtenerOCrearConsumidorFinal()

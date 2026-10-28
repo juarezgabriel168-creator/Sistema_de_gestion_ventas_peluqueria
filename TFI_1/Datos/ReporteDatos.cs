@@ -16,7 +16,6 @@ public class ReporteDatos
 			"       COALESCE(AVG(v.total), 0) AS TicketPromedio " +
 			"FROM ventas AS v " +
 			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
-			"  AND v.anulada = 0 " +
 			"  AND v.anulada = 0;", conexion);
 		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
 		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
@@ -167,8 +166,37 @@ public class ReporteDatos
 			"FROM ventas AS v " +
 			"LEFT JOIN empleados AS e ON e.id_empleado = v.id_empleado " +
 			"WHERE DATE(v.fecha) BETWEEN @desde AND @hasta " +
+			"  AND v.anulada = 0 " +
 			"GROUP BY v.id_empleado, e.apellido, e.nombre " +
 			"ORDER BY Total DESC;", conexion);
+		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
+		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
+		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
+		DataTable tabla = new DataTable();
+		adaptador.Fill(tabla);
+		return tabla;
+	}
+
+	// Ventas anuladas en el período, ordenadas por fecha de anulación.
+	// Se filtra por fecha_anulacion: el registro diario/mensual muestra la
+	// anulación el día en que ocurrió, aunque la venta sea de otro día.
+	public DataTable Anulaciones(DateTime desde, DateTime hasta)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT v.id_venta AS Venta, v.fecha AS FechaVenta, " +
+			"       v.fecha_anulacion AS FechaAnulacion, " +
+			"       COALESCE(CONCAT(c.apellido, ', ', c.nombre), 'Consumidor final') AS Cliente, " +
+			"       v.medio_pago AS Pago, v.total AS Total, " +
+			"       COALESCE(ua.nombre_usuario, 'Sin usuario') AS Usuario, " +
+			"       v.motivo_anulacion AS Motivo " +
+			"FROM ventas AS v " +
+			"LEFT JOIN clientes AS c ON c.id_cliente = v.id_cliente " +
+			"LEFT JOIN usuarios AS ua ON ua.id_usuario = v.id_usuario_anulacion " +
+			"WHERE v.anulada = 1 " +
+			"  AND v.fecha_anulacion IS NOT NULL " +
+			"  AND DATE(v.fecha_anulacion) BETWEEN @desde AND @hasta " +
+			"ORDER BY v.fecha_anulacion DESC, v.id_venta DESC;", conexion);
 		cmd.Parameters.Add(Parametros.SoloFecha("@desde", desde.Date));
 		cmd.Parameters.Add(Parametros.SoloFecha("@hasta", hasta.Date));
 		using MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);

@@ -89,6 +89,31 @@ public class ItemDatos
 		cmd.ExecuteNonQuery();
 	}
 
+	/// <summary>
+	/// Indica si el ítem está referenciado por ventas, ingresos de mercadería
+	/// o turnos. En ese caso no se puede borrar sin romper el historial.
+	/// </summary>
+	public bool TieneDependencias(int id)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand(
+			"SELECT (SELECT COUNT(*) FROM detalle_venta WHERE id_item = @id) " +
+			"     + (SELECT COUNT(*) FROM ingresos_mercaderia_detalle WHERE id_item = @id) " +
+			"     + (SELECT COUNT(*) FROM atenciones WHERE id_item = @id);", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+	}
+
+	public void Eliminar(int id)
+	{
+		using MySqlConnection conexion = ConexionBD.ObtenerConexion();
+		using MySqlCommand cmd = new MySqlCommand("DELETE FROM items WHERE id_item = @id;", conexion);
+		cmd.Parameters.Add(Parametros.Entero("@id", id));
+		conexion.Open();
+		cmd.ExecuteNonQuery();
+	}
+
 	private static void AgregarParametros(MySqlCommand cmd, Item item)
 	{
 		cmd.Parameters.Add(Parametros.Texto("@nombre", item.Nombre));

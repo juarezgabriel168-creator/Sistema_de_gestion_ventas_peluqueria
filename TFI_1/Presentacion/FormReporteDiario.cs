@@ -54,7 +54,7 @@ public partial class FormReporteDiario : Form
 		const int yInferior = 341;
 		int altoInferior = Math.Max(100, ClientSize.Height - yInferior - margen);
 		dgvMasVendidos.SetBounds(xIzquierda, yInferior, anchoColumna, altoInferior);
-		dgvGastosCategoria.SetBounds(xDerecha, yInferior, anchoColumna, altoInferior);
+		tabInferior.SetBounds(xDerecha, yInferior, anchoColumna, altoInferior);
 	}
 
 	private void FormReporteDiario_Load(object sender, EventArgs e)
@@ -108,11 +108,49 @@ public partial class FormReporteDiario : Form
 			if (dgvGastosCategoria.Columns.Contains("Total"))
 				dgvGastosCategoria.Columns["Total"]!.DefaultCellStyle.Format = "C2";
 
+			DataTable anulaciones = _negocio.Anulaciones(fecha, fecha);
+			dgvAnulaciones.DataSource = anulaciones;
+			FormatearAnulaciones();
+			decimal totalAnulado = 0m;
+			foreach (DataRow fila in anulaciones.Rows)
+			{
+				totalAnulado += Convert.ToDecimal(fila["Total"]);
+			}
+			lblResumenAnulaciones.Text =
+				$"Ventas anuladas: {anulaciones.Rows.Count} — Total: {totalAnulado:C2}";
+			tabAnulaciones.Text = $"Anulaciones ({anulaciones.Rows.Count})";
+
 			dgvMasVendidos.DataSource = _negocio.ProductosMasVendidos(fecha, fecha);
 		}
 		catch (Exception ex)
 		{
 			Mensajes.Error(this, "No se pudo generar el reporte", ex);
+		}
+	}
+
+	private void FormatearAnulaciones()
+	{
+		AjustarColumna(dgvAnulaciones, "Venta", "Venta");
+		AjustarColumna(dgvAnulaciones, "FechaAnulacion", "Fecha anulación", "dd/MM/yyyy HH:mm");
+		AjustarColumna(dgvAnulaciones, "FechaVenta", "Fecha venta", "dd/MM/yyyy HH:mm");
+		AjustarColumna(dgvAnulaciones, "Cliente", "Cliente");
+		AjustarColumna(dgvAnulaciones, "Pago", "Pago");
+		AjustarColumna(dgvAnulaciones, "Total", "Total", "C2");
+		AjustarColumna(dgvAnulaciones, "Usuario", "Usuario");
+		AjustarColumna(dgvAnulaciones, "Motivo", "Motivo");
+	}
+
+	private static void AjustarColumna(DataGridView grid, string nombre, string titulo, string? formato = null)
+	{
+		DataGridViewColumn? columna = grid.Columns[nombre];
+		if (columna == null)
+		{
+			return;
+		}
+		columna.HeaderText = titulo;
+		if (formato != null)
+		{
+			columna.DefaultCellStyle.Format = formato;
 		}
 	}
 
@@ -181,6 +219,47 @@ public partial class FormReporteDiario : Form
 			g.DrawString(Convert.ToString(fila["Cantidad"]), fuente, Brushes.Black, x + 250, y);
 			g.DrawString(Convert.ToDecimal(fila["Total"]).ToString("C2"), fuente, Brushes.Black, x + 350, y);
 			y += 20;
+		}
+
+		y += 20;
+		if (y > e.PageBounds.Height - 100)
+		{
+			e.HasMorePages = true;
+			return;
+		}
+		DataTable anuladas = _negocio.Anulaciones(fecha, fecha);
+		decimal totalAnulado = 0m;
+		foreach (DataRow fila in anuladas.Rows)
+		{
+			totalAnulado += Convert.ToDecimal(fila["Total"]);
+		}
+		g.DrawString("ANULACIONES", fuenteNegrita, Brushes.Black, x, y);
+		y += 20;
+		g.DrawString($"Ventas anuladas: {anuladas.Rows.Count} — Total: {totalAnulado:C2}",
+			fuente, Brushes.Black, x, y);
+		y += 20;
+		g.DrawString("Venta", fuenteNegrita, Brushes.Black, x, y);
+		g.DrawString("Fecha anulación", fuenteNegrita, Brushes.Black, x + 70, y);
+		g.DrawString("Cliente", fuenteNegrita, Brushes.Black, x + 220, y);
+		g.DrawString("Total", fuenteNegrita, Brushes.Black, x + 390, y);
+		g.DrawString("Usuario", fuenteNegrita, Brushes.Black, x + 480, y);
+		y += 20;
+		g.DrawLine(Pens.Gray, x, y, x + 580, y);
+		y += 6;
+		foreach (DataRow fila in anuladas.Rows)
+		{
+			g.DrawString(Convert.ToString(fila["Venta"]), fuente, Brushes.Black, x, y);
+			g.DrawString(Convert.ToDateTime(fila["FechaAnulacion"]).ToString("dd/MM/yyyy HH:mm"),
+				fuente, Brushes.Black, x + 70, y);
+			g.DrawString(Convert.ToString(fila["Cliente"]), fuente, Brushes.Black, x + 220, y);
+			g.DrawString(Convert.ToDecimal(fila["Total"]).ToString("C2"), fuente, Brushes.Black, x + 390, y);
+			g.DrawString(Convert.ToString(fila["Usuario"]), fuente, Brushes.Black, x + 480, y);
+			y += 20;
+			if (y > e.PageBounds.Height - 100)
+			{
+				e.HasMorePages = true;
+				return;
+			}
 		}
 
 		y += 20;

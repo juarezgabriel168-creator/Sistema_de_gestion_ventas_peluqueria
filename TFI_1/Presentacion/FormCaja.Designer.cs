@@ -26,6 +26,11 @@ partial class FormCaja : Form
 	private DataGridView dgvResumen;
 	private Label lblMovsTitulo;
 	private DataGridView dgvMovimientos;
+	private TabControl tabDetalle;
+	private TabPage tabMovimientos;
+	private TabPage tabAnulaciones;
+	private Label lblResumenAnulaciones;
+	private DataGridView dgvAnulaciones;
 	private Label lblEsperado;
 	private Button btnActualizar;
 	private Button btnHistorial;
@@ -59,6 +64,11 @@ partial class FormCaja : Form
 		dgvResumen = new DataGridView();
 		lblMovsTitulo = new Label();
 		dgvMovimientos = new DataGridView();
+		tabDetalle = new TabControl();
+		tabMovimientos = new TabPage();
+		tabAnulaciones = new TabPage();
+		lblResumenAnulaciones = new Label();
+		dgvAnulaciones = new DataGridView();
 		lblEsperado = new Label();
 		btnActualizar = new Button();
 		btnHistorial = new Button();
@@ -67,6 +77,10 @@ partial class FormCaja : Form
 		((ISupportInitialize)numMontoMov).BeginInit();
 		((ISupportInitialize)dgvResumen).BeginInit();
 		((ISupportInitialize)dgvMovimientos).BeginInit();
+		tabDetalle.SuspendLayout();
+		tabMovimientos.SuspendLayout();
+		tabAnulaciones.SuspendLayout();
+		((ISupportInitialize)dgvAnulaciones).BeginInit();
 		SuspendLayout();
 		//
 		// lblTitulo
@@ -224,25 +238,87 @@ partial class FormCaja : Form
 		lblMovsTitulo.Name = "lblMovsTitulo";
 		lblMovsTitulo.Size = new Size(118, 15);
 		lblMovsTitulo.TabIndex = 15;
-		lblMovsTitulo.Text = "Movimientos de caja";
+		lblMovsTitulo.Text = "Movimientos y anulaciones";
 		//
 		// dgvMovimientos
 		//
 		dgvMovimientos.AllowUserToAddRows = false;
 		dgvMovimientos.AllowUserToDeleteRows = false;
 		dgvMovimientos.AllowUserToResizeRows = false;
-		dgvMovimientos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 		dgvMovimientos.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 		dgvMovimientos.BackgroundColor = SystemColors.ButtonHighlight;
 		dgvMovimientos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-		dgvMovimientos.Location = new Point(446, 327);
+		dgvMovimientos.Dock = DockStyle.Fill;
+		dgvMovimientos.Location = new Point(3, 3);
 		dgvMovimientos.MultiSelect = false;
 		dgvMovimientos.Name = "dgvMovimientos";
 		dgvMovimientos.ReadOnly = true;
 		dgvMovimientos.RowHeadersVisible = false;
 		dgvMovimientos.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-		dgvMovimientos.Size = new Size(436, 150);
-		dgvMovimientos.TabIndex = 16;
+		dgvMovimientos.Size = new Size(422, 116);
+		dgvMovimientos.TabIndex = 0;
+		//
+		// tabMovimientos
+		//
+		tabMovimientos.Controls.Add(dgvMovimientos);
+		tabMovimientos.Location = new Point(4, 24);
+		tabMovimientos.Name = "tabMovimientos";
+		tabMovimientos.Padding = new Padding(3);
+		tabMovimientos.Size = new Size(428, 122);
+		tabMovimientos.TabIndex = 0;
+		tabMovimientos.Text = "Movimientos";
+		tabMovimientos.UseVisualStyleBackColor = true;
+		//
+		// lblResumenAnulaciones
+		//
+		lblResumenAnulaciones.Dock = DockStyle.Top;
+		lblResumenAnulaciones.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+		lblResumenAnulaciones.Location = new Point(3, 3);
+		lblResumenAnulaciones.Name = "lblResumenAnulaciones";
+		lblResumenAnulaciones.Size = new Size(422, 22);
+		lblResumenAnulaciones.TabIndex = 0;
+		lblResumenAnulaciones.TextAlign = ContentAlignment.MiddleLeft;
+		//
+		// dgvAnulaciones
+		//
+		dgvAnulaciones.AllowUserToAddRows = false;
+		dgvAnulaciones.AllowUserToDeleteRows = false;
+		dgvAnulaciones.AllowUserToResizeRows = false;
+		dgvAnulaciones.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+		dgvAnulaciones.BackgroundColor = SystemColors.ButtonHighlight;
+		dgvAnulaciones.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+		dgvAnulaciones.Dock = DockStyle.Fill;
+		dgvAnulaciones.Location = new Point(3, 25);
+		dgvAnulaciones.MultiSelect = false;
+		dgvAnulaciones.Name = "dgvAnulaciones";
+		dgvAnulaciones.ReadOnly = true;
+		dgvAnulaciones.RowHeadersVisible = false;
+		dgvAnulaciones.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+		dgvAnulaciones.Size = new Size(422, 94);
+		dgvAnulaciones.TabIndex = 1;
+		//
+		// tabAnulaciones
+		//
+		tabAnulaciones.Controls.Add(dgvAnulaciones);
+		tabAnulaciones.Controls.Add(lblResumenAnulaciones);
+		tabAnulaciones.Location = new Point(4, 24);
+		tabAnulaciones.Name = "tabAnulaciones";
+		tabAnulaciones.Padding = new Padding(3);
+		tabAnulaciones.Size = new Size(428, 122);
+		tabAnulaciones.TabIndex = 1;
+		tabAnulaciones.Text = "Anulaciones";
+		tabAnulaciones.UseVisualStyleBackColor = true;
+		//
+		// tabDetalle
+		//
+		tabDetalle.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+		tabDetalle.Controls.Add(tabMovimientos);
+		tabDetalle.Controls.Add(tabAnulaciones);
+		tabDetalle.Location = new Point(446, 327);
+		tabDetalle.Name = "tabDetalle";
+		tabDetalle.SelectedIndex = 0;
+		tabDetalle.Size = new Size(436, 150);
+		tabDetalle.TabIndex = 16;
 		//
 		// lblEsperado
 		//
@@ -297,7 +373,7 @@ partial class FormCaja : Form
 		Controls.Add(btnHistorial);
 		Controls.Add(btnActualizar);
 		Controls.Add(lblEsperado);
-		Controls.Add(dgvMovimientos);
+		Controls.Add(tabDetalle);
 		Controls.Add(lblMovsTitulo);
 		Controls.Add(dgvResumen);
 		Controls.Add(lblVentasTitulo);
@@ -322,6 +398,10 @@ partial class FormCaja : Form
 		((ISupportInitialize)numMontoMov).EndInit();
 		((ISupportInitialize)dgvResumen).EndInit();
 		((ISupportInitialize)dgvMovimientos).EndInit();
+		tabMovimientos.ResumeLayout(false);
+		tabAnulaciones.ResumeLayout(false);
+		((ISupportInitialize)dgvAnulaciones).EndInit();
+		tabDetalle.ResumeLayout(false);
 		ResumeLayout(false);
 		PerformLayout();
 	}

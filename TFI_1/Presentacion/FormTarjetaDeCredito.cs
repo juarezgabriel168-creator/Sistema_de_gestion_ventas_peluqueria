@@ -109,6 +109,24 @@ public partial class FormTarjetaDeCredito : Form
 		catch (Exception ex) { Error("No se pudo actualizar el banco: ", ex); }
 	}
 
+	private void btnBancoEliminar_Click(object? sender, EventArgs e)
+	{
+		if (_banco == null) { Aviso("Seleccione un banco de la lista."); return; }
+		string pregunta = $"¿Eliminar definitivamente '{_banco.Nombre}'?" +
+			Environment.NewLine + Environment.NewLine +
+			"Solo se permite si el banco no tiene tarjetas asociadas.";
+		if (MessageBox.Show(pregunta, "Confirmar",
+				MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+		try
+		{
+			_bancos.Eliminar(_banco.Id);
+			CargarBancos();
+		}
+		catch (ArgumentException ex) { Aviso(ex.Message); }
+		catch (InvalidOperationException ex) { Aviso(ex.Message); }
+		catch (Exception ex) { Error("No se pudo eliminar el banco: ", ex); }
+	}
+
 	// ===================== TARJETAS =====================
 
 	private void CargarTarjetas()

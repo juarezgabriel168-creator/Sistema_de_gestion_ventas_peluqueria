@@ -42,6 +42,8 @@ partial class FormAtenciones : Form
 
 	private Button btnCancelarAtencion;
 
+	private Button btnEliminar;
+
 	protected override void Dispose(bool disposing)
 	{
 		if (disposing && components != null)
@@ -72,6 +74,7 @@ partial class FormAtenciones : Form
         btnNuevo = new Button();
         btnEditar = new Button();
         btnCancelarAtencion = new Button();
+        btnEliminar = new Button();
         ((ISupportInitialize)dgvAtenciones).BeginInit();
         SuspendLayout();
         // 
@@ -260,12 +263,25 @@ partial class FormAtenciones : Form
         btnCancelarAtencion.UseVisualStyleBackColor = true;
         btnCancelarAtencion.Click += btnCancelarAtencion_Click;
         // 
+        // btnEliminar
+        // 
+        btnEliminar.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        btnEliminar.ForeColor = Color.Firebrick;
+        btnEliminar.Location = new Point(340, 512);
+        btnEliminar.Name = "btnEliminar";
+        btnEliminar.Size = new Size(90, 32);
+        btnEliminar.TabIndex = 10;
+        btnEliminar.Text = "Eliminar";
+        btnEliminar.UseVisualStyleBackColor = true;
+        btnEliminar.Click += btnEliminar_Click;
+        // 
         // FormAtenciones
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
         BackColor = SystemColors.ActiveCaption;
         ClientSize = new Size(900, 560);
+        Controls.Add(btnEliminar);
         Controls.Add(btnCancelarAtencion);
         Controls.Add(btnEditar);
         Controls.Add(btnNuevo);

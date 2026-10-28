@@ -186,6 +186,34 @@ public class UsuarioNegocio
 			$"Usuario con id {id} reactivado.");
 	}
 
+	/// <summary>
+	/// Elimina físicamente un usuario. No se permite borrar el propio usuario,
+	/// el último administrador activo ni usuarios con historial asociado.
+	/// </summary>
+	public void Eliminar(int id)
+	{
+		if (id <= 0)
+			throw new ArgumentException("Debe seleccionar un usuario.");
+
+		if (!Sesion.EsAdministrador)
+			throw new InvalidOperationException("Solo un administrador puede eliminar usuarios.");
+
+		if (Sesion.UsuarioActual != null && Sesion.UsuarioActual.Id == id)
+			throw new InvalidOperationException("No puede eliminar su propio usuario.");
+
+		if (_datos.EsUltimoAdministrador(id))
+			throw new InvalidOperationException("No se puede eliminar el último administrador activo del sistema.");
+
+		if (_datos.TieneDependencias(id))
+			throw new InvalidOperationException(
+				"No se puede eliminar el usuario porque tiene ventas, cajas, gastos, movimientos o auditoría asociados. " +
+				"Desactívelo en su lugar.");
+
+		_datos.Eliminar(id);
+		_auditoria.Registrar("usuario_eliminacion", "usuarios", id,
+			$"Usuario con id {id} eliminado.");
+	}
+
 	private static bool VerificarContrasena(string contrasena, string hashAlmacenado)
 	{
 		if (Validaciones.TextoVacio(hashAlmacenado))

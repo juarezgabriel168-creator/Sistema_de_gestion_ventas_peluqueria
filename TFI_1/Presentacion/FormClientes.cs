@@ -14,6 +14,7 @@ public partial class FormClientes : Form
 	public FormClientes()
 	{
 		InitializeComponent();
+		btnEliminar.Visible = Sesion.EsAdministrador;
 	}
 
 	private void FormClientes_Load(object sender, EventArgs e)
@@ -127,6 +128,40 @@ public partial class FormClientes : Form
 		catch (Exception ex)
 		{
 			Mensajes.Error(this, "No se pudo cambiar el estado", ex);
+		}
+	}
+
+	private void btnEliminar_Click(object sender, EventArgs e)
+	{
+		Cliente? cliente = Seleccionado();
+		if (cliente == null)
+		{
+			MessageBox.Show("Seleccione un cliente de la lista.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+			return;
+		}
+
+		DialogResult respuesta = MessageBox.Show(
+			"¿Eliminar definitivamente a " + cliente.NombreCompleto + "?" + Environment.NewLine + Environment.NewLine +
+			"Esta acción no se puede deshacer. Si el cliente tiene ventas, cuenta corriente o turnos asociados, " +
+			"no se podrá eliminar y deberá desactivarlo.",
+			"Eliminar cliente", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+		if (respuesta != DialogResult.Yes)
+		{
+			return;
+		}
+
+		try
+		{
+			_negocio.Eliminar(cliente.Id);
+			Cargar();
+		}
+		catch (InvalidOperationException ex)
+		{
+			MessageBox.Show(ex.Message, "No se puede eliminar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+		catch (Exception ex)
+		{
+			Mensajes.Error(this, "No se pudo eliminar el cliente", ex);
 		}
 	}
 }

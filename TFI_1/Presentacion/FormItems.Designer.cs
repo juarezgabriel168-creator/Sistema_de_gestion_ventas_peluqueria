@@ -31,6 +31,8 @@ partial class FormItems : Form
 
 	private Button btnDesactivar;
 
+	private Button btnEliminar;
+
 	private Button btnRefrescar;
 
 	private DataGridView dgvItems;
@@ -80,6 +82,7 @@ partial class FormItems : Form
         btnNuevo = new Button();
         btnEditar = new Button();
         btnDesactivar = new Button();
+        btnEliminar = new Button();
         btnRefrescar = new Button();
         chkSoloActivos = new CheckBox();
         chkStockBajo = new CheckBox();
@@ -194,13 +197,24 @@ partial class FormItems : Form
         btnDesactivar.UseVisualStyleBackColor = true;
         btnDesactivar.Click += btnDesactivar_Click;
         // 
+        // btnEliminar
+        // 
+        btnEliminar.ForeColor = Color.Firebrick;
+        btnEliminar.Location = new Point(320, 82);
+        btnEliminar.Name = "btnEliminar";
+        btnEliminar.Size = new Size(90, 28);
+        btnEliminar.TabIndex = 10;
+        btnEliminar.Text = "Eliminar";
+        btnEliminar.UseVisualStyleBackColor = true;
+        btnEliminar.Click += btnEliminar_Click;
+        // 
         // btnRefrescar
         // 
         btnRefrescar.Anchor = AnchorStyles.Top | AnchorStyles.Right;
         btnRefrescar.Location = new Point(748, 82);
         btnRefrescar.Name = "btnRefrescar";
         btnRefrescar.Size = new Size(100, 28);
-        btnRefrescar.TabIndex = 10;
+        btnRefrescar.TabIndex = 11;
         btnRefrescar.Text = "Refrescar";
         btnRefrescar.UseVisualStyleBackColor = true;
         btnRefrescar.Click += btnRefrescar_Click;
@@ -264,7 +278,7 @@ partial class FormItems : Form
         dgvItems.RowHeadersVisible = false;
         dgvItems.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         dgvItems.Size = new Size(836, 368);
-        dgvItems.TabIndex = 11;
+        dgvItems.TabIndex = 12;
         dgvItems.Columns.AddRange(new DataGridViewColumn[] { colNombre, colTipo, colCategoria, colPrecio, colCosto, colStock, colStockMinimo, colDuracion, colActivo });
         dgvItems.SelectionChanged += dgvItems_SelectionChanged;
         // 
@@ -361,6 +375,7 @@ partial class FormItems : Form
         Controls.Add(chkStockBajo);
         Controls.Add(chkSoloActivos);
         Controls.Add(btnRefrescar);
+        Controls.Add(btnEliminar);
         Controls.Add(btnDesactivar);
         Controls.Add(btnEditar);
         Controls.Add(btnNuevo);

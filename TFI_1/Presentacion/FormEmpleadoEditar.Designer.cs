@@ -153,6 +153,7 @@ partial class FormEmpleadoEditar : Form
         AcceptButton = btnGuardar;
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
+        BackColor = SystemColors.ActiveCaption;
         CancelButton = btnCancelar;
         ClientSize = new Size(420, 264);
         Controls.Add(btnCancelar);

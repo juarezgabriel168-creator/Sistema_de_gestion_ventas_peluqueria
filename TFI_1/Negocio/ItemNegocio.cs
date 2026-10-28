@@ -11,6 +11,8 @@ public class ItemNegocio
 
 	private readonly CategoriaNegocio _categoriaNegocio = new CategoriaNegocio();
 
+	private readonly AuditoriaNegocio _auditoria = new();
+
 	public List<Item> Listar(string? filtro = null, int? categoriaId = null, TipoItem? tipo = null,
 		bool soloStockBajo = false)
 	{
@@ -99,5 +101,30 @@ public class ItemNegocio
 			throw new ArgumentException("Debe seleccionar un ítem.");
 		}
 		_datos.Reactivar(id);
+	}
+
+	/// <summary>
+	/// Elimina físicamente un ítem. Solo se permite si no tiene ventas,
+	/// ingresos de mercadería ni turnos asociados, para no romper el historial.
+	/// </summary>
+	public void Eliminar(int id)
+	{
+		if (id <= 0)
+		{
+			throw new ArgumentException("Debe seleccionar un ítem.");
+		}
+		if (!Sesion.EsAdministrador)
+		{
+			throw new InvalidOperationException("Solo un administrador puede eliminar ítems.");
+		}
+		if (_datos.TieneDependencias(id))
+		{
+			throw new InvalidOperationException(
+				"No se puede eliminar el ítem porque tiene ventas, ingresos de mercadería o turnos asociados. " +
+				"Desactívelo en su lugar.");
+		}
+
+		_datos.Eliminar(id);
+		_auditoria.Registrar("item_eliminacion", "items", id, $"Ítem con id {id} eliminado.");
 	}
 }

@@ -187,4 +187,71 @@ public class UsuarioDatos
 			cmd.ExecuteNonQuery();
 		}
 	}
+
+	/// <summary>
+	/// Indica si el usuario está referenciado por ventas, cajas, gastos,
+	/// ingresos de mercadería, movimientos o auditoría. En ese caso no se
+	/// puede borrar sin romper el historial.
+	/// </summary>
+	public bool TieneDependencias(int id)
+	{
+		const string sql = @"
+                SELECT (SELECT COUNT(*) FROM ventas WHERE id_usuario = @id OR id_usuario_anulacion = @id)
+                     + (SELECT COUNT(*) FROM movimientos_cuenta_corriente WHERE id_usuario = @id)
+                     + (SELECT COUNT(*) FROM gastos WHERE id_usuario = @id)
+                     + (SELECT COUNT(*) FROM ingresos_mercaderia WHERE id_usuario = @id)
+                     + (SELECT COUNT(*) FROM auditoria WHERE id_usuario = @id)
+                     + (SELECT COUNT(*) FROM cajas WHERE id_usuario_apertura = @id OR id_usuario_cierre = @id)
+                     + (SELECT COUNT(*) FROM caja_movimientos WHERE id_usuario = @id);";
+
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
+		{
+			cmd.Parameters.Add(Parametros.Entero("@id", id));
+			conexion.Open();
+			return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+		}
+	}
+
+	/// <summary>
+	/// Devuelve true solo si el usuario es un administrador activo y no
+	/// queda ningún otro administrador activo en el sistema.
+	/// </summary>
+	public bool EsUltimoAdministrador(int id)
+	{
+		const string sql = @"
+                SELECT COUNT(*)
+                FROM usuarios AS u
+                WHERE u.id_usuario = @id
+                  AND u.id_rol = 1
+                  AND u.activo = 1
+                  AND NOT EXISTS (
+                      SELECT 1
+                      FROM usuarios AS otro
+                      WHERE otro.id_rol = 1
+                        AND otro.activo = 1
+                        AND otro.id_usuario <> @id
+                  );";
+
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
+		{
+			cmd.Parameters.Add(Parametros.Entero("@id", id));
+			conexion.Open();
+			return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+		}
+	}
+
+	public void Eliminar(int id)
+	{
+		const string sql = "DELETE FROM usuarios WHERE id_usuario = @id;";
+
+		using (MySqlConnection conexion = ConexionBD.ObtenerConexion())
+		using (MySqlCommand cmd = new MySqlCommand(sql, conexion))
+		{
+			cmd.Parameters.Add(Parametros.Entero("@id", id));
+			conexion.Open();
+			cmd.ExecuteNonQuery();
+		}
+	}
 }
